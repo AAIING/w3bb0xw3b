@@ -1,0 +1,165 @@
+﻿@model IEnumerable<WebBox.Models.PagosDModels>
+
+@{
+    /**/
+
+    /**/
+
+    Layout = null;
+    int i = 0;
+}
+
+<div class="table-responsive">
+    <table id="table_pagospendientes" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%" style="margin-bottom:0">
+        <thead>
+            <tr style="background-color: #FF9A00; color: #fff">
+                <th style="width:9%">
+                    Pedido
+                </th>
+                <th style="width:9%">
+                    N°Doc
+                </th>
+                <th style="width:8%">
+                    Fecha
+                </th>
+                <th style="width:10%">
+                    Telefono
+                </th>
+                <th style="width:50%">
+                    Cliente
+                </th>
+                <th style="width:12%">
+                    Total
+                </th>
+                @*<th style="width:11%">
+                        Abono
+                    </th>
+                    <th style="width:12%">
+                        Pendiente
+                    </th>*@
+                <th style="width:2%">
+
+                </th>
+                <th style="width:2%">
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td>
+                        @item.pedido
+                    </td>
+                    <td>
+                        @item.numerodoc
+                    </td>
+                    <td>
+                        @item.fecha
+                    </td>
+                    <td>
+                        @item.telefono
+                    </td>
+                    <td>
+                        @item.cliente
+                    </td>
+                    <td class="text-right">
+                        @item.total.ToString("N0")
+                    </td>
+                    @*<td class="text-right">
+                            @item.abono.ToString("N0")
+                        </td>
+                        <td class="text-right">
+                            @item.pendiente.ToString("N0")
+                        </td>*@
+
+                    <td class="text-center verpagos" title="Ingresar pago" data-pedido="@item.pedido" data-numerodoc="@item.numerodoc" data-tipodoc="@item.tipodoc" data-pendiente="@item.pendiente">
+                        <i class="glyphicon glyphicon-folder-open" style="font-size: 22px; color: orange; cursor: pointer"></i>
+                    </td>
+                    <td class="text-center ingresarpago" title="Ingresar pago" data-telefono="@item.telefono" data-pedido="@item.pedido" data-numerodoc="@item.numerodoc" data-tipodoc="@item.tipodoc" data-pendiente="@item.pendiente" data-abono="@item.abono" data-total="@item.total">
+                        <i class="glyphicon glyphicon-usd" style="font-size: 22px; color: blue; cursor: pointer"></i>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" class="init">
+
+
+    $(document).ready(function () {
+        var table_pagospendientes = $('#table_pagospendientes').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": true,
+            "searching": true,
+            "ordering": true,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "Sin Pagos",
+                "sEmptyTable": "Sin Pagos",
+                "sInfo": " _START_ al _END_ de  _TOTAL_ ",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        //cargar_presentaciones_modifica_peso_Item_pedido();
+
+
+
+
+        $('#table_pagospendientes tbody').on('click', '.ingresarpago', function (e) {
+            e.preventDefault();
+            var pedido = $(this).data("pedido");
+            var numerodoc = $(this).data("numerodoc");
+            var tipodoc = $(this).data("tipodoc");
+            var pendiente = $(this).data("pendiente");
+            var total = $(this).data("total");
+            var abono = $(this).data("abono");
+            var telefono = $(this).data("telefono");
+            $(".forma_pago").val("0");
+            valor_formapago_temp_global = 0;
+            $("#numeropedido_insert").val(pedido);
+            $("#numerodoc_insert").val(numerodoc);
+            $("#tipodoc_insert").val(tipodoc);
+            $("#formapago_total").val(Moneda(pendiente));
+            $("#total_insert").val(total);
+            $("#abono_insert").val(abono);
+            $("#telefono_insert").val(telefono);
+
+            $("#modal_ingresar_pagos").modal("show");
+        });
+        $('#table_pagospendientes tbody').on('click', '.verpagos', function (e) {
+            e.preventDefault();
+            var pedido = $(this).data("pedido");
+            var numerodoc = $(this).data("numerodoc");
+            var tipodoc = $(this).data("tipodoc");
+            DetallePagos(pedido, numerodoc, tipodoc);
+            $("#modal_detalle_pagos").modal("show");
+        });
+    });
+
+</script>

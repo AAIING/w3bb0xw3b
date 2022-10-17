@@ -1,0 +1,163 @@
+﻿@model IEnumerable<WebBox.Models.ClientesModels>
+
+@{
+    Layout = null;
+    int i = 0;
+}
+
+<table id="listado_table_clientes" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width:3%">ID&nbsp;Cliente&nbsp;</th>
+            <th style="width:20%">Nombre</th>
+            <th style="width:20%">Dirección</th>
+            <th style="width:10%">Comuna</th>
+            <th style="width:15%">Condominio</th>
+            <th style="width:6%">Teléfono</th>
+            <th style="width:15%">Email</th>
+            <th style="width:9%">Categoria</th>
+            <th style="width:2%" class="text-center"><i class="fa fa-edit" aria-hidden="true" style="font-size: 16px"></i></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td>
+                @item.referencia
+            </td>
+            <td>
+                @item.nombre
+            </td>
+            <td>
+                @item.direccion
+            </td>
+            <td>
+                @item.comuna
+            </td>
+            <td>
+                @item.condominio
+            </td>
+            <td>
+                @item.telefono
+            </td>
+            <td>
+                @item.email
+            </td>
+            <td title="Calidad de Armado">
+                <select id="categoria_@i" class="form-control categoria"
+                        data-fila="@i"
+                        data-referencia="@item.referencia"
+                        data-categoria="@item.categoria" onchange="cambio_categoria(@item.referencia, this.value)" value="@item.categoria">
+                    <option value="1" @if (item.categoria == "1") { <text> selected</text>}>Standard</option>
+                    <option value="2" @if (item.categoria == "2") { <text> selected</text>}>Premium</option>
+                </select>
+            </td>
+            <td>
+                <a style="display: inline;" href="#" data-toggle="modal" data-target="#modal_cliente_editar"
+                   data-referencia='@item.referencia'
+                   data-nombrecliente='@item.nombre'
+                   data-direccion='@item.direccion'
+                   data-comuna='@item.comuna'
+                   data-condominio='@item.condominio'
+                   data-telefono='@item.telefono'
+                   data-email='@item.email'
+                   data-categoria='@item.categoria'
+                   data-lista='@item.lista'
+                   class="cliente_edit">
+                    <img src="../../images/images_edit.png" width="20" height="20" />
+                </a>
+
+            </td>
+
+        </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        table_clientes = $('#listado_table_clientes').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": true,
+            "searching": true,
+            "lengthMenu": [[10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+        $('#listado_table_clientes_length').parent().toggleClass('col-sm-6 col-sm-5');
+        $('#listado_table_clientes_filter').parent().toggleClass('col-sm-6 col-sm-4').addClass('filtrar');
+        $("#listado_table_clientes_wrapper .filtrar").after('<div class="col-sm-3" id="boton_agregar"></div>');
+        $("#boton_agregar").append('<a href="#" data-toggle="modal" data-target="#modal_cliente_insertar" data-placement=" top" data-original-title="Nueva Cliente" title="Nueva Cliente" style="margin-bottom: 5px;" class="btn btn-success pull-right default_modal"><i class="glyphicon glyphicon-plus"></i>Nuevo Cliente</a>');
+
+        $('#listado_table_clientes tbody').on('click', 'a.cliente_deleted', function (e) {
+            e.preventDefault();
+            var referencia = $(this).data('referencia');
+            $("#modal_cliente_eliminar input[id=referencia_hidden]").val(referencia);
+
+        });
+        $('#listado_table_clientes tbody').on('click', 'a.cliente_edit', function (e) {
+            e.preventDefault();
+            //var codigo = $(this).data('codigocliente');
+            $(".modal_prov").val("");
+
+            var referencia = $(this).data('referencia');
+            var nombrecliente = $(this).data('nombrecliente');
+            var direccion = $(this).data('direccion');
+            var comuna = $(this).data('comuna');
+            var condominio = $(this).data('condominio');
+            var telefono = $(this).data('telefono');
+            var email = $(this).data('email');
+            var lista = $(this).data('lista');
+
+            $("#modal_cliente_editar input[id=referencia_edit]").val(referencia);
+            $("#modal_cliente_editar input[id=nombre_edit]").val(nombrecliente);
+            $("#modal_cliente_editar input[id=direccion_edit]").val(direccion);
+            $("#modal_cliente_editar input[id=comuna_edit]").val(comuna);
+            $("#modal_cliente_editar input[id=condominio_edit]").val(condominio);
+            $("#modal_cliente_editar input[id=telefono_edit]").val(telefono);
+            $("#modal_cliente_editar input[id=email_edit]").val(email);
+            debugger;
+            if (lista == "1") {
+                $("#restaurant_edit").prop("checked",true);
+            } else {
+                $("#restaurant_edit").prop("checked",false);
+
+            }
+
+        });
+    });
+
+
+
+
+</script>

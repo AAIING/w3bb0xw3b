@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebBox</title>
+
+
+    @Styles.Render("~/Content/Estilos")
+    @Styles.Render("~/Content/font-awesome")
+    @Styles.Render("~/styles/Graficos")
+    @Styles.Render("~/Content/validationEngine")
+    @Styles.Render("~/Content/alert_mensaje")
+    @Styles.Render("~/Content/fileinput")
+    @Styles.Render("~/Content/bootstrap_combobox_select")
+    @Styles.Render("~/Content/bootstrap_toggle")
+    @*<link href="http://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" rel="stylesheet" />*@
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+
+    @RenderBody()
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/datatables")
+    @*@Scripts.Render("~/bundles/validaSesion")*@
+    @Scripts.Render("~/bundles/file_input")
+
+    @Scripts.Render("~/bundles/jquery_numeric")
+    @Scripts.Render("~/bundles/bootstrap-dialog")
+    @Scripts.Render("~/bundles/alert_mensaje")
+    @Scripts.Render("~/bundles/formatea_numeros")
+    @Scripts.Render("~/bundles/jquery_engine")
+    @Scripts.Render("~/bundles/bootstrap_combobox_select")
+    @Scripts.Render("~/amcharts/Graficos")
+    @Scripts.Render("~/bundles/bootstrap_toggle")
+    <script>
+
+        @*var iva_global = parseFloat(@Session["ss_Iva"].ToString().Replace(',','.'));*@
+        $(document).ready(function () {
+            $('.numerico_int').numeric_entero();
+            $('.numerico_dec').numeric(".");
+            //alert("Layout");
+        });
+
+    </script>
+
+
+    <script  src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.5.5/rxjs.umd.min.js" 
+            integrity="sha512-f9/zRLfT4GaHBAniWJeFTsViOGP3hBxfEhecIauTbM5Ad51sTb4AoFJV5VbFl+Q7PClIU4kNHInGwhWFZKqE9Q=="
+            crossorigin="anonymous" referrerpolicy="no-referrer">   </script>
+
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+﻿
+@model IEnumerable<WebBox.Models.UsuariosModels>
+
+@{
+    Layout = null;
+    int fila = 1;
+}
+
+<div class="responsiva_tabla">
+    <table id="table_usuarios" class="table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+        <thead>
+            <tr style="background-color: #FF9A00; color: #fff">
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th class="text-center">Acceso</th>
+                <th class="text-center"><i class="fa fa-edit" aria-hidden="true" style="font-size: 16px"></i></th>
+                <th class="text-center"><i class="fa fa-trash" aria-hidden="true" style="font-size: 16px"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr title="seleccione con doble Click para la edición" data-fila="@fila" data-referencia="@item.referencia ">
+                <td>
+                    <div id="idcodigo_@fila.ToString()">@item.codigo</div>
+                </td>
+                <td>
+                    <div id="idnombre_@fila.ToString()">@item.nombre</div>
+                </td>
+                <td>
+                    <div id="idcorreo_@fila.ToString()">@item.vendedor</div>
+                </td>
+                <td>
+                    <input type="button" class="accesos center-block" data-fila="@fila" data-usuario="@item.codigo" value="+" />
+                </td>
+                <td class="text-center">
+                    <i class="glyphicon glyphicon-edit editar_fila_usuario text-center"
+                       data-fila="@fila"
+                       data-referencia="@item.referencia"
+                       data-codigo="@item.codigo"
+                       data-nombre="@item.nombre"
+                       data-clave="@item.clave"
+                       data-correo="@item.email"
+                       data-password="@item.password"
+                       data-smtp="@item.smtp"
+                       data-puerto="@item.puerto"
+                       data-vendedor="@item.vendedor"
+                       style="font-size: 22px; color: orange; cursor: pointer"></i>
+                </td>
+                <td class="text-center">
+                    <i class="glyphicon glyphicon-remove borrar_fila_usuario text-center"
+                       data-fila="@fila"
+                       data-codigo="@item.codigo"
+                       style="font-size: 22px; color: red; cursor: pointer"></i>
+                </td>
+            </tr>
+                fila++;
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script type="text/javascript" class="init">
+    var fila_seleccionada = 0;
+    var referencia_seleccionada = 0;
+    var fila_seleccionada_empresa = 0;
+    var table = "";
+
+    $(document).ready(function () {
+
+        table = $('#table_usuarios').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": true,
+            "searching": true,
+            "lengthusuario": [[10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        $('#table_usuarios tbody').on('click', 'tr .accesos', function (e) {
+            e.preventDefault();
+            
+            $("#ajax_loader").show();
+            usuario = $(this).data("usuario");
+            cargarAccesosUsuario(usuario);
+        });
+
+        $('#table_usuarios tbody').on('click', 'tr .borrar_fila_usuario', function (e) {
+            e.preventDefault();
+            $("#modal_advertencia_eliminar").modal("show");
+            var codigo = $(this).data("codigo");
+            $("#usuario_codigo").val(codigo);
+        });
+
+        $('#table_usuarios tbody').on('click', 'tr', function (e) {
+            e.preventDefault();
+            $(".ediciones").removeAttr('disabled');
+            $(".table_filatablecida").removeClass("table_filatablecida");
+            $(this).addClass("table_filatablecida");
+            fila_seleccionada = $(this).data("fila");
+            referencia_seleccionada = $(this).data("referencia");
+            usuario = $("#idcodigo_" + fila_seleccionada).html();
+        });
+
+        $('#table_usuarios tbody').on('click', '.editar_fila_usuario', function (e) {
+            //$("#abreModal_editar_usuario").on('click', function (e) {
+            e.preventDefault();
+            $("#ajax_loader").css("display", "");
+
+            fila_seleccionada = $(this).data("fila");
+            
+            var codigousuario = $(this).data("codigo");
+            var claveusuario  = $(this).data("clave");
+            var nombreusuario = $(this).data("nombre");
+            var correousuario = $(this).data("correo");
+            var password      = $(this).data("password");
+            var smtp          = $(this).data("smtp");
+            var puerto        = $(this).data("puerto");
+            var vendedor      = $(this).data("vendedor");
+
+            $("#modal_editarusuario").modal("show");
+            $("#modal_editarusuario #codigousuario_edit").val(codigousuario);
+            $("#modal_editarusuario #nombreusuario_edit").val(nombreusuario);
+            $("#modal_editarusuario #correousuario_edit").val(correousuario);
+            $("#modal_editarusuario #claveusuario_edit").val(claveusuario);
+            $("#modal_editarusuario #password_edit").val(password);
+            $("#modal_editarusuario #smtp_edit").val(smtp);
+            $("#modal_editarusuario #puerto_edit").val(puerto);
+            $("#modal_editarusuario #vendedor_edit").val(vendedor);
+           
+            $("#ajax_loader").css("display", "none");
+        });
+
+    });
+
+</script>
+
+

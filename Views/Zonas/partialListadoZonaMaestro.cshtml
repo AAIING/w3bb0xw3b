@@ -1,0 +1,114 @@
+﻿@model IEnumerable<WebBox.Models.ZonasModels>
+
+@{
+    /**/
+
+    Layout = null;
+    int fila = 1;
+}
+
+<table id="table_zonas" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%" style="margin-bottom:0 !important">
+    <thead>
+        <tr>
+            <th style="width: 15%" class="text-center">Código</th>
+            <th style="width:40%">Comuna</th>
+            <th style="width: 35%" >Tipo Zona</th>
+            <th style="width: 5%" class="text-center"></th>
+            <th style="width: 5%" class="text-center">
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            fila++;
+        <tr data-fila="@fila">
+            <td class="text-center">
+                @item.codigo
+            </td>
+            <td>
+                @item.nombre
+            </td>
+            <td>
+                @item.tipozona
+            </td>
+            <td class="text-center editar_zona" title="Editar Zona"
+                data-nombre="@item.nombre"
+                data-tipozona="@item.tipozona"
+                data-codigo="@item.codigo">
+                <i class="glyphicon glyphicon-edit" style="font-size: 18px;cursor: pointer" data-fila="@fila.ToString()"></i>
+            </td>
+            <td class="text-center eliminar_zona" title="Eliminar Zona"
+                data-codigo="@item.codigo">
+                <i class="glyphicon glyphicon-remove" style="font-size: 18px; cursor: pointer" data-fila="@fila.ToString()"></i>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var table = $('#table_zonas').DataTable({
+            destroy: true,
+            "lengthusuario": [[10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ codigos",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando codigos del _START_ al _END_ de un total de _TOTAL_ codigos",
+                "sInfoEmpty": "Mostrando codigos del 0 al 0 de un total de 0 codigos",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ codigos)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+        $('#table_zonas tbody').on('click', 'tr .ver_detalle', function (e) {
+            e.preventDefault();
+            var codigo = $(this).data("codigo");
+            var nombre = $(this).data("nombre");
+            var nombre = $(this).data("nombre");
+            $("#modal_ver_detalle_zona").modal("show");
+            $("#nrozona_encabezado").val(codigo);
+            $("#zona_encabezado").val(nombre);
+            listar_DetalleZona(codigo);
+        });
+
+        $('#table_zonas tbody').on('click', '.eliminar_zona', function (e) {
+            e.preventDefault();
+            var codigo = $(this).data('codigo');
+            $("#modal_eliminar_maestro").modal("show");
+            $("#modal_eliminar_maestro input[name=codigo_hidden]").val(codigo);
+        });
+
+        $('#table_zonas tbody').on('click', 'tr .editar_zona', function (e) {
+            e.preventDefault();
+            var codigo = $(this).data("codigo");
+            var comuna = $(this).data("nombre");
+            var tipozona = $(this).data("tipozona");
+            $("#modal_editar").modal("show");
+            $("#codigo_edit").val(codigo);
+            $("#zona_maestro_edit").val(tipozona);//tipo zona
+            $("#comuna_maestro_edit").val(comuna);
+        });
+    });
+
+
+</script>

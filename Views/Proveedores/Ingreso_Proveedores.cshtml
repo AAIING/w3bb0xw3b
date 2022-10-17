@@ -1,0 +1,824 @@
+﻿
+@{
+    ViewBag.Title = "Maestro_Proveedores";
+    Layout = null;
+}
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<form method="POST" class="form_proveedore_eliminar" role="form">
+    <!-- Modal Eliminar-->
+    <div class="modal fade" id="modal_proveedor_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog_eliminar">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_proveedore">Eliminar Proveedor</h3>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro de eliminar el Proveedor?<br />
+                    <br />
+                    <div class="form-horizontal">
+                        <input type="hidden" name="rut_hidden" id="rut_hidden" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="enviar_proveedore_eliminar btn btn-danger" value="Eliminar" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="id_form_proveedore_edit" method="POST" name="fileinfo" role="form">
+    <div class="modal fade" id="modal_proveedor_editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_editar">Editar Proveedor</h3>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Rut </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="rut_edit" type="text" class="form-control " placeholder="99999999-9" onblur="this.value = FormatearRUT(this.value);" data-prompt-position="topRight:-70" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_edit" type="text" name="nombre" class="form-control validate[required] " placeholder="Nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Dirección</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="direccion_edit" name="direccion" type="text" class="form-control validate[required] " placeholder="Dirección">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Región</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="regiones_edit" class="form-control selectpicker  validate[required]" data-live-search="true">
+                                    <option value="0">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Comunas</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="comunas_edit" class="form-control selectpicker  validate[required]" data-live-search="true">
+                                    <option value="0">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Giro</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="giro_edit" type="text" class="form-control validate[required] " placeholder="Giro del proveedor" maxlength="90">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Teléfono</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefono_edit" type="text" class="form-control  " placeholder="Telefono">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="email_edit" type="text" class="form-control validate[required,custom[ValidaEmail]] " placeholder="Email del proveedor" maxlength="30">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Contacto(1)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="contacto1_edit" type="text" class="form-control  validate[required]" placeholder="Nombre contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cargo Contacto(1)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="cargo1_edit" type="text" class="form-control  validate[required]" placeholder="Cargo contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Teléfono Contacto(1)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefonoc1_edit" type="text" class="form-control" placeholder="Telefono contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cargo Contacto(2)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="cargo2_edit" type="text" class="form-control" placeholder="Cargo contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Teléfono Contacto(2)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefonoc2_edit" type="text" class="form-control" placeholder="Telefono contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Contacto(3)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="contacto3_edit" type="text" class="form-control" placeholder="Nombre contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cargo Contacto(3)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="cargo3_edit" type="text" class="form-control" placeholder="Cargo contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Teléfono Contacto(3)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefonoc3_edit" type="text" class="form-control" placeholder="Telefono contacto">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Condición de Pago</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="condiciondep_edit" class="form-control selectpicker comboboxpicker  validate[required]" data-live-search="true">
+                                    <option value="0">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Condición de Entrega</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="condiciondee_edit" class="form-control selectpicker comboboxpicker  validate[required]" data-live-search="true">
+                                    <option value="0">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<div class="form-group">
+            <div class="row">
+                <div class="col-lg-3">
+                    <label>Plazo</label>
+                </div>
+                <div class="col-lg-9">
+                    <input id="plazo_edit" type="text" class="form-control validate[required]" placeholder="Dias de plazo del proveedor" maxlength="5" onkeypress="return validateIntKeyPress(this,event);">
+                </div>
+            </div>
+        </div>*@
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-6 text-center">
+                            <button id="btn_cerrar_proveedor_editar" type="button" class="btn btn-default cerrar_editar_proveedore" data-dismiss="modal">Cancelar</button>
+
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <input id="proveedor_editar" type="submit" class="btn btn-primary" value="Guardar" data-dismiss="modal" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<form id="id_form_proveedore_insert" method="POST" name="fileinfo" role="form">
+    <div class="modal fade" id="modal_proveedor_insertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabelar">Nuevo Proveedor</h3>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Rut </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="rut" type="text" class="form-control  validate[required,custom[ValidaRut],custom[ValidaRutProveedorRepetido_Proveedor]]" placeholder="99999999-9" onblur="this.value = FormatearRUT(this.value);" data-prompt-position="topRight:-70">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre" type="text" name="nombre" class="form-control validate[required] " placeholder="Nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Dirección</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="direccion" name="direccion" type="text" class="form-control validate[required] " placeholder="Dirección">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Región</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="regiones" class="form-control selectpicker validate[required]" data-live-search="true">
+                                    <option value="0">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Comunas</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="comunas" class="form-control selectpicker  validate[required]" data-live-search="true">
+                                    <option value="0">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Giro</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="giro" type="text" class="form-control validate[required] " placeholder="Giro del proveedor" maxlength="90">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Teléfono</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefono" type="text" class="form-control  " placeholder="Telefono">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="email" type="text" class="form-control validate[required,custom[ValidaEmail]] " placeholder="Email del proveedor" maxlength="30">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Contacto(1)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="contacto1" type="text" class="form-control  validate[required]" placeholder="Nombre contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cargo Contacto(1)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="cargo1" type="text" class="form-control  validate[required]" placeholder="Cargo contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Teléfono Contacto(1)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefonoc1" type="text" class="form-control  validate[required]" placeholder="Telefono contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Contacto(2)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="contacto2" type="text" class="form-control" placeholder="Nombre contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cargo Contacto(2)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="cargo2" type="text" class="form-control" placeholder="Cargo contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Teléfono Contacto(2)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefonoc2" type="text" class="form-control" placeholder="Telefono contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Contacto(3)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="contacto3" type="text" class="form-control" placeholder="Nombre contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cargo Contacto(3)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="cargo3" type="text" class="form-control" placeholder="Cargo contacto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Telefono Contacto(3)</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefonoc3" type="text" class="form-control" placeholder="Telefono contacto">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Condición de Pago</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="condiciondep" class="form-control selectpicker comboboxpicker  validate[required]" data-live-search="true">
+                                    <option value="0">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Condición de Entrega</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="condiciondee" class="form-control selectpicker comboboxpicker  validate[required]" data-live-search="true">
+                                    <option value="0">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<div class="form-group">
+            <div class="row">
+                <div class="col-lg-3">
+                    <label>Plazo</label>
+                </div>
+                <div class="col-lg-9">
+                    <input id="plazo" type="text" class="form-control validate[required] numerico_int" placeholder="Dias de plazo del proveedor" maxlength="5" value="30" onkeypress="return validateIntKeyPress(this,event);">
+                </div>
+            </div>
+        </div>*@
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-6 text-center">
+                            <button id="btn_cerrar_proveedorar" type="button" class="btn btn-default cerrarar_proveedore" data-dismiss="modal">Cancelar</button>
+
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <input id="proveedore_enviar" type="submit" class="btn btn-primary" value="Guardar" data-dismiss="modal" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="load_carga" style="align-content: center"></div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Proveedores
+        </h3>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 -col-xs-12">
+        <div id="ListaParcial_Proveedores">
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    var table_proveedores = "";
+    function recargar_listado_proveedores() {
+        $("#ajax_loader").css("display", "");
+        var url_action = '@Url.Action("partialListadoProveedores", "Proveedores")';
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                if (result)
+                $("#ListaParcial_Proveedores").html(result);
+                $("#ajax_loader").css("display", "none");
+
+            }
+        });
+    }
+
+    function cargar_regiones() {
+        $.getJSON('/Regiones/GetRegiones/', function (data) {
+            $("#regiones").empty();
+            $("#regiones_edit").empty();
+            var items = "";
+
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.id + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#regiones').html("<option value='0'>No hay Regiones</option>");
+                $('#regiones_edit').html("<option value='0'>No hay Regiones</option>");
+
+            } else {
+                $('#regiones').html(items);
+                $('#regiones_edit').html(items);
+            }
+            $("#regiones_edit").selectpicker('refresh');
+            $('#regiones').selectpicker('val', '7');
+            $("#regiones").selectpicker('refresh');
+
+        });
+    }
+    function cargar_comunas(idregion) {
+        $.getJSON('/Comunas/GetComunas/?idregion=' + idregion, function (data) {
+            var items = "";
+            $("#comunas").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.id + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#comunas').html("<option value='0'>No hay Comunas</option>");
+
+            } else {
+                $('#comunas').html(items);
+            }
+            $("#comunas").selectpicker('refresh');
+
+        });
+    }
+    function cargar_comuna_edit(idregion) {
+        debugger;
+
+        $.getJSON('/Comunas/GetComunas/?idregion=' + idregion, function (data) {
+            var items = "";
+            $("#comunas_edit").empty();
+
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.id + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#comunas_edit').html("<option value='0'>No hay Comunas</option>");
+
+            } else {
+                $('#comunas_edit').html(items);
+            }
+            $("#comunas_edit").selectpicker('refresh');
+
+        });
+    }
+
+    function cargar_condicionpago() {
+        $.getJSON('/Condiciones/GetCondicionesPago/', function (data) {
+            $("#condiciondep").empty();
+            $("#condiciondep_edit").empty();
+            var items = "";
+
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.referencia + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#condiciondep').html("<option value='0'>No hay Condiciones de Pago</option>");
+                $('#condiciondep_edit').html("<option value='0'>No hay Condiciones de Pago</option>");
+
+            } else {
+                $('#condiciondep').html(items);
+                $('#condiciondep_edit').html(items);
+            }
+            $("#condiciondep").selectpicker('refresh');
+            $("#condiciondep_edit").selectpicker('refresh');
+
+        });
+    }
+    function cargar_condicionentrega() {
+        $.getJSON('/Condiciones/GetCondicionesEntrega/', function (data) {
+            $("#condiciondee").empty();
+            $("#condiciondee_edit").empty();
+            var items = "";
+
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.referencia + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#condiciondee').html("<option value='0'>No hay Condiciones de Pago</option>");
+                $('#condiciondee_edit').html("<option value='0'>No hay Condiciones de Pago</option>");
+
+            } else {
+                $('#condiciondee').html(items);
+                $('#condiciondee_edit').html(items);
+            }
+            $("#condiciondee").selectpicker('refresh');
+            $("#condiciondee_edit").selectpicker('refresh');
+
+        });
+    }
+    $(document).ready(function () {
+        recargar_listado_proveedores();
+        $.ajaxSetup({
+            async: false
+        });
+        cargar_regiones();
+        cargar_comunas($("#regiones").val()); 
+        $.ajaxSetup({
+            async: true
+        });
+        cargar_condicionpago();
+        cargar_condicionentrega();
+        $("#regiones").change(function (e) {
+            e.preventDefault();
+            if ($("#regiones") != "") {
+                cargar_comunas($("#regiones").val());
+            }
+        });
+        $("#regiones_edit").change(function (e) {
+            e.preventDefault();
+            if ($("#regiones_edit") != "") {
+                cargar_comuna_edit($("#regiones_edit").val());
+            }
+        });
+
+        $('.enviar_proveedore_eliminar').click(function (e) {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append("rut", $("#rut_hidden").val());
+            $.ajax({
+                type: "POST",
+                url: '/Proveedores/EliminarProveedor/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#modal_proveedor_eliminar").modal("hide");
+                    if (data.retornoJson == 1) {
+                        mostrar_msj_success('Proveedor Eliminado Correctamente');
+                        recargar_listado_proveedores();
+                    } else if (data.retornoJson == -2) {
+                        mostrar_msj_error(data.errorJson);
+                    } else if (data.retornoJson == 2) {
+                        mostrar_msj_error("No se puede eliminar debido que hay datos relacionados");
+                    }
+                    else {
+                        mostrar_msj_error("Error al Eliminar el proveedore:" + data);
+                    }
+                }
+            });
+        });
+
+        $('#id_form_proveedore_edit').validationEngine();
+        $("#proveedor_editar").click(function (e) {
+            e.preventDefault();
+
+            if (!$("#id_form_proveedore_edit").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            $("#ajax_loader").css("display", "");
+
+            fd.append("rut", $("#rut_edit").val());
+            fd.append("nombre", $("#nombre_edit").val());
+            fd.append("direccion", $("#direccion_edit").val());
+            fd.append("telefono", $("#telefono_edit").val());
+            fd.append("email", $("#email_edit").val());
+            fd.append("giro", $("#giro_edit").val());
+            fd.append("condiciondep", $("#condiciondep_edit").val());
+            fd.append("condiciondee", $("#condiciondee_edit").val());
+            fd.append("region", $("#regiones_edit").val());
+            fd.append("comuna", $("#comunas_edit").val());
+            //fd.append("plazo", $("#plazo_edit").val());
+            fd.append("contacto1", $("#contacto1_edit").val());
+            fd.append("cargo1", $("#cargo1_edit").val());
+            fd.append("telefonoc1", $("#telefonoc1_edit").val());
+            fd.append("contacto2", $("#contacto2_edit").val());
+            fd.append("cargo2", $("#cargo2_edit").val());
+            fd.append("telefonoc2", $("#telefonoc2_edit").val());
+            fd.append("contacto3", $("#contacto3_edit").val());
+            fd.append("cargo3", $("#cargo3_edit").val());
+            fd.append("telefonoc3", $("#telefonoc3_edit").val());
+            $.ajax({
+                type: "POST",
+                url: '/Proveedores/EditarProveedor/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+
+                    $("#ajax_loader").css("display", "none");
+                    if (data.retornojson == "1") {
+                        $("#id_form_proveedore_edit").each(function () { this.reset(); });
+                        mostrar_msj_success('Datos guardados correctamente');
+                        recargar_listado_proveedores();
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conección");
+                }
+            });
+        });
+
+        $('#id_form_proveedore_insert').validationEngine();
+        $("#proveedore_enviar").click(function (e) {
+            e.preventDefault();
+
+            if (!$("#id_form_proveedore_insert").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            $("#ajax_loader").css("display", "");
+            fd.append("rut", $("#rut").val());
+            fd.append("nombre", $("#nombre").val());
+            fd.append("direccion", $("#direccion").val());
+            fd.append("telefono", $("#telefono").val());
+            fd.append("email", $("#email").val());
+            fd.append("giro", $("#giro").val());
+            fd.append("condiciondep", $("#condiciondep").val());
+            fd.append("condiciondee", $("#condiciondee").val());
+            fd.append("region", $("#regiones").val());
+            fd.append("comuna", $("#comunas").val());
+            //fd.append("plazo", $("#plazo").val());
+            fd.append("contacto1", $("#contacto1").val());
+            fd.append("cargo1", $("#cargo1").val());
+            fd.append("telefonoc1", $("#telefonoc1").val());
+            fd.append("contacto2", $("#contacto2").val());
+            fd.append("cargo2", $("#cargo2").val());
+            fd.append("telefonoc2", $("#telefonoc2").val());
+            fd.append("contacto3", $("#contacto3").val());
+            fd.append("cargo3", $("#cargo3").val());
+            fd.append("telefonoc3", $("#telefonoc3").val());
+            $.ajax({
+                type: "POST",
+                url: '/Proveedores/GuardarProveedor/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#ajax_loader").css("display", "none");
+                    if (data.retornojson == "1") {
+                        $("#id_form_proveedore_insert").each(function () { this.reset(); });
+                        mostrar_msj_success('Proveedor Creado Correctamente');
+                        recargar_listado_proveedores();
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conección");
+
+                }
+            });
+        });
+    });
+
+
+
+</script>
+
+

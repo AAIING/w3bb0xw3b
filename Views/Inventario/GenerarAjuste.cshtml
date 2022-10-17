@@ -1,0 +1,290 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Inventario Físico
+        </h3>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-1">
+    </div>
+    <div class="col-lg-1">
+        <label>Bodega</label>
+    </div>
+    <div class="col-lg-2">
+        <select id="bodega" class="form-control" disabled>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+        </select>
+    </div>
+    <div class="col-lg-1">
+        <h4>Insumo</h4>
+    </div>
+    <div class="col-lg-4">
+        <button type="button" class="btn btn-success" id="btn_abre_modal_aplicar" title="Generar Ajuste de Inventario"><i class="glyphicon glyphicon-floppy-disk"></i> Generar Ajuste Inventario</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-1 col-md-1 col-xs-0"></div>
+    <div class="col-lg-10 col-md-10 col-xs-12">
+        <div id="idDivPartialListadoInventario">
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-1 col-xs-0"></div>
+</div>
+
+
+
+<div class="modal fade" id="modal_carrito_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_obra">Eliminar Producto</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar el Producto?<br>
+                <br>
+                <div class="form-horizontal">
+                    <input type="hidden" name="codigocarrito_eliminar_hidden" id="codigocarrito_eliminar_hidden">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="enviar_carrito_eliminar btn btn-danger" value="Eliminar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal_carrito_vaciar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content modal-sm">
+            <div class="modal-header header_modal">
+                <button id="close_modal_vaciar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_vaciar_carrito">Vaciar Carrito</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de vaciar el carrito?<br>
+                <br>
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input id="btn_vaciar_carro" type="submit" class="btn btn-danger" value="Vaciar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_guardar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_guardar" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modal-sm">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_guardar">Guardar Inventario<span style="font-size: 16px"></span></h3>
+            </div>
+
+            <div class="modal-body">
+                ¿Está seguro de guardar el invantario?<br>
+                <br>
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input id="btn_guardar_carro" type="submit" class="btn btn-success" value="Guardar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_aplicar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_guardar" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="min-width: 30% !important; max-width:60% !important">
+        <div class="modal-content modal-sm">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_aplicar">Aplicar Inventario<span style="font-size: 16px"></span></h3>
+            </div>
+
+            <div class="modal-body">
+                ¿Está seguro de aplicar inventario?<br>
+                <br>
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input id="btn_aplicar_inventario" type="submit" class="btn btn-success" value="Aplicar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_inventario_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina">Eliminar Inventario Insumo</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar ?<br>
+                <br>
+                <div class="form-horizontal">
+                    <input type="hidden" id="referencia_eliminar_hidden">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" id="ok_insumo_eliminar" class="btn btn-danger" value="Eliminar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_obsevaciondetalle" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close cerrar_obs_OrdenCompras" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_obsevaciondetalle">Observación</h3>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" rows="5" id="idobsevaciondetalle" readonly></textarea>
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <div class="text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var acumula_escaneos
+    var indice_carro = 0;
+    var inventario = [];
+    var carrito = [];
+    var cantidad_carro = 0;
+    var fila_actual_carro = 0;
+    var tabla_inventario = "";
+    var table_inventario = "";
+    var inventario = [];
+
+    $(document).ready(function () {
+
+
+        cargarinventario();
+
+        $("#btn_mostrarinventariados").click(function (e) {
+            cargarinventario();
+        });
+        $("#bodega").change(function (e) {
+            cargarinventario();
+        });
+
+
+
+        $("#btn_abre_modal_aplicar").click(function (e) {
+            e.preventDefault();
+            $("#modal_aplicar").modal("show");
+        });
+
+        $("#btn_aplicar_inventario").on('click', function (e) {
+            e.preventDefault();
+            $("#ajax_loader").css("display", "");
+            var bodega = $("#bodega").val();
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: '/Inventario/Aplicar_Inventario/',
+                data: JSON.stringify({
+                    carrito: carrito,
+                    bodega: bodega
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#modal_aplicar").modal("hide");
+                    $("#ajax_loader").hide();
+                    if (data == "1") {
+                        $("#ajax_loader").css("display", "none");
+                        mostrar_msj_success('Inventario aplicado exitosamente');
+                        cantidad_carro = 0;
+                        carrito = [];
+                        inventario = [];
+                        $("#idDivPartialListadoInventario").html("");
+                    } else if (data == "0") {
+                        $("#ajax_loader").css("display", "none");
+                        mostrar_msj_advertencia('No se encontro Inventario para aplicar');
+                        cantidad_carro = 0;
+                        carrito = [];
+                        inventario = [];
+                        $("#idDivPartialListadoInventario").html("");
+                    } else if (data == "-1") {
+                        mostrar_msj_error("Error Interno");
+                        window.location.href = "/../Acceso/Login";
+
+                    } else {
+                        $("#ajax_loader").css("display", "none");
+                        mostrar_msj_error(data);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conección");
+                }
+            });
+        });
+
+        //  +++++++++++++++++++++++++++++++++++++++++  fin document ready
+    });
+
+
+    function cargarinventario() {
+        var url_action = '@Html.Raw(Url.Action("partialListadoInventarioAjustar", "Inventario", new { bodega = "bodega_" }))';
+        url_action = url_action.replace("bodega_", $('#bodega').val());
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Acceso/Login";
+                } else {
+                    $("#idDivPartialListadoInventario").html(result);
+                    inventario = [];
+                    $(".eliminarInventario").each(function () {
+
+                        var codigox = $(this).data("codigo").toString();
+                        var elemento = { codigo: codigox };
+                        inventario.push(elemento);
+                    });
+
+                }
+            }
+        });
+    }
+
+
+</script>

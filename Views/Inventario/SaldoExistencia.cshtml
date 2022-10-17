@@ -1,0 +1,226 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Saldo de Existencias
+        </h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-1">
+        <label>Bodega</label>
+    </div>
+    <div class="col-lg-2">
+        <select id="bodega" class="form-control" disabled>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+        </select>
+    </div>
+    <div class="col-lg-2">
+        <label>Bajo Stock Mínimo</label>
+        <input id="bajostockmin" type="checkbox">
+    </div>
+    <div class="col-lg-2">
+        <label>Sobre Stock Máximo</label>
+        <input id="sobrestockmax" type="checkbox">
+    </div>
+    <div class="col-lg-1">
+        <button type="button" class="btn btn-success" id="btn_excel_saldoexistencias" style="width: 100%" title="Buscar"><i class="fa fa-file-excel-o"></i></button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div id="idDivPartialListadoSaldos"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cartola_exitencia" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title">Cartola de Existencias<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <input type="hidden" id="codigo_hidden" />
+                        @*<button type="button" class="btn btn-success pull-right" id="btn_excel_cartolaexistencias" style="width: 100%" title="Buscar"><i class="fa fa-file-excel-o"></i></button>*@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="iddivPartialCartolaExistencias" class="table-responsive">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="id_form_stock">
+    <div class="modal fade" id="modal_stock_min_max" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title">Stock mínimo y máximo<span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="codigo_stock_hidden" />
+                    <div class="row">
+                        <div class="col-lg-6">
+                            Stock Min.
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="text" id="stockmin" class="form-control validate[required]" onkeypress="return SoloNumerosDecimales(event, '0.0', 8, 2);" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            Stock Máx.
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="text" id="stockmax" class="form-control validate[required]" onkeypress="return SoloNumerosDecimales(event, '0.0', 8, 2);" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="editaStock">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" class="init">
+
+    var carrito = [];
+    $(document).ready(function () {
+        cargaSaldos();
+        $("#bodega").change(function (e) {
+            cargaSaldos();
+        });
+        $("#bajostockmin").on('click', function () {
+            $("#sobrestockmax").prop("checked", false);
+            cargaSaldos();
+
+        });
+        $("#sobrestockmax").on('click', function () {
+            $("#bajostockmin").prop("checked", false);
+            cargaSaldos();
+
+        });
+        $("#btn_excel_saldoexistencias").on('click', function () {
+            var bodega = $("#bodega").val();
+            window.open("/Inventario/Excel_Saldo_de_Existencias/?bodega=" + bodega, '_blank');
+        });
+        $("#btn_excel_cartolaexistencias").on('click', function () {
+            var codigo=$("#codigo_hidden").val();
+            window.open("/Inventario/Excel_Cartola_de_Existencias/?codigo=" + codigo, '_blank');
+        });
+
+        $('#id_form_stock').validationEngine();
+        $("#editaStock").click(function (e) {
+            e.preventDefault();
+            if (!$("#id_form_stock").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            $("#ajax_loader").css("display", "");
+            fd.append("codigo", $("#codigo_stock_hidden").val());
+            fd.append("stockmin", $("#stockmin").val());
+            fd.append("stockmax", $("#stockmax").val());
+            $.ajax({
+                type: "POST",
+                url: '/Inventario/EditaStockMinMax/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#ajax_loader").css("display", "none");
+                    $("#modal_stock_min_max").modal("hide");
+                    if (data.retornojson == "1") {
+                        $("#id_form_stock").each(function () { this.reset(); });
+                        mostrar_msj_success('Datos guardados correctamente');
+                        cargaSaldos();
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conección");
+                }
+            });
+        });
+
+    });
+
+    function cargaSaldos() {
+        var bodega = $("#bodega").val();
+        var bajostockmin = ($("#bajostockmin").prop('checked')) ? 1 : 0;
+        var sobrestockmax = ($("#sobrestockmax").prop('checked')) ? 1 : 0;
+        var url_action = '@Html.Raw(Url.Action("partialListadoSaldoExistencia", "Inventario",new { bodega = "bodega_", bajostockmin= "bajostockmin_" , sobrestockmax = "sobrestockmax_"}))';
+        url_action = url_action.replace("bodega_", bodega).replace("bajostockmin_", bajostockmin).replace("sobrestockmax_", sobrestockmax);
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+                    } else {
+                    $("#idDivPartialListadoSaldos").html(result);
+                    }
+                }
+            });
+        }
+
+        function CargaCartolaExistencia(codigo) {
+            var bodega = $("#bodega").val();
+        $("#codigo_hidden").val(codigo);
+            var url_action = '@Html.Raw(Url.Action("partialListadoCartolaExistencia", "Inventario",new { bodega = "bodega_" ,codigo="codigo_"}))';
+            url_action = url_action.replace("bodega_", bodega).replace("codigo_", codigo);
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+                    } else {
+                    $("#iddivPartialCartolaExistencias").html(result);
+                    }
+                }
+            });
+        }
+
+</script>

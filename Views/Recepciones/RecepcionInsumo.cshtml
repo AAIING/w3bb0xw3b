@@ -1,0 +1,650 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<input id="pct_iva" value="@ViewData["porc_iva"]" type="hidden" />
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Recepción de Insumos
+        </h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-1">
+    </div>
+    <div class="col-lg-1">
+        <label>Proveedor</label>
+    </div>
+    <div class="col-lg-4">
+        <p class="input-group">
+            <input type="text" class="form-control text-left cuadrosfiltros" id="nombreproveedor" placeholder="nombre del proveedor" readonly>
+            <input type="hidden" id="rutproveedor_hidden">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-primary" title="Escoger Proveedor" id="idabreModalProveedores">...</button>
+            </span>
+        </p>
+    </div>
+    <div class="col-lg-1 col-sm-2">
+        <label>Nro.Oc</label>
+    </div>
+    <div class="col-lg-3">
+        <p class="input-group">
+            <input type="text" class="form-control text-left cuadrosfiltros" id="ordendecompra" placeholder="Nro.Orden de Compra" readonly="">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-primary" title="Escoger Orden de Compra" id="idabreModalBuscaOC">...</button>
+            </span>
+            <button type="button" class="form-control btn btn-warning" id="idlimpiarfiltros" title="Limpiar filtros"><i class="glyphicon glyphicon-trash"></i></button>
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div id="idDivPartialListadoRecepcion"></div>
+    </div>
+</div>
+<div class="modal fade" id="modal_lista_proveedores" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_Clientes" aria-hidden="true" style="margin-top: 80px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_Clientes">
+                    Proveedores
+                </h3>
+            </div>
+            <div class="modal-body">
+                <select id="listado_proveedores" class="form-control" data-live-search="true">
+                    <option value="0">--Cargando Datos--</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_elegir_modal_proveedor" type="button" class="btn btn-danger pull-left">Elegir</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_busca_oc" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title">Ordenes de Compra Pendientes <span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <input type="text" id="input_numerooc" class="form-control" placeholder="N° Orden de Compra">
+                    </div>
+                    <div class="col-lg-3">
+                        <button class="btn btn-primary" type="button" id="buscar_OrdendeCompra" title="Buscar Ordenes de compra">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <select id="listado_OrdenesdeCompra" multiple="multiple" size="15" class="form-control" style="width: 100%"></select>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="POST" id="form_editar_item" class="form_editar_item" role="form">
+    <div class="modal fade" id="modal_editar_item" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_editar_item" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_editar_item">Edita detalle<span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="id_indice_editar_item">
+                    <input type="hidden" id="codigo_editar_item">
+                    <input type="hidden" id="saldo_editar_item">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Nombre
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" id="producto_editar_item" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12">
+                            Cantidad
+                        </div>
+                        <div class="col-lg-5 col-xs-7">
+                            <input type="text" class="form-control validate[required] calcula_valor_editar_item numerico_dec" id="cantidad_editar_item" value="1" onfocus="this.select()" onblur="validar_cantidad()">
+                        </div>
+                        <div class="col-lg-2 col-xs-2">
+                            <div id="unidadcompra_editar_item" style="padding-top:5px"></div>
+                        </div>
+                        <div class="col-lg-2 col-xs-3">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Precio
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]] calcula_valor_editar_item numerico_int" id="precio_editar_item" onfocus="this.select()" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Descuento %
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control calcula_valor_editar_item" id="descuento_editar_item" value="0" onfocus="this.select()">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Valor
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]]" id="valor_editar_item" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Observación
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="obsdet_editar_item" class="form-control limpiar" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" class="guardaredicionItem btn btn-primary" value="Guardar">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal fade" id="modal_confirmar_eliminar_item" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_confirmar" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_confirmar">Confirme eliminacion item</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" id="id_confirmareliminaritem" class="btn btn-danger" data-dismiss="modal">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="POST" id="form_guardar" class="form_guardar" role="form">
+    <div class="modal fade" id="modal_guardar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_guardar" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="min-width: 30% !important; max-width:60% !important">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_guardar">Guardar Recepción<span style="font-size: 16px"></span></h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Subtotal</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-right validate[required] limpiar" id="subtotal" readonly="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Afecto</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-right validate[required] limpiar" id="afecto" readonly="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Exento</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-right validate[required] limpiar" id="exento" readonly="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Iva</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-right validate[required] limpiar" id="iva" readonly="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Total</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-right validate[required] limpiar" id="total" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Bodega</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <select id="bodega" class="form-control validate[required]" disabled>
+                                <option value="1">1</option>
+                                <option value="2" selected>2</option>
+                                <option value="3">3</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Tipo Doc.</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <select id="listado_tipodocumentos" class="form-control validate[required]"></select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Nro.Doc.</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-right limpiar validate[required,custom[ValidaNumero]]" id="numerodoc" value="0" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Observación</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="observacion" class="form-control limpiar" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" class="guardarRecepcion btn btn-primary" value="Guardar">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" class="init">
+    var table_det = "";
+    var fila_eliminada = 0;
+    var iva_global = $("#pct_iva").val();
+    var mensaje_pendiente = "";
+
+    var carrito = [];
+    $(document).ready(function () {
+        listarProveedores("");
+        CargaTipoDocumentos();
+        $('#form_guardar').validationEngine();
+        $('.guardarRecepcion').on('click', function (e) {
+            e.preventDefault();
+            if (!$("#form_guardar").validationEngine('validate')) {
+                return false;
+            }
+            $("#ajax_loader").css("display", "");
+            var rutproveedor = $("#rutproveedor_hidden").val();
+            var nombreproveedor = $("#nombreproveedor").val();
+            var ordendecompra = $("#ordendecompra").val();
+            var tipodoc = $("#listado_tipodocumentos").val();
+            var numerodoc = ($("#numerodoc").val() == "") ? 0 : $("#numerodoc").val().replace(/\./g, '');
+            var subtotal = $("#subtotal").val().replace(/\./g, '');
+            var descuentos = "0";
+            var afecto = $("#afecto").val().replace(/\./g, '');
+            var exento = $("#exento").val().replace(/\./g, '');
+            var iva = $("#iva").val().replace(/\./g, '');
+            var total = $("#total").val().replace(/\./g, '');
+            var obs = $("#observacion").val();
+            var bodega = $("#bodega").val();
+            var porc_iva = parseFloat(iva_global) * 100;
+            if (obs == "" & mensaje_pendiente != "") {
+                mostrar_msj_error(mensaje_pendiente);
+                $("#ajax_loader").css("display", "none");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Recepciones/Grabar_Recepcion/',
+                data: JSON.stringify({
+                    porc_iva: porc_iva,
+                    bodega:bodega,
+                    rutproveedor: rutproveedor,
+                    nombreproveedor: nombreproveedor,
+                    ordendecompra: ordendecompra,
+                    tipodoc: tipodoc,
+                    numerodoc: numerodoc,
+                    subtotal: subtotal,
+                    descuentos: descuentos,
+                    afecto: afecto,
+                    exento: exento,
+                    iva: iva,
+                    total: total,
+                    obs: obs,
+                    ordenesd: carrito
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#modal_guardar").modal("hide");
+                    $("#ajax_loader_guarda").hide();
+                    if (data.retornoJson == 1) {
+                        $("#ajax_loader").css("display", "none");
+                        //mostrar_msj_success('Datos guardados exitosamente');
+                        carrito = [];
+                        $("#idDivPartialListadoRecepcion").html("");
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe',
+                            'src': data.documentorecepcionJson
+                        });
+                        $('#idDivPartialListadoRecepcion').html(
+                            iframe
+                        );
+
+                    } else if (data.retornoJson == -1) {
+                        mostrar_msj_error(data.mensajejson);
+
+                    } else {
+                        mostrar_msj_error("Error indeterminado");
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexión");
+                }
+            });
+        });
+      
+        $("#id_confirmareliminaritem").on('click', function (ev) {
+            ev.preventDefault();
+            table_det.row($("#table_ordenesdecompra_detalle_btn_eliminar_" + fila_eliminada).parents("tr")).remove().draw();
+        });
+        $("#idabreModalProveedores").click(function (e) {
+            e.preventDefault();
+            $("#modal_lista_proveedores").modal("show");
+        });
+        $("#btn_elegir_modal_proveedor").click(function (e) {
+            e.preventDefault();
+            $(".cuadrosfiltros").val("");
+            $("#idDivPartialListadoRecepcion").html("");
+            $("#modal_lista_proveedores").modal("hide");
+            var rut = $("#listado_proveedores option:selected").val();
+            var nombre = $("#listado_proveedores option:selected").data("nombre");
+            $("#rutproveedor_hidden").val(rut);
+            $("#nombreproveedor").val(nombre);
+        });
+        $("#idabreModalBuscaOC").click(function (e) {
+            e.preventDefault();
+            var rutproveedor = $("#rutproveedor_hidden").val();
+            if (rutproveedor == "") { mostrar_msj_advertencia("Debe seleccionar un proveedor"); return; }
+            $("#modal_busca_oc").modal("show");
+            $("#listado_OrdenesdeCompra").html("");
+            $("#input_numerooc").val("");
+        });
+        $("#buscar_OrdendeCompra").click(function (e) {
+            e.preventDefault();
+            var rutproveedor = $("#rutproveedor_hidden").val();
+            var numerooc = $("#input_numerooc").val();
+            listarOrdenesdeCompra(rutproveedor, numerooc);
+        });
+
+        $("#idlimpiarfiltros").click(function (e) {
+            e.preventDefault();
+            $(".cuadrosfiltros").val("");
+            $("#idDivPartialListadoRecepcion").html("");
+        });
+        $("#listado_OrdenesdeCompra").dblclick(function (e) {
+            e.preventDefault();
+            $("#idDivPartialListadoRecepcion").html("");
+            var numerooc = $("#listado_OrdenesdeCompra").val();
+            $("#ordendecompra").val(numerooc);
+            $("#modal_busca_oc").modal("hide");
+            cargar_detalleoc(numerooc);
+        });
+        /* *************************************************** Edicion carrito ****************************************************************************** */
+
+        $('#form_editar_item').validationEngine();
+        $('.guardaredicionItem').on('click', function (e) {
+            e.preventDefault();
+            if (!$("#form_editar_item").validationEngine('validate')) {
+                return false;
+            }
+            var precio = parseFloat(($("#precio_editar_item").val() == "") ? 0 : $("#precio_editar_item").val().replace(/\,/g, '.'));
+            var cantidad = parseFloat(($("#cantidad_editar_item").val() == "") ? 0 : $("#cantidad_editar_item").val().replace(/\,/g, '.'));
+            var descuento = parseFloat(($("#descuento_editar_item").val() == "") ? 0 : $("#descuento_editar_item").val().replace(/\,/g, '.'));
+            var valor = (precio * cantidad) - ((precio * cantidad) * (descuento / 100));
+            $("#valor_editar_item").val(Moneda(parseInt(valor)));
+
+            $("#ajax_loader").css("display", "");
+
+
+
+            var precio = $("#precio_editar_item").val().replace(/\./g, ',');
+            var cantidad = $("#cantidad_editar_item").val().replace(/\./g, ',');
+            var descuento1 = ($("#descuento_editar_item").val() == "") ? "0" : $("#descuento_editar_item").val().replace(/\./g, ',');
+            var valor = $("#valor_editar_item").val().replace(/\./g, '');
+
+            if (parseFloat(cantidad) > 999999999) {
+                mostrar_msj_error("Cantidad muy grande");
+                $("#ajax_loader").css("display", "none");
+                return false;
+            }
+            if (parseFloat(descuento1) > 100) {
+                mostrar_msj_error("Descuento no debe superar a los 100%");
+                $("#ajax_loader").css("display", "none");
+                return false;
+            }
+
+            if (cantidad.toString().charAt(cantidad.toString().length - 1) == ".") {
+                mostrar_msj_error("Cantidad no debe dejar punto final");
+                $("#ajax_loader").css("display", "none");
+                return false;
+            }
+            if (descuento1.toString().charAt(descuento1.toString().length - 1) == ".") {
+                mostrar_msj_error("Descuento no debe dejar punto final");
+                $("#ajax_loader").css("display", "none");
+                return false;
+            }
+
+
+            var i = $("#id_indice_editar_item").val();
+
+            var v = null;
+
+            v = $("#codigo_editar_item").val();
+            $("#table_ordenesdecompra_detalle_codigo_" + i).text(v);
+            $("#table_ordenesdecompra_detalle_btn_editar_" + i).attr("data-codigo", v);
+
+            v = $("#producto_editar_item").val();
+            $("#table_ordenesdecompra_detalle_producto_" + i).text(v);
+            $("#table_ordenesdecompra_detalle_btn_editar_" + i).attr("data-detalle", v);
+
+            v = $("#cantidad_editar_item").val();
+            $("#table_ordenesdecompra_detalle_cantidad_" + i).text(cantidad);
+            $("#table_ordenesdecompra_detalle_btn_editar_" + i).attr("data-cantidad", v);
+
+            v = $("#unidadcompra_editar_item").html();
+            $("#table_ordenesdecompra_detalle_unidadcompra_" + i).text(v);
+            $("#table_ordenesdecompra_detalle_btn_editar_" + i).attr("data-unidadcompra", v);
+
+            v = $("#precio_editar_item").val();
+            $("#table_ordenesdecompra_detalle_precio_" + i).text(precio);
+            $("#table_ordenesdecompra_detalle_btn_editar_" + i).attr("data-precio", v);
+
+            v = $("#descuento_editar_item").val();
+            $("#table_ordenesdecompra_detalle_descuento1_" + i).text(descuento1);
+            $("#table_ordenesdecompra_detalle_btn_editar_" + i).attr("data-descuento1", v);
+
+            v = $("#valor_editar_item").val();
+            $("#table_ordenesdecompra_detalle_valor_" + i).text(v);
+            $("#table_ordenesdecompra_detalle_btn_editar_" + i).attr("data-valor", valor);
+
+            v = $("#obsdet_editar_item").val();
+            $("#table_ordenesdecompra_detalle_obsdet_" + i).text(v);
+            $("#table_ordenesdecompra_detalle_btn_editar_" + i).attr("data-obsdet", v);
+
+
+            $("#ajax_loader").css("display", "none");
+            $("#modal_editar_item").modal("hide");
+
+        });
+        /* *************************************************** Fin edicion carrito ****************************************************************************** */
+        $('.calcula_valor_editar_item').on('keyup', function (e) {
+            e.preventDefault();
+            var precio = parseFloat(($("#precio_editar_item").val() == "") ? 0 : $("#precio_editar_item").val().replace(/\./g, '.'));
+            var cantidad = parseFloat(($("#cantidad_editar_item").val() == "") ? 0 : $("#cantidad_editar_item").val().replace(/\,/g, '.'));
+            var descuento = parseFloat(($("#descuento_editar_item").val() == "") ? 0 : $("#descuento_editar_item").val().replace(/\,/g, '.'));
+            var valor = (precio * cantidad) - ((precio * cantidad) * (descuento / 100));
+            $("#valor_editar_item").val(formatea_miles(parseInt(valor)));
+        });
+
+    });
+
+    function validar_cantidad() {
+        //
+        var cantidad = parseFloat($("#cantidad_editar_item").val());
+        var saldo = parseFloat($("#saldo_editar_item").val());
+        if (cantidad > saldo) {
+            mostrar_msj_error("No puede recibir mas que la cantidad pendiente");
+            $("#cantidad_editar_item").val(saldo.toString());
+        } else {
+            var fila_det = $("#id_indice_editar_item").val();
+            var pendiente = saldo - cantidad;
+            $("#table_ordenesdecompra_detalle_cantidad_" + fila_det).html(pendiente);
+        }
+
+    }
+    function CargaTipoDocumentos() {
+        $.getJSON('/Documentos/GetTipoDocumentos/', function (data) {
+            var items = "<option>Seleccione...</option>";
+            $("#listado_tipodocumentos").empty();
+
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.codigo + "' data-nombre='" + district.nombre + "'>" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_tipodocumentos').html("<option value='0' data-nombre=''>No hay datos</option>");
+
+            } else {
+                $('#listado_tipodocumentos').html(items);
+
+            }
+        });
+    }
+    function validar_cantidad_det() {
+        //
+        var cantidad = parseFloat($("#cantidad_editar_item").val());
+        var saldo = parseFloat($("#saldo_editar_item").val());
+        if (cantidad > saldo) {
+            mostrar_msj_error("No puede recibir mas de cantidad pendiente");
+            $("#cantidad_editar_item").val(saldo.toString());
+        } else {
+            var fila_det = $("#id_indice_editar_item").val();
+            var pendiente = saldo - cantidad;
+            $("#table_ordenesdecompra_detalle_cantidad_" + fila_det).html(pendiente);
+        }
+
+    }
+
+    function pad(str, max) {
+        str = str.toString();
+        return str.length < max ? pad("0" + str, max) : str;
+    }
+    function cargar_detalleoc(numerooc) {
+        var url_action = '@Html.Raw(Url.Action("partialListadoProductoRecepcion", "Recepciones",new { numero = "numerooc_"}))';
+        url_action = url_action.replace("numerooc_", numerooc);
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialListadoRecepcion").html(result);
+                }
+            }
+        });
+    }
+    function listarOrdenesdeCompra(rutproveedor, numerooc) {
+        $.getJSON('/OrdenCompras/GetOrdenesdeCompraPendientes/', { rutproveedor: rutproveedor, numerooc: numerooc }, function (data) {
+            var items;
+            $("#listado_OrdenesdeCompra").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                debugger;
+                count = 1;
+                items += "<option value='" + district.numero + "'> No.Rec:" + pad(district.numero, 6) + "  Fecha: " + district.fecha + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_OrdenesdeCompra').html("<option value='0'>No hay datos</option>");
+            } else {
+                $('#listado_OrdenesdeCompra').html(items);
+            }
+        });
+    }
+    function listarProveedores(nombre) {
+        $.getJSON('/Proveedores/GetProveedores/?nombre_proveedor=' + nombre, function (data) {
+            var items = "";
+            $("#listado_proveedores").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option data-nombre='" + district.nombre + "' value='" + district.rut + "'>" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_proveedores').html("<option value='0'>No hay datos</option>");
+            } else {
+                $('#listado_proveedores').html(items);
+            }
+            $("#listado_proveedores").selectpicker('refresh');
+
+        });
+    }
+</script>

@@ -1,0 +1,170 @@
+﻿@model IEnumerable<WebBox.Models.InventariosModels>
+
+@{
+    Layout = null;
+    int i = 0;
+    double suma = 0;
+    string ocultar = "";
+    string ocultartitulo = "";
+    string nombre = "";
+
+}
+
+
+<table id="tabla_inventario" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+
+            <th colspan="8" class="text-center"><u>PRODUCTOS INVENTARIADOS</u></th>
+        </tr>
+        <tr style="background-color: #FF9A00; color: #fff">
+
+            <th style="width: 10%">Codigo</th>
+            <th style="width: 43%">Nombre</th>
+            <th style="width: 5%">Cantidad</th>
+            <th style="width: 10%" class="text-center">Und</th>
+            <th style="width: 20%" class="text-right">Valor</th>
+            <th class="text-center" style="width: 2%">Obs</th>
+            <th style="width: 5%">
+                <input type="checkbox" class="seleccionarItem_todos" />
+            </th>
+            <th style="width: 5%">Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            suma += @item.cantidad;
+        <tr id="fila_inventario_@i">
+            <td>
+                @item.codigo
+            </td>
+            <td>
+                @item.nombre
+            </td>
+            <td class="text-right cantidad">
+                @item.cantidad.ToString().Replace(',', '.')
+            </td>
+            <td class="text-center">
+                @item.unidad
+            </td>
+            <td class="text-right">
+                @item.valor.ToString("N0")
+            </td>
+            <td class="text-center ver_observacion_aj" data-observacion="@item.observacion" style="cursor:pointer">
+                <i class="fa fa-comment fa-2x" aria-hidden="true" style="color: #fee83a" title="Ver observación"></i>
+            </td>
+            <td>
+                <input type="checkbox" id="check_aprobar_@i" class="aprobar_check" data-registro="@item.referencia" />
+            </td>
+            <td>
+                <button type="button" class="eliminarInventario" data-fila="@i" data-referencia="@item.referencia" data-codigo="@item.codigo" style="width: 100%">X</button>
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th></th>
+            <th class="text-right">Total</th>
+            <th class="text-right">
+                <div id="total">@suma</div>
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+
+        </tr>
+    </tfoot>
+</table>
+
+
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        tabla_inventario = $('#tabla_inventario').DataTable({
+            destroy: true,
+            //"bInfo": false,
+            //"bPaginate": false,
+            "searching": true,
+            "ordering": false,
+            "bFilter": false,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        $('#tabla_inventario').on('search.dt', function () {
+
+            var total = 0;
+            $('.cantidad').each(function (data) {
+
+                var valor = $(this).text();
+                var cantidad = parseFloat(valor);
+                total += cantidad;
+            });
+            $("#total").text(total);
+        });
+
+        $('#tabla_inventario tbody').on('click', 'tr td.ver_observacion_aj', function (e) {
+            //e.preventDefault();
+            var observ = $(this).data('observacion');
+            $("#modal_obsevaciondetalle").modal("show");
+            $("#idobsevaciondetalle").val("");
+            $("#idobsevaciondetalle").val(observ);
+        });
+
+        $('.seleccionarItem_todos').click(function (e) {
+            if ($('.seleccionarItem_todos').prop('checked')) {
+                $("#tabla_inventario .aprobar_check").each(function () {
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $("#tabla_inventario .aprobar_check").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+        $('#tabla_inventario tbody').on('click', '.eliminarInventario', function (e) {
+            e.preventDefault();
+
+            var referencia = $(this).data('referencia');
+            fila_actual_carro = $(this).data('fila');
+            $("#referencia_eliminar_hidden").val(referencia);
+            $("#modal_inventario_eliminar").modal("show");
+
+        });
+
+    });
+
+
+</script>

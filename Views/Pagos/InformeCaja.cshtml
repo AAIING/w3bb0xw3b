@@ -1,0 +1,203 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Informe Caja
+        </h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-1" style="padding-right: 0 !important;">
+        <input type="text" class="form-control text-right limpiar" id="telefono" style="padding-left: 0 !important;" placeholder="xxx" value="" readonly>
+    </div>
+    <div class="col-lg-3 " style="padding-left: 0 !important;">
+        <div class="input-group input-group-md">
+            <input type="text" class="form-control limpiar" id="nombrecliente" placeholder="Nombre Cliente" value="" readonly>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="button" id="idabreModalClientes">
+                    <i class="glyphicon glyphicon-folder-open"></i>
+                </button>
+            </span>
+        </div>
+    </div>
+    <div class="col-lg-1">
+        <label>
+            &nbsp;N°Pago
+        </label>
+    </div>
+    <div class="col-lg-1">
+        <input type="text" class="form-control limpiar" id="comprobante" onkeypress="return validateEnteroKeyPress(this,event);">
+    </div>
+    <div class="col-lg-2">
+        <input type="date" class="form-control" id="idfechainicio">
+    </div>
+    <div class="col-lg-2">
+        <input type="date" class="form-control" id="idfechacorte">
+    </div>
+    <div class="col-lg-2">
+        <button class="btn btn-primary" id="idBuscarPagos" title="Buscar"><i class="glyphicon glyphicon-search"></i></button>
+        <button type="button" class="btn btn-danger" id="btn_limpia_filtros" title="Limpiar Filtros"><i class="fa fa-trash-o"></i></button>
+        <button type="button" class="btn btn-success" id="btn_export_informe_caja" title="Exportar Informe Caja"><i class="fa fa-file-excel-o"></i></button>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div id="idDivPartialInfomeCaja"></div>
+    </div>
+</div>
+<div class="modal fade" id="modal_busca_Clientes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_Clientes" aria-hidden="true" style="margin-top: 80px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_Clientes">
+                    Clientes
+                </h3>
+
+            </div>
+            <div class="modal-body">
+                <select id="listado_Clientes" class="form-control" data-live-search="true">
+                    <option value="0">--Cargando Datos--</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_elegir_modal_Clientes" type="button" class="btn btn-danger pull-left">Elegir</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_detalle_pagos" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title">Detalle Deuda<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="idDivPartialDetallePagos" class="table-responsive">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" class="init">
+        var table_pagados = "";
+
+    $(document).ready(function () {
+        var d = new Date();
+        var curDay = d.getDate();
+        var curMonth = d.getMonth() + 1;
+        var curYear = d.getFullYear();
+
+        var fi = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-01";
+        var ft = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-" + (curDay < 10 ? "0" + curDay : curDay);
+
+        $('#idfechainicio').val(fi);
+        $("#idfechacorte").val(ft);
+
+        cargarInformeCaja();
+        $("#btn_export_informe_caja").on('click', function () {
+            exportar_excel();
+        });
+        $("#idBuscarPagos").on('click', function () {
+            cargarInformeCaja();
+        });
+
+            $("#btn_export_informe_caja").on('click', function () {
+                cargarInformeCaja();
+            });
+            $("#btn_limpia_filtros").on('click', function () {
+                $(".limpiar").val("");
+            });
+            $("#idabreModalClientes").on('click', function () {
+                $("#modal_busca_Clientes").modal("show");
+                listarClientes("");
+            });
+
+            $("#btn_elegir_modal_Clientes").click(function (e) {
+                e.preventDefault();
+                $("#modal_busca_Clientes").modal("hide");
+                var telefono = $("#listado_Clientes option:selected").val();
+                var nombre = $("#listado_Clientes option:selected").data("nombre");
+                $("#telefono").val(telefono);
+                $("#nombrecliente").val(nombre);
+            });
+
+    });
+    function listarClientes(nombre) {
+        $.getJSON('/Clientes/BuscarClientes/?nombre_cliente=' + nombre, function (data) {
+            var items = "";
+            $("#listado_Clientes").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.telefono + "' data-nombre='" + district.nombre + "' data-direccion='" + district.direccion + "' data-comuna='" +
+                    district.comuna + "' data-condominio='" + district.condominio + "' data-categoria='" + district.categoria + "'  data-lista='" + district.lista + "'>" + district.nombre + "</option>";
+            });
+
+            if (count == 0) {
+                $('#listado_Clientes').html("<option value='0' data-nombre='' data-direccion='' data-comuna='' data-condominio=''>No hay datos</option>");
+            } else {
+                $('#listado_Clientes').html(items);
+            }
+            $("#listado_Clientes").selectpicker('refresh');
+
+        });
+    }
+
+    function cargarInformeCaja() {
+        var telefono = $("#telefono").val();
+        var comprobante = $("#comprobante").val();
+        var idfechainicio = $("#idfechainicio").val();
+        var idfechacorte = $("#idfechacorte").val();
+        var url_action = '@Html.Raw(Url.Action("partialListadoPagosInformeCaja", "Pagos",new { telefono = "telefono_", comprobante = "comprobante_", fechainicio = "idfechainicio_", fechacorte = "idfechacorte_" }))';
+        url_action = url_action.replace("telefono_", telefono).replace("comprobante_", comprobante).replace("idfechainicio_", idfechainicio).replace("idfechacorte_", idfechacorte);
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+                    } else {
+                        $("#idDivPartialInfomeCaja").html(result);
+                    }
+                }
+            });
+    }
+    function exportar_excel() {
+        var telefono = $("#telefono").val();
+        var comprobante = $("#comprobante").val();
+        var idfechainicio = $("#idfechainicio").val();
+        var idfechacorte = $("#idfechacorte").val();
+        window.location.href = "/Pagos/Excel_InformeCaja?telefono=" + telefono + "&comprobante=" + comprobante + "&fechainicio=" + idfechainicio +"&fechacorte="+idfechacorte;
+    }
+</script>

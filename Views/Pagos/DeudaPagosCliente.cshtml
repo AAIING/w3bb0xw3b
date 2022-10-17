@@ -1,0 +1,1270 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<input type="hidden" id="diamorosos1" value="@ViewData["diasmorosos1"]"/>
+<input type="hidden" id="diamorosos2" value="@ViewData["diasmorosos2"]"/>
+<input type="hidden" id="diamorosos3" value="@ViewData["diasmorosos3"]"/>
+
+
+<form id="id_form_cliente_edit" method="POST" name="fileinfo" class="form_referencia_insert" role="form">
+    <div class="modal fade" id="modal_cliente_ctacorriente_editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_editar">Editar Cliente</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="refcondpago" />
+                    <input type="hidden" id="idcondpago" />
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_edit" type="text" name="nombre" class="form-control validate[required] modal_clte" placeholder="Nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Dirección</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="direccion_edit" name="direccion" type="text" class="form-control validate[required] modal_clte" placeholder="Dirección">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Comuna</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="comuna_edit" type="text" class="form-control validate[required] modal_clte" placeholder="Comuna">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Condominio</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="condominio_edit" type="text" class="form-control  modal_clte" placeholder="condominio">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Telefono</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefono_edit" type="text" class="form-control validate[required] modal_clte" placeholder="Telefono">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="email_edit" type="text" class="form-control validate[required,custom[ValidaEmail]] modal_clte" placeholder="Email del cliente" maxlength="40">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <label>RUT</label>
+                            </div>
+                            <div class="col-lg-4">
+                                <input id="rut_edit" type="text" class="form-control" placeholder="0000" maxlength="40">
+                            </div>
+                            <div class="col-lg-2">
+                                <label>DV</label>
+                            </div>
+                            <div class="col-lg-4">
+                                <input id="dv_edit" type="text" class="form-control" placeholder="0" maxlength="40">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cond. de pago</label>
+                            </div>
+                            <div class="col-lg-9" id="idSelectorCondpago">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-6 text-center">
+                            <button id="btn_cerrar_cliente_editar" type="button" class="btn btn-default cerrar_editar_cliente" data-dismiss="modal">Cancelar</button>
+
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <input id="cliente_editar" type="submit" class="btn btn-primary" value="Guardar" data-dismiss="modal" />
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Cuenta Corriente
+        </h3>
+    </div>
+    <div class="col-lg-6 text-right" style="padding-top:20px !important">
+        <button type="button" id="excel_cte_deudas" class="btn btn-success" title="exportar a excel">
+            <i class="fa fa-file-excel-o center-block" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+@*</div>
+    <div class="row">
+        <div class="col-lg-1">
+            <label>
+                &nbsp;Cliente
+            </label>
+        </div>
+        <div class="col-lg-1" style="padding-right: 0 !important;">
+            <input type="text" class="form-control text-right limpiar" id="telefono" style="padding-left: 0 !important;" placeholder="xxx" value="" readonly>
+        </div>
+        <div class="col-lg-4 " style="padding-left: 0 !important;">
+            <div class="input-group input-group-md">
+                <input type="text" class="form-control limpiar" id="nombrecliente" placeholder="Nombre Cliente" value="" readonly>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" id="idabreModalClientes">
+                        <i class="glyphicon glyphicon-folder-open"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-primary" id="idBuscarClientes" title="Buscar"><i class="glyphicon glyphicon-search"></i></button>
+            <button type="button" class="btn btn-danger" id="btn_limpia_filtros" title="Limpiar Filtros"><i class="fa fa-trash-o"></i></button>
+
+        </div>
+
+    </div>*@
+<div class="row">
+    <div class="col-lg-12">
+        <div id="idDivPartialClientes"></div>
+    </div>
+</div>
+<div class="modal fade" id="modal_busca_Clientes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_Clientes" aria-hidden="true" style="margin-top: 80px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_Clientes">
+                    Clientes
+                </h3>
+
+            </div>
+            <div class="modal-body">
+                <select id="listado_Clientes" class="form-control" data-live-search="true">
+                    <option value="0">--Cargando Datos--</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_elegir_modal_Clientes" type="button" class="btn btn-danger pull-left">Elegir</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade actualiza_scroll" id="modal_detalle_deudas" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title">Ingresar Pagos<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="font-weight:bold">
+                    <div class="col-lg-1">
+                        Teléfono
+                    </div>
+                    <div class="col-lg-2">
+                        <div id="telefonocliente"></div>
+                    </div>
+                    <div class="col-lg-1">
+                        Rut
+                    </div>
+                    <div class="col-lg-2">
+                        <div id="rutcliente"></div>
+                    </div>
+                    <div class="col-lg-1">
+                        Nombre
+                    </div>
+                    <div class="col-lg-5">
+                        <div id="nombrecliente"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="idDivPartialDetalleDeuda_Pagar" class="table-responsive">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade actualiza_scroll" id="modal_detalle_movimientos_cte" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title">Detalle Deuda<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="font-weight:bold">
+                    <div class="col-lg-1">
+                        Teléfono
+                    </div>
+                    <div class="col-lg-2">
+                        <div id="telefonocliente_detalle"></div>
+                    </div>
+                    <div class="col-lg-1">
+                        Rut
+                    </div>
+                    <div class="col-lg-2">
+                        <div id="rutcliente_detalle"></div>
+                    </div>
+                    <div class="col-lg-1">
+                        Nombre
+                    </div>
+                    <div class="col-lg-4">
+                        <div id="nombrecliente_detalle"></div>
+                    </div>
+                    <div class="col-lg-1">
+                        <button type="button" id="excel_cte" class="btn btn-success" title="exportar a excel">
+                            <i class="fa fa-file-excel-o center-block" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row" style="font-weight:bold">
+                    <div class="col-lg-1">
+                        Dirección
+                    </div>
+                    <div class="col-lg-5">
+                        <div id="direccion_detalle"></div>
+                    </div>
+                    <div class="col-lg-1">
+                        Comuna
+                    </div>
+                    <div class="col-lg-2">
+                        <div id="comuna_detalle"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="idDivPartialDetalleDeuda" class="table-responsive">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="form_envio_correo">
+    <div class="modal fade" id="modal_boleta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <div class="row">
+                        <div class="col-lg-10 col-xs-8">
+                            <h3 class="modal-title titulo_modal_h3" id="myModalLabel_Boleta">Boleta</h3>
+                        </div>
+                        <div class="col-lg-2 col-xs-4">
+                            <button type="button" data-dismiss="modal" class="btn btn-primary center-block">Cerrar</button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="pdfboleta">
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    Email
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" id="id_email_destinatario" class="form-control validate[required,custom[ValidaEmail]]">
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="submit" class="enviar_correo_enviar btn btn-primary" value="Enviar">
+                                </div>
+                                <div class="col-lg-2">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="modal fade" id="modal_recuperaciones" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title">Ingreso Recuperaciones<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="tabs_recuperacion">
+                    <li class="active"><a data-toggle="tab" href="#recuperacion_tab">Recupera Cta. Cte.</a></li>
+                    <li><a data-toggle="tab" href="#formapago">Forma de Pago</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="recuperacion_tab" class="tab-pane fade in active">
+                        <div id="idDivPartialRecuperacion"></div>
+                    </div>
+                    <div id="formapago" class="tab-pane fade">
+                        <!--Ingreso Forma Pagos-->
+                        <br />
+                        <form id="id_form_pagos">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center">
+                                        Fecha pago
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="date" id="fechapago_insert" class="form-control text-center" value="@ViewData["fecha_actual_cte"]" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3  text-center">
+                                        Total
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="text" id="formapago_total" class="form-control  text-center" readonly /><!--Pendiente por pagar-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center">
+                                        Transferencia
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control text-center forma_pago" id="formapago_transferencia" value="0" onfocus="this.select(),this.value = AgregaTotal(this.value);" onblur="calcular_total();this.value=Moneda(this.value)" onkeypress="return validateIntKeyPress(this,event);" maxlength="9">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center">
+                                        Efectivo
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control text-center forma_pago" id="formapago_efectivo" value="0" onfocus="this.select(),this.value = AgregaTotal(this.value);" onblur="calcular_total();this.value=Moneda(this.value)" onkeypress="return validateIntKeyPress(this,event);" maxlength="9">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center">
+                                        Ch. día
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <div class="input-group input-group-md">
+                                            <input type="text" class="form-control text-center" id="formapago_cheques_dia" value="0" onfocus="this.select();" onblur="calcular_total();this.value=Moneda(this.value)" readonly>
+                                            <label class="input-group-btn">
+                                                <input type="button" class="btn btn-warning" id="btn_formapago_cheques_dia" value="...">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center">
+                                        Ch. fecha
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <div class="input-group input-group-md">
+                                            <input type="text" class="form-control text-center forma_pago" id="formapago_cheques_fecha" value="0" onfocus="this.select()" onblur="calcular_total();this.value=Moneda(this.value)" readonly>
+                                            <label class="input-group-btn">
+                                                <input type="button" class="btn btn-warning" id="btn_formapago_cheques_fecha" value="...">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center">
+                                        Tarjeta Cr
+                                    </div>
+                                    <div class="col-lg-9 text-center">
+                                        <input type="text" class="form-control text-center forma_pago" id="formapago_tarjetacr" value="0" onfocus="this.select(),this.value = AgregaTotal(this.value);" onblur="calcular_total();this.value=Moneda(this.value)" onkeypress="return validateIntKeyPress(this,event);" maxlength="9">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center">
+                                        Tarjeta Db
+                                    </div>
+                                    <div class="col-lg-9 text-center">
+                                        <input type="text" class="form-control text-center forma_pago" id="formapago_tarjetadb" value="0" onfocus="this.select(),this.value = AgregaTotal(this.value);" onblur="calcular_total();this.value=Moneda(this.value)" onkeypress="return validateIntKeyPress(this,event);" maxlength="9">
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" class="form-control text-center forma_pago" id="formapago_cuentacte" value="0" onblur="calcular_total();this.value=Moneda(this.value)" onfocus="this.select(),this.value = AgregaTotal(this.value);" onkeypress="return validateIntKeyPress(this,event);" maxlength="9">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center">
+                                        Vuelto
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control text-center forma_pago" id="formapago_vuelto" value="0" onfocus="this.select()" readonly="" onkeypress="return validateIntKeyPress(this,event);" maxlength="9">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="form-group text-right">
+                            <button type="button" class="btn btn-primary" id="guardarpago">Guardar</button>
+                        </div>
+
+                        <!--Fin Forma de Pago-->
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="POST" id="form_anotaciones" class="form_anotaciones" role="form">
+    <div class="modal fade" id="modal_anotaciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_anotaciones" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_cantidad">Anotaciones<span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="registro_hidden" />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Historico
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="anotaciones_ant" class="form-control" rows="15" readonly></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Observación
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="anotaciones_new" class="form-control limpiar" rows="5"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" class="guardarAnotacion btn btn-primary" value="Agregar" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modal_forma_pago" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_cantidad">Forma Pago<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div id="idDivPartialInfomeCaja"></div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_carritocheques_dia" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="min-width:90%">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title">Detalle de Cheque Día<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div id="partialDetalleChequesDia"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_carritocheques_fecha" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="min-width:90%">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title" >Detalle de Cheque Fecha<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div id="partialDetalleChequesFecha"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_confirma_eliminar_item_carritochequesdia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminarcheques">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button  type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" >Eliminar Cheque</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar cheque?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" id="fila_carritochequesdia_a_eliminar_hidden" />
+                    <input type="hidden" id="valor_carritochequesdia_a_eliminar_hidden" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="ok_confirma_eliminar_item_carritochequesdia btn btn-danger" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_confirma_eliminar_item_carritochequesfecha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-fechalog modal-fechalog_eliminarcheques">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3">Eliminar Cheque</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar cheque?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" id="fila_carritochequesfecha_a_eliminar_hidden" />
+                    <input type="hidden" id="valor_carritochequesfecha_a_eliminar_hidden" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="ok_confirma_eliminar_item_carritochequesfecha btn btn-danger" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" class="init">
+
+    var carrito = [];
+    var carritocheques_dia = [];
+    var carritocheques_fecha = [];
+    var table_cheques_dia = "";
+    var table_cheques_fecha = "";
+    var table_pagospendientes = "";
+    var table_pagospendientes_pagar = "";
+    var valor_formapago_temp_global = 0;
+    var telefono_global = "";
+    var rut_global = "";
+    var cliente_global = "";
+    var numerodoc_global = "";
+    var email_global = "";
+    var list_condpago = [];
+
+
+    $(document).ready(function () {
+        cargarClientes();
+
+        cargar_codiciones_de_pago();
+
+        $('#modal_cliente_ctacorriente_editar #cliente_editar').on('click', function (e) {
+            e.preventDefault();
+
+            //debugger
+            var fd = new FormData();
+            fd.append("referencia", $('#refcondpago').val());
+            fd.append("nombre", $('#nombre_edit').val());
+            fd.append("direccion", $('#direccion_edit').val());
+            fd.append("comuna", $('#comuna_edit').val());
+            fd.append("condominio", $('#condominio_edit').val());
+            fd.append("telefono", $('#telefono_edit').val());
+            fd.append("condiciondepago", $('#condicion_pago option:selected').val());
+            fd.append("email", $('#email_edit').val());
+
+            $.ajax({
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                type: "POST",
+                url: '/Clientes/EditarCliente/',
+                success: function (data) {
+                  
+                }
+            });
+
+        });
+
+
+        $(".ok_confirma_eliminar_item_carritochequesdia").click(function (e) {
+            e.preventDefault();
+            var fila_a_eliminar = $("#fila_carritochequesdia_a_eliminar_hidden").val().toString();
+            let indexForDeleteDia = carritocheques_dia.findIndex(x => x.fila.toString()=== fila_a_eliminar);
+            if (indexForDeleteDia != -1) {
+                carritocheques_dia.splice(indexForDeleteDia, 1);
+            }
+            llenarcarritocheques_dia();
+
+            $("#modal_confirma_eliminar_item_carritochequesdia").modal("hide");
+
+        });
+        $(".ok_confirma_eliminar_item_carritochequesfecha").click(function (e) {
+            e.preventDefault();
+            var fila_a_eliminar = $("#fila_carritochequesfecha_a_eliminar_hidden").val().toString();
+            let indexForDeleteFecha = carritocheques_fecha.findIndex(x => x.fila.toString() === fila_a_eliminar);
+            if (indexForDeleteFecha != -1) {
+                carritocheques_fecha.splice(indexForDeleteFecha, 1);
+            }
+            llenarcarritocheques_fecha();
+
+            $("#modal_confirma_eliminar_item_carritochequesdia").modal("hide");
+
+        });
+        $("#excel_cte_deudas").on('click', function () {
+            var telefono = $("#telefono").val();
+            var diamorosos1 = $("#diamorosos1").val();
+            var diamorosos2 = $("#diamorosos2").val();
+            var diamorosos3 = $("#diamorosos3").val();
+            var telefono = $("#telefono").val();
+
+            window.location.href = "/Pagos/Excel_InformeCteDeudores_Listado?telefono=" + telefono + "&diamorosos1=" + diamorosos1 + "&diamorosos2=" + diamorosos2 + "&diamorosos3=" + diamorosos3;
+        });
+        $("#excel_cte").on('click', function () {
+            window.location.href = "/Pagos/Excel_InformeCte?telefono=" + telefono_global + "&rutcompleto=" + rut_global + "&cliente=" + cliente_global ;
+        });
+        $("#btn_formapago_cheques_dia").click(function (e) {
+            llenarcarritocheques_dia();
+        });
+        $("#btn_formapago_cheques_fecha").click(function (e) {
+            llenarcarritocheques_fecha();
+        });
+        $("#idabreModalClientes").click(function (e) {
+            e.preventDefault();
+            listarClientes("");
+            $("#modal_lista_proveedores").modal("show");
+        });
+        $("#idBuscarClientes").on('click', function () {
+            cargarClientes();
+        });
+        $("#btn_limpia_filtros").on('click', function () {
+            $(".limpiar").val("");
+        });
+        $("#idabreModalClientes").on('click', function () {
+            $("#modal_busca_Clientes").modal("show");
+        });
+        $('#form_envio_correo').validationEngine();
+        $(".enviar_correo_enviar").on('click', function (ev) {
+            ev.preventDefault();
+            if (!$("#form_envio_correo").validationEngine('validate')) {
+                return false;
+            }
+            var destinatario = $("#id_email_destinatario").val();
+            $("#ajax_loader").css("display", "");
+            var fd = new FormData();
+            fd.append("numero", numerodoc_global);
+            fd.append("destinatario", destinatario);
+            $.ajax({
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                type: "POST",
+                url: '/Pagos/EnviaBoleta/',
+                success: function (data) {
+                    if (data.retornoJson == "1") {
+                        $("#ajax_loader").hide();
+                        $("#modal_boleta").modal("hide");
+                        mostrar_msj_success('Boleta enviada correctamente al cliente');
+                    } else if (data.retornoJson == "-1") {
+                        $("#ajax_loader").hide();
+                        $("#modal_odencompra").modal("hide");
+                        mostrar_msj_error("error: El tiempo de sesión ha expirado");
+                    } else if (data.retornoJson == "2") {
+                        $("#ajax_loader").hide();
+                        $("#modal_odencompra").modal("hide");
+                        mostrar_msj_error("Email vacio del cliente");
+                    } else {
+                        $("#ajax_loader").hide();
+                        $("#modal_odencompra").modal("hide");
+                        mostrar_msj_error("error interno: " + data.errorMsjJson);
+                    }
+                }/*,*/
+            });
+        });
+        $("#btn_elegir_modal_Clientes").click(function (e) {
+            e.preventDefault();
+            $("#modal_busca_Clientes").modal("hide");
+            var telefono = $("#listado_Clientes option:selected").val();
+            var nombre = $("#listado_Clientes option:selected").data("nombre");
+            $("#telefono").val(telefono);
+            $("#nombrecliente").val(nombre);
+        });
+        $('#modal_carritocheques_dia').on('shown.bs.modal', function () {
+            table_cheques_dia.columns.adjust().draw();
+        });
+        $('#modal_detalle_deudas').on('shown.bs.modal', function () {
+            table_pagospendientes_pagar.columns.adjust().draw();
+        });
+        $('#modal_detalle_movimientos_cte').on('shown.bs.modal', function () {
+            table_pagospendientes.columns.adjust().draw();
+        });
+        $('#id_form_pagos').validationEngine();
+        $("#guardarpago").click(function (e) {
+            e.preventDefault();
+            if (!$("#id_form_pagos").validationEngine('validate')) {
+                return false;
+            }
+            var fecha_pago = $("#fechapago_insert").val();
+            var transferencia = parseInt(($("#formapago_transferencia").val().replace(/\./g, "") == "") ? 0 : $("#formapago_transferencia").val().replace(/\./g, ""));
+            var efectivo = parseInt(($("#formapago_efectivo").val().replace(/\./g, "") == "") ? 0 : $("#formapago_efectivo").val().replace(/\./g, ""));
+            var cheques_dia = parseInt(($("#formapago_cheques_dia").val().replace(/\./g, "") == "") ? 0 : $("#formapago_cheques_dia").val().replace(/\./g, ""));
+            var cheques_fecha = parseInt(($("#formapago_cheques_fecha").val().replace(/\./g, "") == "") ? 0 : $("#formapago_cheques_fecha").val().replace(/\./g, ""));
+            var tarjetacr = parseInt(($("#formapago_tarjetacr").val().replace(/\./g, "") == "") ? 0 : $("#formapago_tarjetacr").val().replace(/\./g, ""));
+            var tarjetadb = parseInt(($("#formapago_tarjetadb").val().replace(/\./g, "") == "") ? 0 : $("#formapago_tarjetadb").val().replace(/\./g, ""));
+            var vuelto = parseInt(($("#formapago_vuelto").val().replace(/\./g, "") == "") ? 0 : $("#formapago_vuelto").val().replace(/\./g, ""));
+            var cuentacte = parseInt(($("#formapago_cuentacte").val().replace(/\./g, "") == "") ? 0 : $("#formapago_cuentacte").val().replace(/\./g, ""));
+
+            var vuelto = parseInt($("#formapago_vuelto").val().replace(/\./g, ""));
+            if (vuelto < 0) {
+                mostrar_msj_error("El desglose forma de pago debe ser igual al total");
+                return false;
+            }
+            var cuadratura = parseInt($("#formapago_total").val().replace(/\./g, ""));
+            var total = 0;
+            total += parseInt(($("#formapago_transferencia").val().replace(/\./g, "") == "") ? 0 : $("#formapago_transferencia").val().replace(/\./g, ""));
+            total += parseInt(($("#formapago_efectivo").val().replace(/\./g, "") == "") ? 0 : $("#formapago_efectivo").val().replace(/\./g, ""));
+            total += parseInt(($("#formapago_cheques_dia").val().replace(/\./g, "") == "") ? 0 : $("#formapago_cheques_dia").val().replace(/\./g, ""));
+            total += parseInt(($("#formapago_cheques_fecha").val().replace(/\./g, "") == "") ? 0 : $("#formapago_cheques_fecha").val().replace(/\./g, ""));
+            total += parseInt(($("#formapago_tarjetacr").val().replace(/\./g, "") == "") ? 0 : $("#formapago_tarjetacr").val().replace(/\./g, ""));
+            total += parseInt(($("#formapago_tarjetadb").val().replace(/\./g, "") == "") ? 0 : $("#formapago_tarjetadb").val().replace(/\./g, ""));
+            total += parseInt(($("#formapago_tarjetadb").val().replace(/\./g, "") == "") ? 0 : $("#formapago_cuentacte").val().replace(/\./g, ""));
+            total -= parseInt($("#formapago_vuelto").val().replace(/\./g, ""));
+            if (total != cuadratura) {
+                mostrar_msj_error("El desglose forma de pago debe ser igual al total");
+                return false;
+            }
+            $("#ajax_loader").css("display", "");
+            $.ajax({
+                type: "POST",
+                url: '/Pagos/GuardarPago/',
+                data: JSON.stringify({
+                    fechapag: fecha_pago,
+                    telefono: $("#telefonocliente").html(),
+                    rutcliente: $("#rutcliente").html(),
+                    nombrecliente: $("#nombrecliente").html(),
+                    total: total,
+                    transferencia: transferencia,
+                    efectivo: efectivo,
+                    cheques_dia: cheques_dia,
+                    cheques_fecha: cheques_fecha,
+                    tarjetacr: tarjetacr,
+                    tarjetadb: tarjetadb,
+                    vuelto: vuelto,
+                    cuentacte: cuentacte,
+                    carrito: carrito,
+                    carritocheques_dia: carritocheques_dia,
+                    carritocheques_fecha: carritocheques_fecha
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#modal_detalle_deudas").modal("hide");
+                    $("#modal_recuperaciones").modal("hide");
+                    $("#ajax_loader").css("display", "none");
+                    if (data.retornojson > 0) {
+                        carrito = [];
+                        carritocheques_dia = [];
+                        carritocheques_fecha = [];
+                        valor_formapago_temp_global = 0;
+                        $("#id_form_pagos").each(function () { this.reset(); });
+                        cargarClientes();
+                        mostrar_msj_success("Pago Guardado Éxitomente");
+                    } else if (data.retornojson == -1) {
+                        mostrar_msj_error(data.mensajejson);
+                    } else {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Acceso/Login";
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de conexión");
+                }
+            });
+        });
+
+        $('#form_anotaciones').validationEngine();
+        $(".guardarAnotacion").click(function (e) {
+            e.preventDefault();
+            if (!$("#id_form_pagos").validationEngine('validate')) {
+                return false;
+            }
+            var registro = $("#registro_hidden").val();
+            var anotacionesant = $("#anotaciones_ant").val();
+            var anotacionesnew = $("#anotaciones_new").val();
+            if (anotacionesnew.length == 0) { return; }
+            $("#ajax_loader").css("display", "");
+
+            $.ajax({
+                type: "POST",
+                url: '/Pagos/Guardar_Anotaciones_Pedido/',
+                traditional: true,
+                data: {
+                    registro: registro,
+                    anotacionesant: anotacionesant,
+                    anotacionesnew: anotacionesnew
+                },
+                DataType: 'json',
+                success: function (data) {
+
+                    if (data.retornoJson == "1") {
+                        $("#ajax_loader").hide();
+                        $("#modal_anotaciones").modal("hide");
+                    } else if (data.retornoJson == "-1") {
+                        $("#ajax_loader").hide();
+                        $("#modal_anotaciones").modal("hide");
+                        mostrar_msj_error("error: El tiempo de sesión ha expirado");
+                    } else {
+                        $("#ajax_loader").hide();
+                        $("#modal_anotaciones").modal("hide");
+                        mostrar_msj_error("error interno: " + data.anotaciones);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error: " + errorThrown);
+                    //alert("errorThrown: " + errorThrown + "XMLHttpRequest: " + XMLHttpRequest + "textStatus: " + textStatus);
+                }
+            });
+        });
+    });
+
+ 
+    function cargar_codiciones_de_pago() {
+
+        if (list_condpago.length == 0) {
+            $.getJSON('/Clientes/GetCondPagos/', function (data) {         
+                console.log(data)
+                $.each(data, function (i, item) {  
+                    var item = {
+                        referencia: item.referencia,
+                        nombre: item.nombre
+                    };
+                    list_condpago.push(item);
+                });
+            });
+        }
+
+    }
+
+    function listarClientes(nombre) {
+        $.getJSON('/Clientes/BuscarClientes/?nombre_cliente=' + nombre, function (data) {
+            var items = "";
+            $("#listado_Clientes").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.telefono + "' data-nombre='" + district.nombre + "' data-direccion='" + district.direccion + "' data-comuna='" +
+                    district.comuna + "' data-condominio='" + district.condominio + "' data-categoria='" + district.categoria + "'  data-lista='" + district.lista + "'>" + district.nombre + "</option>";
+            });
+
+            if (count == 0) {
+                $('#listado_Clientes').html("<option value='0' data-nombre='' data-direccion='' data-comuna='' data-condominio=''>No hay datos</option>");
+            } else {
+                $('#listado_Clientes').html(items);
+            }
+            $("#listado_Clientes").selectpicker('refresh');
+
+        });
+    }
+    function cargarDetalleFormaPago(comprobante) {
+        var url_action = '@Html.Raw(Url.Action("partialListadoFormaPago", "Pagos",new {  comprobante = "comprobante_"}))';
+        url_action = url_action.replace("comprobante_", comprobante);
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+                    } else {
+                        $("#idDivPartialInfomeCaja").html(result);
+                    }
+                }
+            });
+    }
+    function llenarcarritocheques_dia() {
+        $("#ajax_loader").css("display", "");
+
+        $.ajax({
+            type: "POST",
+            url: '/Pagos/partialDetalleChequesDia/',
+            data: JSON.stringify({ carritocheques_dia: carritocheques_dia }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            async: false,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error_volverIniciar("Sus variable de Sessión ha expirado, debe volver a loguearse", "/../Acceso/Login");
+                } else {
+                    $("#modal_carritocheques_dia").modal('show');
+                    $("#partialDetalleChequesDia").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de conexión");
+            }
+        });
+
+    }
+    function llenarcarritocheques_fecha() {
+        $("#ajax_loader").css("display", "");
+
+        $.ajax({
+            type: "POST",
+            url: '/Pagos/partialDetalleChequesFecha/',
+            data: JSON.stringify({ carritocheques_fecha: carritocheques_fecha }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            async: false,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error_volverIniciar("Sus variable de Sessión ha expirado, debe volver a loguearse", "/../Acceso/Login");
+                } else {
+                    $("#modal_carritocheques_fecha").modal('show');
+                    $("#partialDetalleChequesFecha").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de conexión");
+            }
+        });
+
+    }
+    function cargarClientes() {
+        var telefono = $("#telefono").val();
+        var diamorosos1 = $("#diamorosos1").val();
+        var diamorosos2 = $("#diamorosos2").val();
+        var diamorosos3 = $("#diamorosos3").val();
+        var url_action = '@Html.Raw(Url.Action("partialListadoVerClientes", "Clientes",new { telefono = "telefono_", diamorosos1 = "_diamorosos1", diamorosos2 = "_diamorosos2", diamorosos3 = "_diamorosos3" }))';
+        url_action = url_action.replace("telefono_", telefono).replace("_diamorosos1", diamorosos1).replace("_diamorosos2", diamorosos2).replace("_diamorosos3", diamorosos3);
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+                    } else {
+                        $("#idDivPartialClientes").html(result);
+                    }
+                }
+            });
+        }
+        function DetalleDeudaPorCliente_Pagar(telefono) {
+            var url_action = '@Html.Raw(Url.Action("partialDeudaPorClientes_Pagar", "Pagos",new { telefono = "telefono_"}))';
+            url_action = url_action.replace("telefono_", telefono);
+            $("#ajax_loader").css("display", "");
+            $.ajax({
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                url: url_action,
+                success: function (result) {
+                    $("#ajax_loader").hide();
+                        if (result == -1) {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+                        } else {
+                            $("#idDivPartialDetalleDeuda_Pagar").html(result);
+                        }
+                    }
+                });
+        }
+        function DetalleDeudaPorCliente(telefono) {
+            var url_action = '@Html.Raw(Url.Action("partialDeudaPorClientes", "Pagos",new { telefono = "telefono_"}))';
+            url_action = url_action.replace("telefono_", telefono);
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+                    } else {
+                        $("#idDivPartialDetalleDeuda").html(result);
+                    }
+                }
+            });
+        }
+        function actualizar_abono_carrito(abono_actual_a_paga, id_fila_carro) {
+            abono_actual_a_paga = parseInt(abono_actual_a_paga.toString().replace(/\./g, ''));
+            var pos = carrito.findIndex(i => i.id === id_fila_carro);
+            carrito[pos].abono = abono_actual_a_paga;
+            var total_recuperacion = 0;
+        $(".abonos_carrito").each(function () {
+                total_recuperacion += parseInt(($(this).val() == "") ? 0 : parseFloat($(this).val().toString().replace(/\./g, '')));
+            });
+            total_recuperacion = Moneda(total_recuperacion);
+        $(".total_recuperacion_carrito").html(total_recuperacion);
+        $("#formapago_total").val(total_recuperacion);
+        }
+        function llenarCarritoRecuperacion() {
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            type: "POST",
+            url: '/Pagos/partialListadoCarritoRecuperacion/',
+            data: JSON.stringify({ carrito: carrito }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                $("#idDivPartialRecuperacion").html(result);
+
+                },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexión");
+                }
+            });
+        }
+        function calcular_total() {
+            if ($(("#formapago_transferencia")).val() == "") { $(("#formapago_transferencia")).val("0"); };
+            if ($(("#formapago_efectivo")).val() == "") { $(("#formapago_efectivo")).val("0"); };
+            if ($(("#formapago_cheques_dia")).val() == "") { $(("#formapago_cheques_dia")).val("0"); };
+            if ($(("#formapago_cheques_fecha")).val() == "") { $(("#formapago_cheques_fecha")).val("0"); };
+            if ($(("#formapago_tarjetacr")).val() == "") { $(("#formapago_tarjetacr")).val("0"); };
+            if ($(("#formapago_tarjetadb")).val() == "") { $(("#formapago_tarjetadb")).val("0"); };
+            if ($(("#formapago_cuentacte")).val() == "") { $(("#formapago_cuentacte")).val("0"); };
+
+            var transferencia = parseInt($("#formapago_transferencia").val().replace(/\./g, ""));
+            var efectivo = parseInt($("#formapago_efectivo").val().replace(/\./g, ""));
+            var totalventa = parseInt($("#formapago_total").val().replace(/\./g, ""));
+            var cancelado = 0;
+            cancelado += parseInt($("#formapago_transferencia").val().replace(/\./g, ""));
+            cancelado += parseInt($("#formapago_efectivo").val().replace(/\./g, ""));
+            cancelado += parseInt($("#formapago_cheques_dia").val().replace(/\./g, ""));
+            cancelado += parseInt($("#formapago_cheques_fecha").val().replace(/\./g, ""));
+            cancelado += parseInt($("#formapago_tarjetacr").val().replace(/\./g, ""));
+            cancelado += parseInt($("#formapago_tarjetadb").val().replace(/\./g, ""));
+            cancelado += parseInt($("#formapago_cuentacte").val().replace(/\./g, ""));
+            var vuelto = (cancelado - totalventa);
+            if (vuelto > transferencia + efectivo) { vuelto = 0; }
+        $("#formapago_vuelto").val(vuelto);
+        }
+        function AgregaTotal(valor) {
+            if (valor_formapago_temp_global == 0) {
+                var total = $("#formapago_total").val();
+                valor_formapago_temp_global = 1;
+                return total;
+            } else {
+                if (valor == "0" || valor == "") {
+                    return 0;
+                } else {
+                    return valor;
+                }
+            }
+        }
+        function formato_fecha(texto) {
+            var m = texto.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            var fch = m[3] +"-"+ m[2] +"-"+ m[1];
+            return fch;
+        }
+
+        function listarBancosCheqDia(fila) {
+            var items = '<select id="id_selector_bancos_cheqdia_' + fila+'" class="form-control_combobox_achicado" style="width:100% !important"></option>';
+        $.ajaxSetup({ async: false });
+        $.getJSON('/Bancos/GetBancos/', function (data) {
+                var count = 0;
+            $.each(data, function (i, district) {
+                    count = 1;
+                    items += "<option value='" + district.codigo + "'>" + district.alias + "</option>";
+                });
+                if (count == 0) {
+                $('#id_selector_bancos_cheqdia_' + fila).html("<option value='0'>No hay datos</option>");
+                } else {
+                $('#id_selector_bancos_cheqdia_' + fila).html(items);
+                }
+            });
+        $.ajaxSetup({ async: true });
+            return items;
+        }
+        function listarPlazasCheqDia(fila) {
+            var items = '<select id="id_selector_plazas_cheqdia_' + fila + '" class="form-control_combobox_achicado" style="width:100% !important"></option>';
+        $.ajaxSetup({ async: false });
+        $.getJSON('/Plazas/GetPlazas/', function (data) {
+                var count = 0;
+            $.each(data, function (i, district) {
+                    count = 1;
+                    items += "<option value='" + district.codigo + "'>" + district.alias + "</option>";
+                });
+                if (count == 0) {
+                $('#id_selector_plazas_cheqdia_' + fila).html("<option value='0'>No hay datos</option>");
+                } else {
+                $('#id_selector_plazas_cheqdia_' + fila).html(items);
+                }
+            });
+        $.ajaxSetup({ async: true });
+
+            return items;
+        }
+        function totalizar_cheques_cheqdia() {
+
+            var filav = 0;
+            var total = 0;
+            table_cheques_dia.$("input.columna").each(function () {
+
+                filav = $(this).data("fila");
+                var valor = $("#idchequedia_valor_" + filav).val().replace(/\./g, "");
+                total += parseInt(valor);
+                debugger;
+            });
+        $("#modal_carritocheques_dia .total_chequedia").val(Moneda(total));
+        $("#modal_formapago #formapago_cheques_dia").val(Moneda(total));
+        }
+
+        ////////////////////////cheque a fecha ///////////////////////////////
+
+        function listarBancosCheqFecha(fila) {
+            var items = '<select id="id_selector_bancos_cheqfecha_' + fila + '" class="form-control_combobox_achicado" style="width:100% !important"></option>';
+        $.ajaxSetup({ async: false });
+        $.getJSON('/Bancos/GetBancos/', function (data) {
+                var count = 0;
+            $.each(data, function (i, district) {
+                    count = 1;
+                    items += "<option value='" + district.codigo + "'>" + district.alias + "</option>";
+                });
+                if (count == 0) {
+                $('#id_selector_bancos_cheqfecha_' + fila).html("<option value='0'>No hay datos</option>");
+                } else {
+                $('#id_selector_bancos_cheqfecha_' + fila).html(items);
+                }
+            });
+        $.ajaxSetup({ async: true });
+            return items;
+        }
+        function listarPlazasCheqFecha(fila) {
+            var items = '<select id="id_selector_plazas_cheqfecha_' + fila + '" class="form-control_combobox_achicado" style="width:100% !important"></option>';
+        $.ajaxSetup({ async: false });
+        $.getJSON('/Plazas/GetPlazas/', function (data) {
+                var count = 0;
+            $.each(data, function (i, district) {
+                    count = 1;
+                    items += "<option value='" + district.codigo + "'>" + district.alias + "</option>";
+                });
+                if (count == 0) {
+                $('#id_selector_plazas_cheqfecha_' + fila).html("<option value='0'>No hay datos</option>");
+                } else {
+                $('#id_selector_plazas_cheqfecha_' + fila).html(items);
+                }
+            });
+        $.ajaxSetup({ async: true });
+
+            return items;
+        }
+        function totalizar_cheques_cheqfecha() {
+
+            var filav = 0;
+            var total = 0;
+            table_cheques_fecha.$("input.columna").each(function () {
+
+                filav = $(this).data("fila");
+                var valor = $("#idchequefecha_valor_" + filav).val().replace(/\./g, "");
+                total += parseInt(valor);
+            });
+        $("#modal_carritocheques_fecha .total_chequefecha").val(Moneda(total));
+        $("#modal_formapago #formapago_cheques_fecha").val(Moneda(total));
+        }
+
+</script>

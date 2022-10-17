@@ -1,0 +1,179 @@
+﻿@model IEnumerable<WebBox.Models.PedidosMaestroModels>
+@{
+    Layout = null;
+    int i = 0;
+    double ttotal = 0;
+}
+
+<table id="table_pedidos_maestro" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width: 10%"  class="text-center">Fec-Ent</th>
+            <th style="width: 30%"  class="text-center">Cliente</th>
+            @*<th style="width: 5%"  class="text-center">Telefono</th>*@
+            <th style="width: 10%"  class="text-center">Comuna</th>
+            <th style="width: 30%" class="text-center">Direccion</th>
+            <th style="width: 10%" class="text-right">Total</th>
+            <th style="width: 5%" class="text-center">Ver</th>
+            <th style="width: 5%" class="text-center">
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <input class="seleccionados" type="checkbox">
+                    </label>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            ttotal += item.total;
+        <tr id="fila_@i">
+            <td class="text-center">
+                @item.fechaent
+            </td>
+            <td class="text-center">
+                @item.cliente
+            </td>
+            @*<td class="text-right">
+                @item.telefono.ToString()
+            </td>*@
+            <td class="text-left">
+                @item.comuna.ToString()
+            </td>
+            <td class="text-center">
+                @item.direccion.ToString()
+            </td>
+            <td class="text-center">
+                @item.total.ToString("N0")
+            </td>
+            <td>
+                <button type="button" class="editarpedido"
+                        data-fila="@i"
+                        data-registro="@item.registro"
+                        data-fecha="@item.fecha"
+                        data-vendedor="@item.vendedor"
+                        data-nombrevendedor="@item.nombrevendedor"
+                        data-telefono="@item.telefono"
+                        data-cliente="@item.cliente"
+                        data-direccion="@item.direccion"
+                        data-comuna="@item.comuna"
+                        data-total="@item.total"
+                        data-fechaent="@item.fechaent"
+                        data-horaent="@item.horaent"
+                        data-obs="@item.obs"
+                        style="width: 100%" title="Conultar">+</button>
+            </td>
+
+            <td class="text-center">
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <input id="selected_@i.ToString()" class="seleccionado" type="checkbox" data-registro="@item.registro"r>
+                    </label>
+                </div>
+            </td>
+
+
+        </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr style="background-color: #fff; color: #000">
+            <td></td>
+            @*<td></td>*@
+            <td></td>
+            <td></td>
+            <td style="font-weight:Bold" class="text-right">Total</td>
+            <td style="font-weight:Bold" class="text-right">@ttotal.ToString("N0")</td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </tfoot>
+</table>
+
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        table_pedidos_maestro = $('#table_pedidos_maestro').DataTable({
+            destroy: true,
+            "bInfo": false,
+            "bPaginate": false,
+            "searching": false,
+            "ordering": false,
+            "bFilter": false,
+            "scrollX": true,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        $('.seleccionados').click(function (e) {
+            //e.preventDefault();
+            
+            if ($('.seleccionados').prop('checked')) {
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    $(this).prop("checked", false);
+                });
+
+            }
+        });
+
+
+        $('#table_pedidos_maestro tbody').on('click', '.editarpedido', function (e) {
+            e.preventDefault();
+            
+            //debugger;
+            global_registro = $(this).data("registro");
+            global_fecha=$(this).data("fecha");
+            global_vendedor = $(this).data("vendedor");
+            global_nombrevendedor = $(this).data("nombrevendedor");
+            global_telefono = $(this).data("telefono");
+            global_cliente = $(this).data("cliente");
+            global_direccion = $(this).data("direccion");
+            global_comuna = $(this).data("comuna");
+            global_total = $(this).data("total");
+            global_fechaent = $(this).data("fechaent");
+            global_horaent = $(this).data("horaent");
+            global_obs = $(this).data("obs");
+            cargar_detalle_pedido(global_registro);
+            editar_detalle_pedido();
+        });
+
+    });
+
+</script>
+
+
+

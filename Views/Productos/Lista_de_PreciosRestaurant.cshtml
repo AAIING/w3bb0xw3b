@@ -1,0 +1,336 @@
+﻿
+@{
+
+    Layout = null;
+}
+
+<br />
+
+<div class="row">
+    <div class="form-inline">
+        <div class="col-lg-3 col-md-3 col-xs-0"></div>
+
+        <div class="col-lg-4 col-md-4 col-xs-12">
+            <div class="input-group input-group-sm">
+                <select id="listado_insumos" class="form-control input-lg">
+                    <option value="0" data-cuenta="0" data-tipo="0" data-referencia="0">--------Seleccione--------</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-1 col-md-1 col-xs-0">
+            <input type="submit" id="generar_excel" class="btn btn-success" title="Generar excel lista de precios" value="Excel" />
+        </div>
+        <div class="col-lg-1 col-md-1 col-xs-0">
+
+            <input type="hidden" id="fechaactual" name="fechaactual" />
+
+            <input type="submit" id="abremodalPDF" class="btn btn-danger" title="Generar pdf lista de precios" value="Pdf" />
+
+        </div>
+
+        <div class="col-lg-2 col-md-2 col-xs-0"></div>
+
+    </div>
+</div>
+
+@*@using (Html.BeginForm("ExportPDF", "Exportar", FormMethod.Post))
+    {
+    <input type="text" name="dato1" id="dato1" value="" />
+
+    <input type="submit" id="btnSubmit" value="Export" />
+    }*@
+
+
+<form id="form_edicion_producto" method="POST" name="fileinfo" class="form_producto_edit" role="form">
+    <div class="modal fade" id="modal_producto_editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_editar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_edit">Editar Producto</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Codigo</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="codigo_prod_edit" type="text" class="form-control" placeholder="" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_prod_edit" type="text" class="form-control validate[required]" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Unidad</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="unidad_prod_edit" type="text" class="form-control validate[required]" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Precio Restaurant</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="precio_prod_edit" type="text" class="form-control validate[required] calcula_margen" placeholder="Precio" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Costo</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="costo_prod_edit" type="text" class="form-control validate[required] calcula_margen" placeholder="Costo" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Margen</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="margen_prod_edit" type="number" step="0.01" min="-9999.99" max="9999.99" class="form-control" placeholder="Costo" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button id="btn_cerrar_guardar_edicion" type="button" class="btn btn-default cerrar_editar" data-dismiss="modal">Cancelar</button>
+                    <input id="guardar_edicion" type="submit" class="editar_producto btn btn-primary" data-dismiss="modal" value="Modificar" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<br />
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 1000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+    <div class="col-lg-6 col-md-6 col-xs-12" id="divpartiallistadeprecios"></div>
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+</div>
+
+<div class="modal fade" id="modal_seleccionaestiloimprimepdf" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_estilopdf" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal_advertencia">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_estilopdf">Seleccione Ordenamiento </h3>
+            </div>
+            @using (Html.BeginForm("PDFListadePreciosRestaurant", "Productos", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>Normal</label>
+                        </div>
+
+                        <div class="col-lg-1">
+                            <input id="ordenamiento_normal" class="radio" type="radio" name="ordenamiento" value="1" checked>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>De menor precio</label>
+                        </div>
+
+                        <div class="col-lg-1">
+                            <input id="ordenamiento_menor" class="radio" type="radio" name="ordenamiento" value="2">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>De mayor precio</label>
+                        </div>
+
+                        <div class="col-lg-1">
+                            <input id="ordenamiento_mayor" class="radio" type="radio" name="ordenamiento" value="3">
+                        </div>
+                    </div>
+               
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                        <input id="generar_pdf" type="submit" class="btn btn-primary" value="Aceptar" />
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+    var change_edita_insert = 0;
+    var edita_inserta_insumo = 0;
+
+
+    $(document).ready(function () {
+
+        var fecha = aaaammdd(new Date());
+        $("fechaactual").val(fecha);
+
+        $('#codigo').numeric_entero();
+
+        cargar_insumos("");
+        cargar_productos("0");
+
+        $('#listado_insumos').on('change', function () {
+            cargar_productos($("#listado_insumos").val());
+        });
+        $('#abremodalPDF').on('click', function (e) {
+            e.preventDefault();
+            $("#modal_seleccionaestiloimprimepdf").modal("show");
+        });
+        $('#generar_pdf').on('click', function () {
+            $("#modal_seleccionaestiloimprimepdf").modal("hide");
+            //var ordenamiento = $("input[name=ordenamiento]:checked").val();
+            //window.location.href = "/Productos/PDFListadePrecios/?ordenamiento=" + ordenamiento;
+        });
+        $('#form_edicion_producto').validationEngine();
+        $("#guardar_edicion").click(function (e) {
+            e.preventDefault();
+            if (!$("#form_edicion_producto").validationEngine('validate')) {
+                return false;
+            }
+
+            var fd = new FormData();
+            fd.append("codigo", $("#codigo_prod_edit").val());
+            fd.append("precio", $("#precio_prod_edit").val());
+            fd.append("costo", $("#costo_prod_edit").val());
+
+            $("#saving").show();
+            $.ajax({
+                type: "POST",
+                url: '/Productos/GuardarPrecioRestaurant/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == 1) {
+                        $("#saving").hide();
+                        mostrar_msj_success('Cambios guardados');
+                        cargar_productos($("#listado_insumos").val());
+                    } else {
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("Error de Conexion");
+                }
+            });
+            $("#saving").hide();
+        });
+
+        $('.calcula_margen').on('keyup', function (e) {
+            e.preventDefault();
+
+            var precio = parseInt(($("#precio_prod_edit").val() == "") ? 0 : $("#precio_prod_edit").val().replace(/\./g, ''));
+            var costo = parseFloat(($("#costo_prod_edit").val() == "") ? 0 : $("#costo_prod_edit").val().replace(/\,/g, '.'));
+            var margen = Math.round((precio - costo) / precio * 100).toFixed(2);
+            $("#margen_prod_edit").val(margen);
+        });
+
+        $("#generar_excel").on('click', function (e) {
+            e.preventDefault();
+
+            cargar_informe();
+        });
+
+    });
+
+    function cargar_informe() {
+
+        $("#loading").show();
+        window.open("/Productos/Excel_PreciosRestaurant", '_blank');
+        $("#loading").hide();
+    }
+
+    function cargar_insumos_edicion() {
+        $('#listado_insumos_prod_edit').html("<option value='0'>Cargando ...</option>");
+        $.getJSON('/Productos/GetinsumoProd/', function (data) {
+            var items = "<option value='0'>--Seleccione--</option>";
+            $("#listado_insumos_prod_edit").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.codigo + "'>" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_insumos_prod_edit').html("<option value='0'>No hay datos</option>");
+            } else {
+                $('#modal_producto_editar #listado_insumos_prod_edit').html(items);
+            }
+        });
+    }
+    function cargar_insumos(nombre_insumo) {
+        $('#listado_insumos').html("<option value='0' data-codigo='0'>Cargando ...</option>");
+        $.getJSON('/Productos/GetInsumo/?nombre_insumo=' + nombre_insumo, function (data) {
+            var items = "<option value='0' data-codigo='0'>--Seleccione--</option>";
+            $("#listado_insumos").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.codigo + "' data-codigo='" + district.codigo + "'>" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_insumos').html("<option value='0' data-codigo='0'>No hay datos</option>");
+            } else {
+                $('#listado_insumos').html(items);
+            }
+        });
+    }
+
+    function cargar_productos(insumo) {
+        var url_action = '@Html.Raw(Url.Action("partialListadePreciosRestaurant", "Productos", new {insumo = "_insumo"}))';
+        url_action = url_action.replace("_insumo", insumo);
+
+        $("#saving").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+
+                $("#saving").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#divpartiallistadeprecios").html(result);
+                }
+            }
+        });
+    }
+
+</script>
+

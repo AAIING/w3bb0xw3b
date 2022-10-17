@@ -1,0 +1,3730 @@
+﻿
+@{
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+}
+
+<input type="hidden" id="tramo1" value="@ViewData["tramo1_vd"]" />
+<input type="hidden" id="tramo2" value="@ViewData["tramo2_vd"]" />
+<input type="hidden" id="valort1" value="@ViewData["valort1_vd"]" />
+<input type="hidden" id="valort2" value="@ViewData["valort2_vd"]" />
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div id="saving" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>Guardando...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<br />
+<input id="porc_iva" value="@ViewData["porc_iva"].ToString().Replace(",",".")" type="hidden" />
+<input id="factor_divisoriva" value="@ViewData["factor_divisoriva"].ToString().Replace(",",".")" type="hidden" />
+
+<div class="row">
+    <div class="col-lg-2 col-xs-12"></div>
+
+    <div class="col-lg-2 col-xs-12">
+        <div class="form-group">
+            <label class="control-label">Cotización</label>
+            <input type="checkbox" id="estado_cotizacion" data-toggle="toggle" data-on="SI" data-off="NO">
+
+        </div>
+    </div>
+    <div class="col-lg-6 col-xs-12">
+        <div class="form-group">
+            <label class="control-label">Productos/Cliente restaurant</label>
+            <input type="checkbox" id="lista_restaurant" data-toggle="toggle" data-on="SI" data-off="NO" disabled>
+        </div>
+    </div>
+    <div class="col-lg-2 col-xs-12"></div>
+
+</div>
+<div class="row">
+    <div class="col-lg-2 col-xs-12"></div>
+    <div class="col-lg-2 col-xs-12">
+        <p class="input-group">
+            <input type="hidden" id="idreferencia" value="0" />
+            <input type="text" class="form-control numerico_int" id="idtelefono" placeholder="Teléfono" autofocus>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" id="btn_buscar_clientes" title="Buscar cliente">..</button>
+            </span>
+        </p>
+    </div>
+    <div class="col-lg-3 col-xs-12">
+        <p class="input-group">
+            <input type="text" class="form-control" id="idcliente" placeholder="Nombre del cliente" autofocus>
+            <span class="input-group-btn">
+                <button class="btn btn-success" id="btn_buscar_clientescall" title="Buscar cliente call center">..</button>
+            </span>
+        </p>
+    </div>
+    <div class="col-lg-3 col-xs-12">
+        <p class="input-group">
+            <select id="idcategoria" class="form-control categoria" title="Categoria:Standard o Premium">
+                <option value="">Categoria</option>
+                <option value="1">Standard</option>
+                <option value="2">Premium</option>
+            </select>
+            <span class="input-group-btn">
+                <button class="btn btn-success" id="btn_next" placeholder="Próximo cliente">Call</button>
+            </span>
+        </p>
+    </div>
+    <div class="col-lg-2 col-xs-12"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-2 col-xs-12"></div>
+    <div class="col-lg-3 col-xs-5">
+        <textarea type="text" class="form-control" id="iddireccion" style="width: 100%;padding-left:0;padding-right:0" placeholder="Direccion" rows="3" autofocus"></textarea>
+    </div>
+    <div class="col-lg-2 col-xs-2">
+        <button type="button" class="form-control btn btn-warning" id="idflechadir" placeholder="pasar a la derecha">></button>
+        <button type="button" class="form-control btn btn-info" id="idprocedimientos">Procedimientos</button>
+
+    </div>
+    <div class="col-lg-3 col-xs-5">
+        <textarea type="text" class="form-control" id="iddireccionenvio" style="width: 100%;padding-left:0;padding-right:0" placeholder="Direccion de envio" rows="3" autofocus></textarea>
+    </div>
+    <div class="col-lg-2 col-xs-12"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-2 col-xs-12"></div>
+    <div class="col-lg-3 col-xs-5">
+        <button type="button" class="form-control btn btn-default" id="idcomuna">Comuna</button>
+    </div>
+    <div class="col-lg-2 col-xs-2">
+        <button type="button" class="form-control btn btn-success" id="idotrasdirecciones">+Direcciones</button>
+    </div>
+    <div class="col-lg-3 col-xs-5">
+        <button type="button" class="form-control btn btn-default" id="idcomunaenvio">Comuna</button>
+    </div>
+    <div class="col-lg-2 col-xs-12"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-2 col-xs-12"></div>
+    <div class="col-lg-3 col-xs-5">
+        <button type="button" class="form-control btn btn-default" id="idcondominio">Condominio</button>
+    </div>
+    <div class="col-lg-2 col-xs-2">
+        <button type="button" class="btn btn-primary" id="btn_guardar_cliente" style="width: 100%;padding-left:0;padding-right:0" title="Guardar datos cliente"><i class="glyphicon glyphicon-floppy-disk"></i></button>
+    </div>
+    <div class="col-lg-3 col-xs-5">
+        <button type="button" class="form-control btn btn-default" id="idcondominioenvio">Condominio</button>
+    </div>
+    <div class="col-lg-2 col-xs-12"></div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-2 col-xs-12"></div>
+    <div class="col-lg-3 col-xs-4">
+        <input type="text" class="form-control" id="idproducto_pedidos" placeholder="Producto" autofocus>
+    </div>
+    <div class="col-lg-1 col-xs-2">
+        <button type="button" class="btn btn-warning" id="btn_buscar_productos_pedidos" style="width: 100%;padding-left:0;padding-right:0" title="Buscar"><i class="glyphicon glyphicon-search"></i></button>
+    </div>
+    <div class="col-lg-1 col-xs-2">
+        <button type="button" class="btn btn-info" id="btn_vercarrito_pedidos" style="width: 100%;padding-left:0;padding-right:0" title="Ver carrito"><i class="glyphicon glyphicon-shopping-cart"></i></button>
+    </div>
+
+    <div class="col-lg-1 col-xs-2">
+        <button type="button" class="btn btn-danger" id="btn_vaciarcarro_pedidos" style="width: 100%;padding-left:0;padding-right:0" title="Vaciar"><i class="glyphicon glyphicon-trash"></i></button>
+    </div>
+    <div class="col-lg-1 col-xs-2">
+        <button type="button" class="btn btn-success" id="btn_abre_modal_guardar_pedidos" style="width: 100%;padding-left:0;padding-right:0" title="Guardar Pedido"><i class="glyphicon glyphicon-floppy-disk"></i></button>
+    </div>
+    <div class="col-lg-1 col-xs-12">
+        <button type="button" class="btn btn-primary" id="btn_abre_modal_cargar_cotizacion" style="width: 100%;padding-left:0;padding-right:0" title="Cargar Cotización del cliente"><i class="glyphicon glyphicon-folder-open"></i></button>
+    </div>
+    <div class="col-lg-2 col-xs-12"></div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-2 col-xs-12"></div>
+    <div class="col-lg-8 col-xs-12">
+        <div id="idDivPartialListadeProductos">
+        </div>
+    </div>
+    <div class="col-lg-2 col-xs-12"></div>
+</div>
+
+<form method="POST" id="form_cantidad" class="form_cantidad" role="form">
+    <div class="modal fade" id="modal_cantidad_pedidos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_cantidad" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_cantidad">Detalle Producto <span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="codigo_cant_pedidos" />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Nombre
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" id="producto_cant_pedidos" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-3">
+                            Cantidad
+                        </div>
+                        <div class="col-lg-9 col-xs-9">
+                            <div class="row">
+                                <div class="col-lg-8 col-xs-8" style="padding-right:0">
+                                    <input type="text" class="form-control validate[required] calcula_valor numerico_dec" id="cantidad_cant_pedidos" value="1" onfocus="this.select()">
+                                </div>
+                                <div class="col-lg-4 col-xs-4" style="padding-left:0">
+                                    <input type="text" id="unidad_cant_pedidos" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12">
+                            Presentacion
+                        </div>
+                        <div class="col-lg-9 col-xs-12" id="divlistado_presentaciones_pedidos" style="width:75%">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Cabeza
+                            <input id="cabeza_cant_pedidos" type="checkbox" />
+                        </div>
+                        <div class="col-lg-1 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Esquelon
+                            <input id="esquelon_cant_pedidos" type="checkbox" />
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Precio
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]] calcula_valor numerico_int" id="precio_cant_pedidos" onfocus="this.select()">
+                            <input type="hidden" id="costo_cant_pedidos">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Valor
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]]" id="valor_cant_pedidos" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Observación
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="obsdet_cant_pedidos" class="form-control limpiar" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" class="guardarCarrito btn btn-primary" value="Agregar" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="POST" id="form_editar_pedidos" class="form_editar_pedidos" role="form">
+    <div class="modal fade" id="modal_editar_pedidos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_editar_pedidos" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_editar_pedidos">Edita detalle<span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="id_indice_editar_pedidos" />
+                    <input type="hidden" id="codigo_editar_pedidos" />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Nombre
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" id="producto_editar_pedidos" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-9">
+                            Cantidad
+                        </div>
+                        <div class="col-lg-9 col-xs-9">
+                            <div class="row">
+                                <div class="col-lg-8 col-xs-8" style="padding-right:0">
+                                    <input type="text" class="form-control validate[required] calcula_valor numerico_dec" id="cantidad_editar_pedidos" value="1" onfocus="this.select()">
+                                </div>
+                                <div class="col-lg-4 col-xs-4" style="padding-left:0">
+                                    <input type="text" id="unidad_editar_pedidos" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12">
+                            Presentacion
+                        </div> <!--divlistado_presentaciones_editar_pedidos-->
+                        <div class="col-lg-9 col-xs-12" id="divlistado_presentaciones_editar_pedidos" style="width:75%">
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Cabeza
+                            <input id="cabeza_editar_pedidos" type="checkbox" />
+                        </div>
+                        <div class="col-lg-1 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Esquelon
+                            <input id="esquelon_editar_pedidos" type="checkbox" />
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Precio
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]] calcula_valor_editar_pedidos numerico_int" id="precio_editar_pedidos" onfocus="this.select()">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Valor
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]]" id="valor_editar_pedidos" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Observación
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="obsdet_editar_pedidos" class="form-control limpiar" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" class="guardaredicionCarrito btn btn-primary" value="Guardar" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modal_carrito_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_obra">Eliminar Producto</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar el Producto?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" id="id_indice_eliminar_hidden" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="ok_carrito_eliminar btn btn-danger" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_carrito_vaciar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_vaciar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_vaciar_carrito">Vaciar Carrito</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de vaciar el carrito?<br />
+                <br />
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input id="btn_vaciar_carro" type="submit" class="btn btn-danger" value="Vaciar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" id="form_guardar_pedidos" class="form_guardar_pedidos" role="form">
+    <div class="modal fade" id="modal_guardar_pedidos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_guardar" aria-hidden="true" data-focus-on="input:first">
+        <div class="modal-dialog" style="min-width: 30% !important; max-width:60% !important">
+            <div class="modal-content">
+
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_guardar">Guardar <span style="font-size: 16px"></span></h3>
+                </div>
+
+                <div class="modal-body">
+
+                    <input value="" class="validate[required,past[#fechaent_pedido]]" type="hidden" id="fechaactual_pedido" name="fechaactual_pedido" />
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Total</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-right validate[required] limpiar" id="total" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Fecha Ent</label>
+                        </div>
+                        <div class="col-lg-9">
+                            @*<input type="date" class="form-control text-left validate[required] limpiar" id="fechaent" style="height:30px;font-size: 13px;">*@
+                            <input value="" class="validate[required,future[#fechaactual_pedido]]" type="date" id="fechaent" name="fechaent_pedido" style="height:30px;font-size: 13px;" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Hora Ent</label>
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="text" class="form-control text-left validate[required] limpiar numerico_int" maxlength="2" id="horaent">
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="button" class="btn btn-danger horacambiar">+</button>
+                            <button type="button" class="btn btn-danger horacambiar">-</button>
+                        </div>
+                        <div class="col-lg-1 col-xs-6">
+                            AM
+                            <input id="am" type="checkbox" class="ampm" />
+                        </div>
+                        <div class="col-lg-1 col-xs-6">
+                            PM
+                            <input id="pm" type="checkbox" class="ampm" />
+                        </div>
+                        <div class="col-lg-1 col-xs-6">
+                            Factura
+                            <input id="factura" type="checkbox" />
+                        </div>
+                        <div class="col-lg-1 col-xs-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>¿Empaque para RESTAURANT?</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input id="empaq_restaurant" type="checkbox" />
+                        </div>
+                    </div>
+                    <div class="row" id="container_tipodoc">
+                        <div class="col-lg-3">
+                            <label>¿Tipo documento?</label>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            BOLETA INTERNA (BIT)
+                            <input id="bit_tipodoc" type="checkbox" name="tipodoc" class="xxtipodoc"/>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            FACTURA
+                            <input id="factura_tipodoc" type="checkbox" name="tipodoc" class="xxtipodoc"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Observación</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="observacion" class="form-control limpiar" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-2">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                        <div class="col-lg-4 col-xs-4 text-primary">
+                            <label>Entrega Boleta</label>
+                        </div>
+                        <div class="col-lg-1 col-xs-1">
+                            <input id="entregaboleta" type="checkbox" class="text-left" checked />
+                        </div>
+                        <div class="col-lg-3 col-xs-2">
+                        </div>
+                        <div class="col-lg-2 col-xs-2">
+                            <input type="submit" class="btn btn-primary guardarpedidos" value="Guardar" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modal_cambiar_comuna" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_comuna">Comuna</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscacomuna" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscacomuna" value="Buscar" title="buscar comuna" />
+                <div id="divlistado_comunas">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_comuna" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_comunaenvio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_comunaenvio">Comuna Envio</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscacomunaenvio" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscacomunaenvio" value="Buscar" title="buscar comuna envio" />
+                <div id="divlistado_comunasenvio">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" data-dismiss="modal" class="btn btn-warning pull-left">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_comunaenvio" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_condominio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_condominio">condominio</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscacondominio" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscacondominio" value="Buscar" title="buscar condominio" />
+                <input type="button" id="btn_textoagregarcondominio" value="Agregar" title="agregar condominio" />
+                <div id="divlistado_condominios">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" data-dismiss="modal" class="btn btn-warning pull-left">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_condominio" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_condominioenvio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_condominioenvio">condominio Envio</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscacondominioenvio" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscacondominioenvio" value="Buscar" title="buscar condominio envio" />
+                <input type="button" id="btn_textoagregarcondominioenvio" value="Agregar" title="agregar condominio envio" />
+                <div id="divlistado_condominioenvio">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_condominioenvio" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_otras_direcciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_otras" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_otras_direcciones">Otras direcciones</h3>
+            </div>
+            <div class="modal-body">
+                <textarea type="text" class="form-control" id="idotras_direccion" style="width: 100%;padding-left:0;padding-right:0" placeholder="Direccion" rows="3" autofocus></textarea>
+                <button type="button" class="form-control btn btn-default" id="idotras_comuna">Comuna</button>
+                <button type="button" class="form-control btn btn-default" id="idotras_condominio">Condominio</button>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-2 col-xs-2"><button type="button" class="btn btn-default center-block" data-dismiss="modal">Cerrar</button></div>
+                    <div class="col-lg-1 col-xs-1"><button type="button" class="btn btn-warning pull-left" id="btn_otras_anterior"><</button></div>
+                    <div class="col-lg-1 col-xs-1"><button type="button" class="btn btn-warning pull-left" id="btn_otras_siguiente">></button></div>
+                    <div class="col-lg-2 col-xs-2"></div>
+                    <div class="col-lg-2 c11-xs-2"><button type="button" class="btn btn-default center-block" id="btn_otras_limpiar">Nueva</button></div>
+                    <div class="col-lg-2 col-xs-2"><button type="button" class="btn btn-primary pull-right" id="btn_otras_agregar">Guardar</button></div>
+                    <div class="col-lg-2 col-xs-2"><button type="button" class="btn btn-default center-block" data-dismiss="modal" id="btn_otras_aceptar">Aceptar</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_otras_comuna" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_comuna">Comuna</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscaotrascomuna" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscaotrascomuna" value="Buscar" title="buscar comuna" />
+                <div id="divlistado_otras_comunas">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_otras_comuna" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_otras_condominio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_condominio">condominio</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscaotrascondominio" value="" title="texto busqueda" onblur="this.toUpperCase()" />
+                <input type="button" id="btn_textobuscaotrascondominio" value="Buscar" title="buscar condominio" />
+                <input type="button" id="btn_textoagregarotrascondominio" value="Agregar" title="agregar condominio" />
+                <div id="divlistado_otras_condominios">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" data-dismiss="modal" class="btn btn-warning pull-left">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_otras_condominio" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_ultimas_ventas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title text-center" id="clienteultimasventas">Ultimas Ventas<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div id="idtelefono_ultimasventas"></div>
+                <div id="divpartialUltimas_Ventas" @*class="table-responsive"*@>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-2 col-xs-12">
+                        <button type="button" id="ok_postergar_call" class="btn btn-danger pull-right" data-dismiss="modal" title="postergar fecha llamada">Post</button>
+                    </div>
+                    <div class="col-lg-8 col-xs-12">
+                        <div class="row">
+                            <div class="col-lg-4" style="padding-top:10px">
+                                <label>Volver a contactar</label>
+                            </div>
+                            <div class="col-lg-5">
+                                @*<input type="date" class="form-control text-left validate[required] limpiar" id="fechaent" style="height:30px;font-size: 13px;">*@
+                                <input value="" @*class="validate[required,future[#fechaactual_pedido]]"*@ type="date" id="fechavolver" name="fechavolver" style="height:30px;font-size: 13px;margin-right:0;" />
+                            </div>
+                            <div class="col-lg-3" style="padding-top:5px">
+                                <button type="button" class="btn btn-warning btn-xs volvercontactar">+</button>
+                                <button type="button" class="btn btn-warning btn-xs volvercontactar">-</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <button type="button" id="ok_cerrar_ultimas_ventas" class="btn btn-primary pull-right" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" id="form_cantidad_pedidos_call" class="form_cantidad_pedidos_call" role="form">
+    <div class="modal fade" id="modal_cantidad_pedidos_call" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_cantidad" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_cantidad">Detalle Producto <span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="codigo_pedidos_call" />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Nombre
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" id="producto_pedidos_call" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-3">
+                            Cantidad
+                        </div>
+                        <div class="col-lg-9 col-xs-9">
+                            <div class="row">
+                                <div class="col-lg-8 col-xs-8" style="padding-right:0">
+                                    <input type="text" class="form-control validate[required] calcula_valor numerico_dec" id="cantidad_pedidos_call" value="1" onfocus="this.select()">
+                                </div>
+                                <div class="col-lg-4 col-xs-4" style="padding-left:0">
+                                    <input type="text" id="unidad_pedidos_call" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12">
+                            Presentacion
+                        </div>
+                        <div class="col-lg-9 col-xs-12" id="divlistado_presentaciones_pedidos" style="width:75%">
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Cabeza
+                            <input id="cabeza_pedidos_call" type="checkbox" />
+                        </div>
+                        <div class="col-lg-1 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Esquelon
+                            <input id="esquelon_pedidos_call" type="checkbox" />
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Precio
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]] calcula_valor numerico_int" id="precio_pedidos_call" onfocus="this.select()">
+                            <input type="hidden" id="costo_pedidos_call">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Valor
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]]" id="valor_pedidos_call" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Observación
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="obsdet_pedidos_call" class="form-control limpiar" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" class="guardarCarrito_pedidos_call btn btn-primary" value="Agregar" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="POST" id="form_anotaciones" class="form_anotaciones" role="form">
+    <div class="modal fade" id="modal_anotaciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_anotaciones" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_cantidad">Anotaciones<span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="telefono_hidden" />
+                    <input type="hidden" id="fecha_hidden" />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Historico
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="anotaciones_ant" class="form-control" rows="15" readonly></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Observación
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="anotaciones_new" class="form-control limpiar" rows="5"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" id="guardarAnotacion" class="btn btn-primary" value="Agregar" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modal_email_cliente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_email_cliente" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_email_cliente">Email Cliente<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <input type="text" id="idemail" class="form-control" rows="1" maxlength="30" placeholder="Email" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <input type="submit" id="ok_guardar_cliente" class="btn btn-primary" value="Guardar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_busca_Clientes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_Clientes" aria-hidden="true" style="margin-top: 80px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_Clientes">
+                    Clientes
+                    @*<span style="font-size:20px"></span>*@
+                </h3>
+                @*<input type="text" id="input_nombreClientes" placeholder="colocar nombre" style="font-size:20px;color:black">
+                    <input type="submit" id="buscar_Clientes" value="buscar" style="font-size:20px">*@
+            </div>
+            <div class="modal-body">
+                <select id="listado_Clientes" class="form-control" data-live-search="true">
+                    <option value="0">--Cargando Datos--</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_elegir_modal_Clientes" type="button" class="btn btn-danger pull-left">Elegir</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_busca_Clientescall" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_Clientes" aria-hidden="true" style="margin-top: 80px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_Clientes">
+                    Clientes
+                    <span style="font-size:20px"></span>
+                </h3>
+                <input type="text" id="input_nombreClientescall" placeholder="colocar nombre" style="font-size:20px;color:black">
+                <input type="submit" id="buscar_Clientescall" value="buscar" style="font-size:20px">
+            </div>
+            <div class="modal-body">
+                <select id="listado_Clientescall" size="15" style="width: 100%;height:200px;">
+                    <option value="0">--Cargando Datos--</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_elegir_modal_Clientescall" type="button" class="btn btn-danger pull-left">Elegir</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_guardar_cotizacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_pe"
+     aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-info" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center header_modal">
+                <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="titulo_modal_h3 modal-title text-center" id="myModalLabel_pe"><i class="fas fa-money-check-alt rotateIn mb-4" style="color:#fff"></i> Confirmar Cotización</h3>
+            </div>
+            <div class="modal-body" style="background-color:#f1f1f4">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12">
+                            <p></p>
+                            <p class="text-center"><i class="glyphicon glyphicon-usd fa-4x" style="color:#051671"></i></p>
+                        </div>
+                        <div class="col-lg-9 col-xs-12 ">
+                            <fieldset class="scheduler-border-interno">
+
+                                <div class="row">
+                                    <div class="col-lg-12 col-xs-12 text-center">
+                                        <div style="font-size:22px" id="id_incluye_flete"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-5 col-xs-6 text-right">
+                                        <div style="font-size:22px">Afecto:</div>
+                                    </div>
+                                    <div class="col-lg-7 col-xs-6">
+                                        <div id="afecto_cotizacion" style="font-size:22px"></div>
+                                    </div>
+                                </div>
+                                <div class="row" id="iva_final">
+                                    <div class="col-lg-5 col-xs-6 text-right">
+                                        <div style="font-size:22px">Iva:</div>
+                                    </div>
+                                    <div class="col-lg-7 col-xs-6">
+                                        <div id="iva_cotizacion" style="font-size:22px"></div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-5 col-xs-6 text-right">
+                                        <div style="font-size:22px">Total:</div>
+                                    </div>
+                                    <div class="col-lg-7 col-xs-6">
+                                        <div id="valortotal_cotizacion" style="font-size:22px"></div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <textarea type="text" class="form-control" id="observacion_cotizacion" style="width: 100%;" placeholder="Observación" rows="3" autofocus"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer" style="background-color:#dadae0">
+                <div class="row">
+
+                    <div class="col-lg-6 col-xs-6 text-center">
+                        <button id="btn_cerrar_cotizacion" type="button" class="btn btn-default " data-dismiss="modal">Cancelar</button>
+                    </div>
+                    <div class="col-lg-6 col-xs-6 text-center">
+                        <button id="btn_confirmar_cotizacion" type="button" class="btn btn-primary"><i class="fas fa-cloud-upload-alt"></i> Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="form_enviar_pdf_cotizacion">
+
+    <div class="modal fade" id="modal_mostrar_documento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_md" aria-hidden="true">
+        <div class="modal-dialog" style="min-width: 50%">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_md">
+                        Cotización
+                        <span style="font-size: 16px"></span>
+                    </h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="pdfcotizacion" style="width: 100% !important"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <input type="text" id="id_email_destinatario" class="form-control validate[required,custom[ValidaEmail]]" placeholder="ejemplo@correo.com">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="enviar_correo_enviar btn btn-danger" value="Enviar">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal fade" id="modal_procedimientos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title text-center">Procedimientos<span style="font-size: 16px"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div id="divpartialprocedimiento">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="ok_cerrar_procedimientos" class="btn btn-default pull-lef" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="abre_modal_agrega_procedimiento" class="btn btn-primary pull-right">Agregar Ítem</button>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="agregar_contenido_procedimiento">
+    <div class="modal fade" id="modal_agregar_procedimientos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title text-center">Ingresar<span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            Sección
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="text" id="idseccionp" class="form-control validate[required]">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            Nombre
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="text" id="idnombrep" class="form-control validate[required]">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            Archivo
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="file" id="documento" class="form-control" />
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-primary" value="Guardar" id="guardar_procedimiento">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal fade" id="modal_procedimiento_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_obra">Eliminar Procedimiento</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar el Contenido?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" id="id_eliminar_procedimiento_hidden" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-danger" value="Eliminar" id="confirma_elimina_procedimiento" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form id="form_documentacion_procedimiento">
+    <div class="modal fade" id="modal_mostrar_documentacion_procedimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_proc" aria-hidden="true">
+        <div class="modal-dialog" style="min-width: 50%">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_proc">
+                        Contenido
+                        <span style="font-size: 16px"></span>
+                    </h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="referencia_procedimiento_hidden" />
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="documentacion" style="width: 100% !important"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal fade" id="modal_mostrar_listadocotizaciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_listadocotizacion" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_listadocotizacion">
+                    Cotizaciones
+                    <span style="font-size: 16px"></span>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="divpartialCotizaciones" style="width: 100% !important"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    var lista_global = 0;
+    var table_cotizaciones = "";
+    var indice_carro = 0;
+    var valor_flete_global = 0;
+    var fila_actual_carro = 0;
+    var fecha_actual = "";
+    var cantidad_carro = 0;
+    var table_pedidos = "";
+    var table_carrito = "";
+    var carrito = [];
+    var valor_global = 0;
+    var global_telefono = 0;
+    var global_existecliente = 0;
+    var carrito_producto = 0;//1: producto, 2:carrito
+    var datos_clientes = {};
+    var tramo1 = ($("#tramo1").val() == "") ? 0 : parseInt($("#tramo1").val());
+    var tramo2 = ($("#tramo2").val() == "") ? 0 : parseInt($("#tramo2").val());
+    var valort1 = ($("#valort1").val() == "") ? 0 : parseInt($("#valort1").val());
+    var valort2 = ($("#valort2").val() == "") ? 0 : parseInt($("#valort2").val());
+
+    var codigominimo = "405";
+    var nombreminimo = "ITEM DESPACHO";
+
+    function eliminarFlete() {
+        //debugger;
+        let indexElimina = carrito.findIndex(carrito => carrito.codigo === codigominimo);
+        //Eliminando item
+        if (indexElimina > 0) {
+            carrito.splice(indexElimina, 1);
+        }
+    }
+
+        function calcularValorFlete(valor_v) {
+            valor_flete_global = 0;
+            if (valor_v < tramo1) {//30000
+                indice_carro = indice_carro + 1;
+                var valorflete = valort1;//2500;
+                var fila = {
+                    id_indice: indice_carro,
+                    codigo: codigominimo,
+                    detalle: nombreminimo,
+                    cantidad: 1,
+                    presentacion: 0,
+                    cabeza: 0,
+                    esquelon: 0,
+                    unidad: "UN",
+                    precio: valorflete,
+                    valor: valorflete,
+                    costo: 0,
+                    obsdet: ""
+                }
+                valor_flete_global = valorflete
+                carrito.push(fila);
+                //totalpedido += valorflete;
+            } else if (valor_v < tramo2) {//50000
+                indice_carro = indice_carro + 1;
+                var valorflete = valort2;//1500;
+                var fila = {
+                    id_indice: indice_carro,
+                    codigo: codigominimo,
+                    detalle: nombreminimo,
+                    cantidad: 1,
+                    presentacion: 0,
+                    cabeza: 0,
+                    esquelon: 0,
+                    unidad: "UN",
+                    precio: valorflete,
+                    valor: valorflete,
+                    costo: 0,
+                    obsdet: ""
+                }
+                valor_flete_global = valorflete
+                carrito.push(fila);
+                //totalpedido += valorflete;
+            }
+    }
+
+    function cargarCotizacionAcarrito(registro) {
+        $.ajaxSetup({
+            async: false
+        });
+        carrito = [];
+        cantidad_carro = 0;
+        $.getJSON('/Cotizaciones/GetCotizacion/?registro=' + registro, function (data) {
+                debugger;
+                $.each(data, function (i, item) {
+                    cantidad_carro = cantidad_carro + 1;
+                    indice_carro = indice_carro + 1;
+                    var fila = {
+                        id_indice: indice_carro,
+                        codigo: item.codigo,
+                        detalle: item.detalle,
+                        cantidad: item.cantidad,
+                        presentacion: item.presentacion,
+                        cabeza: item.cabeza,
+                        esquelon: item.esquelo,
+                        unidad: item.unidad,
+                        precio: item.precio,
+                        valor: item.valor,
+                        costo: item.costo,
+                        obsdet: item.obsdet
+                    }
+                    carrito.push(fila);
+                });
+        });
+        $.ajaxSetup({
+            async: true
+        });
+        if (cantidad_carro == 0) {
+            mostrar_msj_error("No hay cotizaciones para este cliente en esta fecha");
+        }
+        $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>(' + cantidad_carro + ')');
+
+    }
+
+    function actualizarProcedimiento(referencia, valor,campo) {
+        $("#saving").show();
+        $.ajax({
+            type: "POST",
+            url: '/Procedimientos/ActualizaProcedimiento/',
+            data: JSON.stringify({
+                referencia: referencia,
+                valor: valor,
+                campo: campo
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#saving").hide();
+                if (data.retornojson == "1") {
+                } else {
+                    mostrar_msj_error(data.mensajejson);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexión");
+            }
+        });
+    }
+    function mostrarArchivoProcedimiento() {
+        $("#saving").show();
+        var referencia = $("#referencia_procedimiento_hidden").val();
+        $.ajax({
+            type: "POST",
+            url: '/Procedimientos/IntermedioGetArchivo/',
+            data: JSON.stringify({
+                referencia: referencia
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $("#saving").hide();
+
+                if (data.retornojson == "-1") {
+                    mostrar_msj_error(data.mensajejson);
+
+                } else {
+                    if (data.formatoJson == ".pdf") {
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe_proced',
+                            'src': data.archivoJson
+                        });
+                        $('#documentacion').html(iframe);
+                        $("#modal_mostrar_documentacion_procedimiento").modal("show");
+
+
+                    } else if (data.formatoJson == ".mp4") {
+                        listar_Video();
+                        $("#modal_mostrar_documentacion_procedimiento").modal("show");
+
+                    } else if (data.formatoJson == ".png" || data.formatoJson ==".jpeg" || data.formatoJson =="jpg") {
+                        listar_Foto();
+                        $("#modal_mostrar_documentacion_procedimiento").modal("show");
+
+                    } else if (data.formatoJson == ".docx" || data.formatoJson==".doc") {
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe_proced',
+                            'src': data.archivoJson
+                        });
+                        $('#documentacion').html(iframe);
+
+                    }
+
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexión");
+            }
+        });
+    }
+    $(function () {
+        $('#estado_cotizacion').bootstrapToggle({
+            on: 'SI',
+            off: 'NO'
+        });
+        $('#lista_restaurant').bootstrapToggle({
+            on: 'SI',
+            off: 'NO'
+        });
+    })
+    $(document).ready(function () {
+            var d = new Date();
+            var curDay = d.getDate();
+            var curMonth = d.getMonth() + 1;
+            var curYear = d.getFullYear();
+
+            fecha_actual = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) +"-"+ (curDay < 10 ? "0" + curDay : curDay);
+
+        listar_Productos(lista_global);
+
+        $('#form_enviar_pdf_cotizacion').validationEngine();
+        $(".enviar_correo_enviar").on('click', function (ev) {
+                ev.preventDefault();
+                if (!$("#form_enviar_pdf_cotizacion").validationEngine('validate')) {
+                    return false;
+                }
+                var destinatario = $("#id_email_destinatario").val();
+                $("#saving").show();
+                var fd = new FormData();
+                fd.append("destinatario", destinatario);
+                $.ajax({
+                    data: fd,
+                    DataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    type: "POST",
+                    url: '/Cotizaciones/EnviaCotizacionCliente/',
+                    success: function (data) {
+                        if (data.retornoJson == "1") {
+                            $("#saving").hide();
+                            $("#modal_mostrar_documento").modal("hide");
+                            mostrar_msj_success('Cotización enviada correctamente al cliente');
+                        } else if (data.retornoJson == "-1") {
+                            $("#ajax_loader").hide();
+                            $("#modal_mostrar_documento").modal("hide");
+                            mostrar_msj_error("error: El tiempo de sesión ha expirado");
+                        } else if (data.retornoJson == "2") {
+                            $("#ajax_loader").hide();
+                            $("#modal_mostrar_documento").modal("hide");
+                            mostrar_msj_error("Email vacio del cliente");
+                        } else {
+                            $("#ajax_loader").hide();
+                            $("#modal_mostrar_documento").modal("hide");
+                            mostrar_msj_error("error interno: " + data.errorMsjJson);
+                        }
+                    }/*,*/
+                    //error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    //    mostrar_msj_error("error: " + errorThrown);
+                    //    //alert("errorThrown: " + errorThrown + "XMLHttpRequest: " + XMLHttpRequest + "textStatus: " + textStatus);
+                    //}
+                });
+
+
+        });
+
+        $("#abre_modal_agrega_procedimiento").on('click', function (ev) {
+            ev.preventDefault();
+            $("#modal_agregar_procedimientos").modal("show");
+        });
+        $("#idprocedimientos").on('click', function (ev) {
+            ev.preventDefault();
+            $("#modal_procedimientos").modal("show");
+            listar_Procedimientos();
+        });
+        $('#agregar_contenido_procedimiento').on('hidden.bs.modal', function () {
+            $('#modal_procedimientos').addClass("actualiza_scroll");
+        });
+        $('#modal_mostrar_documentacion_procedimiento').on('hidden.bs.modal', function () {
+            $('#modal_procedimientos').addClass("actualiza_scroll");
+        });
+
+        $("#btn_buscar_clientescall").click(function (e) {
+            e.preventDefault();
+            listarClientescall("");
+            $("#modal_busca_Clientescall").modal("show");
+            $("#input_nombreClientescall").val("");
+        });
+
+        $("#buscar_Clientescall").click(function (e) {
+            e.preventDefault();
+            debugger;
+            listarClientescall($("#input_nombreClientescall").val());
+        });
+
+        $("#buscar_Clientescall").click(function (e) {
+            e.preventDefault();
+            debugger;
+            listarClientescall($("#input_nombreClientescall").val());
+        });
+
+        $("#btn_elegir_modal_Clientescall").click(function (e) {
+            e.preventDefault();
+            debugger;
+            $("#modal_busca_Clientescall").modal("hide");
+            var telefono = $("#listado_Clientescall option:selected").val();
+            var nombre = $("#listado_Clientescall option:selected").data("nombre");
+            var direccion = $("#listado_Clientescall option:selected").data("direccion");
+            var comuna = $("#listado_Clientescall option:selected").data("comuna");
+            var condominio = $("#listado_Clientescall option:selected").data("condominio");
+            var categoria = $("#listado_Clientescall option:selected").data("categoria");
+            $("#idtelefono").val(telefono);
+            $("#idcliente").val(nombre);
+            $("#iddireccion").val(direccion);
+            $("#idcomuna").text(comuna);
+            $("#idcondominio").text(condominio);
+            $("#iddireccionenvio").val("");
+            $("#idcomunaenvio").text("Comuna Envio");
+            $("#idcondominioenvio").text("Condominio Envio");
+            $("#idcategoria").val(categoria);
+            UltimasVentas(telefono, fecha_actual);
+        });
+
+            $("#listado_Clientescall").dblclick(function (e) {
+                e.preventDefault();
+                debugger;
+                $("#modal_busca_Clientescall").modal("hide");
+                var telefono = $("#listado_Clientescall option:selected").val();
+                var nombre = $("#listado_Clientescall option:selected").data("nombre");
+                var direccion = $("#listado_Clientescall option:selected").data("direccion");
+                var comuna = $("#listado_Clientescall option:selected").data("comuna");
+                var condominio = $("#listado_Clientescall option:selected").data("condominio");
+                var categoria = $("#listado_Clientescall option:selected").data("categoria");
+                $("#idtelefono").val(telefono);
+                $("#idcliente").val(nombre);
+                $("#iddireccion").val(direccion);
+                $("#idcomuna").text(comuna);
+                $("#idcondominio").text(condominio);
+                $("#iddireccionenvio").val("");
+                $("#idcomunaenvio").text("Comuna Envio");
+                $("#idcondominioenvio").text("Condominio Envio");
+                $("#idcategoria").val(categoria);
+                UltimasVentas(telefono, fecha_actual);
+
+            });
+
+            $("#btn_buscar_clientes").click(function (e) {
+                e.preventDefault();
+                listarClientes("");
+                $("#modal_busca_Clientes").modal("show");
+                $("#input_nombreClientes").val("");
+            });
+
+            $("#buscar_Clientes").click(function (e) {
+                e.preventDefault();
+                debugger;
+                listarClientes($("#input_nombreClientes").val());
+            });
+
+            $("#btn_elegir_modal_Clientes").click(function (e) {
+                e.preventDefault();
+                debugger;
+                $("#modal_busca_Clientes").modal("hide");
+                var telefono = $("#listado_Clientes option:selected").val();
+                var nombre = $("#listado_Clientes option:selected").data("nombre");
+                var direccion = $("#listado_Clientes option:selected").data("direccion");
+                var comuna = $("#listado_Clientes option:selected").data("comuna");
+                var condominio = $("#listado_Clientes option:selected").data("condominio");
+                var categoria = $("#listado_Clientes option:selected").data("categoria");
+                var lista = $("#listado_Clientes option:selected").data("lista");
+                carrito = [];
+                cantidad_carro = 0;
+                $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>');
+                //listar_Productos(lista);
+                $("#lista_restaurant").prop('disabled', false).change();
+                if (lista == "1") {
+                    $("#lista_restaurant").prop('checked', true).change();
+                } else {
+                    $("#lista_restaurant").prop("checked", false).change();
+                }
+                $("#lista_restaurant").prop('disabled', true).change();
+
+                $("#idtelefono").val(telefono);
+                $("#idcliente").val(nombre);
+                $("#iddireccion").val(direccion);
+                $("#idcomuna").text(comuna);
+                $("#idcondominio").text(condominio);
+                $("#iddireccionenvio").val("");
+                $("#idcomunaenvio").text("Comuna Envio");
+                $("#idcondominioenvio").text("Condominio Envio");
+                $("#idcategoria").val(categoria);
+            });
+
+            $("#listado_Clientes").dblclick(function (e) {
+                e.preventDefault();
+                debugger;
+                $("#modal_busca_Clientes").modal("hide");
+                var telefono = $("#listado_Clientes option:selected").val();
+                var nombre = $("#listado_Clientes option:selected").data("nombre");
+                var direccion = $("#listado_Clientes option:selected").data("direccion");
+                var comuna = $("#listado_Clientes option:selected").data("comuna");
+                var condominio = $("#listado_Clientes option:selected").data("condominio");
+                var categoria = $("#listado_Clientes option:selected").data("categoria");
+                $("#idtelefono").val(telefono);
+                $("#idcliente").val(nombre);
+                $("#iddireccion").val(direccion);
+                $("#idcomuna").text(comuna);
+                $("#idcondominio").text(condominio);
+                $("#iddireccionenvio").val("");
+                $("#idcomunaenvio").text("Comuna Envio");
+                $("#idcondominioenvio").text("Condominio Envio");
+                $("#idcategoria").val(categoria);
+
+            });
+
+            $("#fechaactual_pedido").val(aaaammdd(new Date()));
+            $("#idreferencia").val("0");
+            $("#idtelefono").val("");
+            $("#idcliente").val("");
+            $("#iddireccion").val("");
+            $("#iddireccionenvio").val("");
+            $("#idcomuna").text("Comuna");
+            $("#idcomunaenvio").text("Comuna Envio");
+            $("#idcondominio").text("Condominio");
+            $("#idcondominioenvio").text("Condominio Envio");
+            $("#idcategoria").val("");
+
+            $("#idotrasdirecciones").on('click', function () {
+                $("#idreferencia").val("0");
+                $("#modal_otras_direcciones").modal("show");
+                $("#btn_otras_siguiente").click();
+            })
+
+            $("#btn_otras_limpiar").on('click', function () {
+                $("#idotras_direccion").val("");
+                $("#idotras_comuna").text("Comuna");
+                $("#idotras_condominio").text("Comuna Envio");
+                $("#idreferencia").val("0");
+            });
+
+            $("#idotras_comuna").click(function (e) {
+
+                var x = $("#idcliente").val();
+                if ($("#idcliente").val() == "") { return false; }
+                $("#modal_cambiar_otras_comuna").modal("show");
+                cargar_otras_comunas("");
+            });
+
+            $("#ok_cambiar_otras_comuna").click(function (e) {
+                e.preventDefault();
+                var arreglo = $("#modal_cambiar_otras_comuna #otras_comuna").val();
+                var comuna = arreglo[0];
+                var nombre = $("#otras_comuna option:selected").text();
+                $("#idotras_comuna").text(nombre);
+                $("#modal_cambiar_otras_comuna").modal("hide");
+            });
+
+            $("#idotras_condominio").click(function (e) {
+
+                var x = $("#idcliente").val();
+                if ($("#idcliente").val() == "") { return false; }
+                $("#modal_cambiar_otras_condominio").modal("show");
+                var comuna = $("#idotras_comuna").text().trim();
+                cargar_otras_condominios(comuna,"");
+            });
+
+            $("#btn_textobuscaotrascondominio").on('click', function (e) {
+
+                var cond = $("#textobuscaotrascondominio").val().toUpperCase();
+                $("#textobuscaotrascondominio").val(cond);
+                var co = cargar_otras_condominios($("#idotras_comuna").text(), cond);
+                $("#textobuscaotrascondominio").val("");
+                $("#otras_comuna option[value=" + co + "]").attr("selected", true);
+            })
+
+            $("#btn_textoagregarotrascondominio").on('click', function (e) {
+
+                var cond = $("#textobuscaotrascondominio").val().toUpperCase();
+                $("#textobuscaotrascondominio").val(cond);
+                if (!cond == "") {
+                    agregar_otras_condominios($("#idotras_comuna").text(), cond);
+                    var co = cargar_otras_condominios($("#idotras_comuna").text(), $("#textobuscaotrascondominio").val());
+                    $("#textobuscaotrascondominio").val("");
+                    $("#otras_comuna option[value=" + co + "]").attr("selected", true);
+                }
+            })
+
+            $("#ok_cambiar_otras_condominio").click(function (e) {
+                e.preventDefault();
+                var arreglo = $("#modal_cambiar_otras_condominio #otras_condominio").val();
+                var condominio = arreglo[0];
+                var nombre = $("#otras_condominio option:selected").text();
+                $("#idotras_condominio").text(nombre);
+                $("#modal_cambiar_otras_condominio").modal("hide");
+            });
+
+            $("#btn_otras_siguiente").on('click', function (e) {
+
+                var telefono = $("#idtelefono").val();
+                if (telefono == "") { return false;}
+                var referencia = $("#idreferencia").val();
+                $.ajaxSetup({
+                    async: false
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Leer_Direccion/',
+                    data: JSON.stringify({
+                        telefono: telefono,
+                        referencia: referencia,
+                        avance:1
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#saving").hide();
+                        if (data.retornojson == "0") {
+                            $("#idotras_direccion").val("");
+                            $("#idotras_comuna").text("");
+                            $("#idotras_condominio").text("");
+                            $("#idreferencia").val("0");
+                        } else if (data.retornojson == "1")
+                        {
+                            $("#idotras_direccion").val(data.direccionjson);
+                            $("#idotras_comuna").text(data.comunajson);
+                            $("#idotras_condominio").text(data.condominiojson);
+                            $("#idreferencia").val(data.referenciajson);
+                        }
+                        //else if (data.retornojson == "0") { mostrar_msj_advertencia("No hay mas alternativas"); }
+
+                        else if (data.retornojson == "-1") {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+                        } else {
+                            mostrar_msj_error(data.mensajejson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+                $.ajaxSetup({
+                    async: true
+                });
+            })
+
+            $("#btn_otras_anterior").on('click', function (e) {
+
+                var telefono = $("#idtelefono").val();
+                if (telefono == "") { return false; }
+                var referencia = $("#idreferencia").val();
+                $.ajaxSetup({
+                    async: false
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Leer_Direccion/',
+                    data: JSON.stringify({
+                        telefono: telefono,
+                        referencia: referencia,
+                        avance: -1
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#saving").hide();
+                        if (data.retornojson == "1") {
+                            $("#idotras_direccion").val(data.direccionjson);
+                            $("#idotras_comuna").text(data.comunajson);
+                            $("#idotras_condominio").text(data.condominiojson);
+                            $("#idreferencia").val(data.referenciajson);
+                        }
+                        else if (data.retornojson == "0") { mostrar_msj_advertencia("No hay mas alternativas");/* $("#idreferencia").val("0");*/ }
+
+                        else if (data.retornojson == "-1") {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+                        } else {
+                            mostrar_msj_error(data.mensajejson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+                $.ajaxSetup({
+                    async: true
+                });
+            })
+
+            $("#btn_otras_agregar").on('click', function (e) {
+
+                var telefono = $("#idtelefono").val();
+                if (telefono == "") { return false; }
+                var direccion = $("#idotras_direccion").val().toUpperCase();
+                var comuna = $("#idotras_comuna").text().toUpperCase();
+                var condominio = $("#idotras_condominio").text().toUpperCase();
+                var referencia = $("#idreferencia").val();
+                $.ajaxSetup({
+                    async: false
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Agregar_Direccion/',
+                    data: JSON.stringify({
+                        telefono:telefono,
+                        direccion:direccion,
+                        comuna: comuna,
+                        condominio: condominio,
+                        referencia: referencia
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#saving").hide();
+                        if (data.retornojson == "1") {
+                            $("#idreferencia").val(data.referenciajson);
+                        } else if (data.retornojson =="-1") {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+                        } else {
+                            mostrar_msj_error(data.mensajejson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+                $.ajaxSetup({
+                    async: true
+                });
+            })
+
+            $("#btn_otras_aceptar").on('click', function () {
+
+                $("#iddireccionenvio").val($("#idotras_direccion").val());
+                $("#idcomunaenvio").text($("#idotras_comuna").text());
+                $("#idcondominioenvio").text($("#idotras_condominio").text());
+            })
+
+            $("#idcomuna").click(function (e) {
+
+                var x = $("#idcliente").val();
+                if ($("#idcliente").val() == "") { return false; }
+                $("#modal_cambiar_comuna").modal("show");
+                cargar_comunas("");
+            });
+
+            $("#idcomunaenvio").click(function (e) {
+
+                var x = $("#idcliente").val();
+                if ($("#idcliente").val() == "") { return false; }
+                $("#modal_cambiar_comunaenvio").modal("show");
+                cargar_comunasenvio("");
+            });
+
+            $("#ok_cambiar_comuna").click(function (e) {
+                e.preventDefault();
+
+                var arreglo = $("#modal_cambiar_comuna #comuna").val();
+                var comuna = arreglo[0];
+                var nombre = $("#comuna option:selected").text();
+                $("#idcomuna").text(nombre);
+                $("#modal_cambiar_comuna").modal("hide");
+            });
+
+            $("#ok_cambiar_comunaenvio").click(function (e) {
+                e.preventDefault();
+                if ($("#idcliente").val() == "") { return false; }
+                var arreglo = $("#modal_cambiar_comunaenvio #comunaenvio").val();
+                var comuna = arreglo[0];
+                var nombre = $("#comunaenvio option:selected").text();
+                $("#idcomunaenvio").text(nombre);
+                $("#modal_cambiar_comunaenvio").modal("hide");
+            });
+
+            $("#idcondominio").click(function (e) {
+
+                var x = $("#idcliente").val();
+                if ($("#idcliente").val() == "") { return false; }
+                $("#modal_cambiar_condominio").modal("show");
+                var comuna = $("#idcomuna").text().trim();
+                cargar_condominios(comuna,"");
+            });
+
+            $("#btn_textobuscacondominio").on('click', function (e) {
+
+                var cond = $("#textobuscacondominio").val().toUpperCase();
+                $("#textobuscacondominio").val(cond);
+                var co = cargar_condominios($("#idcomuna").text(), cond);
+                $("#textobuscacondominio").val("");
+                $("#comuna option[value=" + co + "]").attr("selected", true);
+            })
+
+            $("#btn_textoagregarcondominio").on('click', function (e) {
+
+                var cond = $("#textobuscacondominio").val().toUpperCase();
+                $("#textobuscacondominio").val(cond);
+                if (!cond == "") {
+                    agregar_condominios($("#idcomuna").text(), cond);
+                    var co = cargar_condominios($("#idcomuna").text(), $("#textobuscacondominio").val());
+                    $("#textobuscacondominio").val("");
+                    $("#comuna option[value=" + co + "]").attr("selected", true);
+                }
+            })
+
+            $("#idcondominioenvio").click(function (e) {
+
+                var x = $("#idcliente").val();
+                if ($("#idcliente").val() == "") { return false; }
+                $("#modal_cambiar_condominioenvio").modal("show");
+                var comunaenvio = $("#idcomunaenvio").text().trim();
+                cargar_condominioenvio(comunaenvio,"");
+            });
+
+            $("#btn_textobuscacondominioenvio").on('click', function (e) {
+
+                var cond = $("#textobuscacondominioenvio").val().toUpperCase();
+                $("#textobuscacondominioenvio").val(cond);
+                var co = cargar_condominioenvio($("#idcomunaenvio").text(), cond);
+                $("#textobuscacondominioenvio").val("");
+                $("#comuna option[value=" + co + "]").attr("selected", true);
+            })
+
+            $("#btn_textoagregarcondominioenvio").on('click', function (e) {
+
+                var cond = $("#textobuscacondominioenvio").val().toUpperCase();
+                $("#textobuscacondominioenvio").val(cond);
+                if (!cond == "") {
+                    agregar_condominioenvio($("#idcomunaenvio").text(), cond);
+                    var co = cargar_condominioenvio($("#idcomunaenvio").text(), $("#textobuscacondominioenvio").val());
+                    $("#textobuscacondominioenvio").val("");
+                    $("#comuna option[value=" + co + "]").attr("selected", true);
+                }
+            })
+
+            $("#ok_cambiar_condominio").click(function (e) {
+                e.preventDefault();
+                var arreglo = $("#modal_cambiar_condominio #condominio").val();
+                var condominio = arreglo[0];
+                var nombre = $("#condominio option:selected").text();
+                $("#idcondominio").text(nombre);
+                $("#modal_cambiar_condominio").modal("hide");
+            });
+
+            $("#ok_cambiar_condominioenvio").click(function (e) {
+                e.preventDefault();
+                if ($("#idcliente").val() == "") { return false; }
+                var arreglo = $("#modal_cambiar_condominioenvio #condominioenvio").val();
+                var condominio = arreglo[0];
+                var nombre = $("#condominioenvio option:selected").text();
+                $("#idcondominioenvio").text(nombre);
+                $("#modal_cambiar_condominioenvio").modal("hide");
+            });
+
+            $("#idDivPartialListadeProductos").html("");
+
+            $("#idtelefono").focus();
+
+            $("#idcliente").blur(function () {
+                var nom = $("#idcliente").val().toUpperCase();
+                $("#idcliente").val(nom);
+            });
+
+            $("#iddireccion").blur(function () {
+                var nom = $("#iddireccion").val().toUpperCase();
+                $("#iddireccion").val(nom);
+            });
+
+            $("#idtelefono").blur( function () {
+
+                if (!(isNaN($('#idtelefono').val())))
+                {
+                    if ($("#idtelefono").val() != "")
+                    {
+                        obtieneCliente();
+                        if ($("#idcliente").val() == "")
+                        {
+                            $("#idcliente").focus();
+                        }
+                    else
+                        {
+                            $("#iddireccion").focus();
+                        }
+                    }
+                    else
+                    {
+                        //mostrar_msj_error('Debe indicar telefono');
+                    }
+                }
+            });
+
+            $("#btn_next").on('click', function (e) {
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Siguiente_Cliente/',
+                    contentType: false,
+                    processData: false,
+                    DataType: 'json',
+                    success: function (data) {
+
+                        if (data.retornojson == "1") {
+                            var telefono = data.telefonojson.toUpperCase().trim();
+                            var cliente = data.nombrejson.toUpperCase().trim();
+                            var direccion = data.direccionjson.toUpperCase().trim();
+                            var comuna = data.comunajson.toUpperCase().trim();
+                            var condominio = data.condominiojson.toUpperCase().trim();
+                            var categoria = data.categoriajson.toUpperCase().trim();
+                            var fechacall = data.fechacalljson.toUpperCase().trim();
+                            $('#idtelefono').val(telefono);
+                            $("#idcliente").val(cliente);
+                            $("#iddireccion").val(direccion);
+                            $("#idcomuna").text(comuna);
+                            $("#idcondominio").text(condominio);
+                            $("#iddireccionenvio").val("");
+                            $("#idcomunaenvio").text("Comuna Envio");
+                            $("#idcondominioenvio").text("Condominio Envio");
+                            $("#idcategoria").val(categoria);
+                            UltimasVentas(telefono,fechacall);
+                        }
+                        else if (data.retornojson == "0") {
+                            global_existecliente = 0;
+                            mostrar_msj_error("No existe el cliente indicado..!!");
+                        }
+                        else if (data.retornojson = "-1") {
+                            mostrar_msj_error("error +++ " + data.mensajejson);
+                        }
+                        $("#loading").hide();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(errorThrown);
+                    }
+                });
+            });
+
+            $('#modal_ultimas_ventas').on('shown.bs.modal', function () {
+                var table = $('#table_ultimas_ventas').DataTable();
+                table.columns.adjust();
+            });
+        $('#modal_mostrar_listadocotizaciones').on('shown.bs.modal', function () {
+            table_cotizaciones.columns.adjust();
+        });
+            $('#modal_cantidad_pedidos_call').on('hidden.bs.modal', function () {
+                $('#modal_ultimas_ventas').addClass("actualiza_scroll");
+            });
+
+            $("#idflechadir").on('click', function (e) {
+                e.preventDefault();
+                $("#iddireccionenvio").val($("#iddireccion").val());
+                $("#idcomunaenvio").text($("#idcomuna").text());
+                $("#idcondominioenvio").text($("#idcondominio").text());
+            });
+
+            $("#btn_textobuscacomuna").on('click', function (e) {
+                var co=cargar_comunas($("#textobuscacomuna").val());
+                $("#textobuscacomuna").val("");
+                $("#comuna option[value=" + co + "]").attr("selected", true);
+            })
+
+            $("#btn_textobuscacomunaenvio").on('click', function (e) {
+                var co =cargar_comunasenvio($("#textobuscacomunaenvio").val());
+                $("#textobuscacomunaenvio").val("");
+                $("#comunaenvio option[value=" + co + "]").attr("selected", true);
+            })
+
+            $("#btn_guardar_cliente").on('click', function (e) {
+                e.preventDefault();
+                $("#modal_email_cliente").modal("show");
+        });
+
+        $('#agregar_contenido_procedimiento').validationEngine();
+        $("#guardar_procedimiento").on('click', function (e) {
+            e.preventDefault();
+            if (!$("#agregar_contenido_procedimiento").validationEngine('validate')) {
+                return false;
+            }
+            $("#modal_agregar_procedimientos").modal("hide");
+            $("#saving").show();
+            var seccion = $("#idseccionp").val();
+            var nombre = $("#idnombrep").val();
+            var fd = new FormData();
+
+            if ($('#documento').val() != "") {
+                var fileSize = $('#documento')[0].files[0].size;
+                //if (fileSize > 20000000) {
+                //    mostrar_msj_error("El archivo debe ser menor a 2000 KB");
+                //    $("#saving").css("display", "none");
+                //    return false;
+                //}
+                var archivo = $("#documento").val();
+                var extensiones = archivo.substring(archivo.lastIndexOf("."));
+                if (extensiones != ".pdf" && extensiones != ".docx" && extensiones != ".mp4" && extensiones != ".MP4" && extensiones != ".doc" && extensiones != ".jpg" && extensiones != ".jpeg" && extensiones != ".png") {
+                    mostrar_msj_error("Archivo de tipo " + extensiones + " no es válido. Debe ser de tipo pdf,mp4,docx,doc,jpg,png");
+                    $("#saving").css("display", "none");
+                    return false;
+                }
+                var totalFiles = document.getElementById("documento").files.length;
+                for (var i = 0; i < totalFiles; i++) {
+                    var file = document.getElementById("documento").files[i];
+                    fd.append("Document", file);
+                }
+            } else {
+                $("#saving").css("display", "none");
+                mostrar_msj_error("Debe adjuntar documento");
+                return false;
+            }
+            fd.append("nombre", nombre);
+            fd.append("seccion", seccion);
+            fd.append("documento", $("#documento").val());
+            $.ajax({
+                type: "POST",
+                url: '/Procedimientos/Guardar_Procedimientos/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#saving").hide();
+
+                    if (data.retornojson == "1") {
+                        mostrar_msj_success('Datos guardados');
+                        listar_Procedimientos()
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexión");
+                }
+            });
+        });
+
+        $("#confirma_elimina_procedimiento").click(function (e) {
+            e.preventDefault();
+            $("#saving").show();
+            var referencia = $("#id_eliminar_procedimiento_hidden").val();
+            $("#modal_procedimiento_eliminar").modal("hide");
+            $.ajax({
+                type: "POST",
+                url: '/Procedimientos/EliminarProcedimientos/',
+                data: JSON.stringify({
+                    referencia: referencia
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#saving").hide();
+                    if (data.retornojson == "1") {
+                        mostrar_msj_success('Procedimiento eliminado correctamente');
+                        listar_Procedimientos();
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexión");
+                }
+            });
+        });
+
+
+        $("#ok_guardar_cliente").on('click', function (e) {
+                e.preventDefault();
+
+                $("#modal_email_cliente").modal("hide");
+
+                if ($("#idtelefono").val() == "") { return false; }
+                if ($("#iddireccion").val() == "")
+                {
+                    mostrar_msj_advertencia("Complete datos direccion del cliente");
+                    return false;
+                }
+                if ($("#idcomuna").text() == "" || $("#idcomuna").text() == "Comuna") {
+                    mostrar_msj_advertencia("Complete datos direccion del cliente");
+                    return false;
+                }
+                $("#saving").show();
+                var telefono = $("#idtelefono").val().replace(/\./g, '');
+                var nombre = $("#idcliente").val();
+                var direccion = $("#iddireccion").val();
+                var comuna = $("#idcomuna").text();
+                var condominio = $("#idcondominio").text();
+                condominio = (condominio == "" || condominio == "Condominio") ? "" : condominio;
+                var categoria = $("#idcategoria").val();
+                var email = $("#idemail").val();
+                var obs = "";
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Guardar_Cliente/',
+                    data: JSON.stringify({
+                        telefono: telefono,
+                        nombre: nombre,
+                        direccion: direccion,
+                        comuna: comuna,
+                        condominio: condominio,
+                        categoria: categoria,
+                        email: email,
+                        obs: obs
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#saving").hide();
+                        if (data.retornojson == "1") {
+                            global_existecliente = 1;
+                            mostrar_msj_success('Datos guardados');
+                        } else {
+                            mostrar_msj_error(data.mensajejson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexión");
+                    }
+                });
+            });
+
+            $("#btn_abre_modal_cargar_cotizacion").click(function (e) {
+                e.preventDefault();
+                var telefono = $("#idtelefono").val();
+                if (telefono == "") {
+                    mostrar_msj_advertencia("Debe señalar cliente")
+                    return false;
+                }
+                $("#modal_mostrar_listadocotizaciones").modal("show");
+                debugger;
+                listar_Cotizaciones(telefono);
+
+
+            });
+            $('#btn_confirmar_cotizacion').on('click', function (e) {
+                e.preventDefault();
+
+                datos_clientes.observacion = $("#observacion_cotizacion").val();
+
+                $("#saving").show();
+                $.ajax({
+                    type: "POST",
+                    url: '/Cotizaciones/GuardarCotizacion/',
+                    data: JSON.stringify({
+                        datos_clienes_obj: datos_clientes,
+                        carrito: carrito
+                    }),
+                    async: true,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (resultado) {
+                        $("#modal_guardar_cotizacion").modal("hide");
+                        $("#saving").hide();
+
+                        if (resultado.retornoJson == -3) {
+                            mostrar_msj_error_volverIniciar(resultado.mensajeJson, "/../Home/Login");
+
+                        } else if (resultado.retornoJson < 0) {
+                            mostrar_msj_error(resultado.mensajeJson);
+
+                        } else {
+                            var cotizacion = resultado.retornoJson;
+                            cantidad_carro = 0;
+                            valor_flete_global = 0;
+                            $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>(' + cantidad_carro + ')');
+                            $("#idreferencia").val("0");
+                            $("#idtelefono").val("");
+                            $("#idcliente").val("");
+                            $("#iddireccion").val("");
+                            $("#idcomuna").text("");
+                            $("#idcondominio").text("");
+                            $("#iddireccionenvio").val("");
+                            $("#idcomunaenvio").text("");
+                            $("#idcondominioenvio").text("");
+                            $("#observacion_cotizacion").val("");
+                            $('#estado_cotizacion').prop("checked", false);
+                            $("#estado_cotizacion").bootstrapToggle("off")
+                            //$("#idDivPartialListadeProductos").html("");
+                            carrito = [];
+                            $("#cantidad_carrito").html('(' + cantidad_carro + ')');
+
+                            var iframe = $('<iframe/>', {
+                                'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                                'name': 'myname',
+                                'id': 'print-iframe',
+                                'src': resultado.documentoDteJson
+                            });
+
+                            $('#pdfcotizacion').html(iframe);
+                            $("#modal_mostrar_documento").modal("show");
+                            $('#modal_mostrar_documento').addClass('actualiza_scroll');
+
+                        }
+
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+            });
+
+            $("#btn_abre_modal_guardar_pedidos").click(function (e) {
+                e.preventDefault();
+
+                var telefono = $("#idtelefono").val();
+                if (telefono == "") {
+                    mostrar_msj_advertencia("Debe señalar cliente")
+                    return false;
+                }
+                var direccionenvio = $("#iddireccionenvio").val();
+                if (direccionenvio == "") {
+                    mostrar_msj_advertencia("Debe señalar direccion de envio")
+                    return false;
+                }
+                var comunaenvio = $("#idcomunaenvio").text();
+                if (comunaenvio == "" || comunaenvio == "Comuna" || comunaenvio == "Comuna Envio") {
+                    mostrar_msj_advertencia("Debe señalar comuna de envio")
+                    return false;
+                }
+                if (cantidad_carro == 0) {
+                    mostrar_msj_error("Debe ingresar al menos un elemento al carro");
+                    return false;
+                }
+
+
+                if ($("#estado_cotizacion").is(":checked")) {
+                    var telefono = $("#idtelefono").val();
+                    //if (telefono == "") {
+                    //    mostrar_msj_advertencia("Debe señalar cliente")
+                    //    return false;
+                    //}
+                    var direccionenvio = $("#iddireccionenvio").val();
+                    //if (direccionenvio == "") {
+                    //    mostrar_msj_advertencia("Debe señalar direccion de envio")
+                    //    return false;
+                    //}
+                    var comunaenvio = $("#idcomunaenvio").text();
+                    //if (comunaenvio == "" || comunaenvio == "Comuna" || comunaenvio == "Comuna Envio") {
+                    //    mostrar_msj_advertencia("Debe señalar comuna de envio")
+                    //    return false;
+                    //}
+                    //if (cantidad_carro == 0) {
+                    //    mostrar_msj_error("Debe ingresar al menos un elemento al carro");
+                    //    return false;
+                    //}
+                    $("#modal_guardar_pedidos").modal("hide");
+                    $("#modal_guardar_cotizacion").modal("show");
+                    var factor_divisoriva = parseFloat($("#factor_divisoriva").val());
+                    var porc_iva = parseFloat($("#porc_iva").val());
+                    var total = 0;
+                    eliminarFlete();
+                    for (let cotiz of carrito) {
+                        total = total + parseInt(cotiz.valor);
+                        var i = cotiz.id_indice,
+                            obsdet = cotiz.obsdet;
+                        if (obsdet == null) {
+                            let pos_c = resumen.findIndex(carrito => carrito.id_indice === i);
+                            carrito[pos_c] = { 'obsdet': '' }
+                        };
+                    }
+                    //debugger;
+                    calcularValorFlete(total);
+                    var subtotal = total + valor_flete_global;
+                    var descuento = 0;
+                    var exento = 0;
+                    var afecto = redondear((subtotal - descuento) / factor_divisoriva, 0);
+                    var iva = redondear(afecto * porc_iva, 0);
+                    var diferencia = subtotal - descuento - afecto - iva - exento;
+                    iva = iva + diferencia;
+                    var valor_final = exento + iva + afecto;
+                    var nombre = $("#idcliente").val();
+                    var telefono = $("#idtelefono").val().replace(/\./g, '');
+                    var direccionenvio = $("#iddireccionenvio").val();
+                    var comunaenvio = $("#idcomunaenvio").text();
+                    var condominioenvio = $("#idcondominioenvio").text();
+                    condominioenvio = (condominioenvio == "" || condominioenvio == "Condominio" || condominioenvio == "Condominio Envio") ? "" : condominioenvio;
+                    //debugger;
+                    datos_clientes.telefono = telefono;
+                    datos_clientes.nombre = nombre;
+                    datos_clientes.direccionenvio = direccionenvio;
+                    datos_clientes.comunaenvio = comunaenvio;
+                    datos_clientes.condominioenvio = condominioenvio;
+                    datos_clientes.telefono = telefono;
+                    datos_clientes.subtotal = subtotal;
+                    datos_clientes.descuentos = descuento;
+                    datos_clientes.exento = exento;
+                    datos_clientes.afecto = afecto;
+                    datos_clientes.iva = iva;
+                    datos_clientes.porc_iva = porc_iva;
+                    datos_clientes.total = valor_final;
+                    $("#iva_cotizacion").html(formatea_miles(iva));
+                    $("#afecto_cotizacion").html(formatea_miles(afecto));
+                    $("#valortotal_cotizacion").html(formatea_miles(valor_final));
+                    if (valor_flete_global > 0) {
+                        $("#id_incluye_flete").html("(Incluye flete de: " + formatea_miles(valor_flete_global) + ")");
+                    } else {
+                        $("#id_incluye_flete").html("");
+                    }
+
+                } else {
+                    $("#modal_guardar_pedidos").modal("show");
+                    $("#modal_guardar_pedidos #observacion").focus();
+                    $("#fechaent").val(aaaammdd(new Date()));
+                    var he = $("#horaent").val();
+
+                    if (isNaN(he) || he == "") { he = "8"; }
+                    $("#horaent").val(he);
+                    eliminarFlete();
+                    valor_global = 0;
+                    for (let pedidos of carrito) {
+                        valor_global = valor_global + parseInt(pedidos.valor);
+                        var i = pedidos.id_indice,
+                            obsdet = pedidos.obsdet;
+                        if (obsdet == null) {
+                            let pos = resumen.findIndex(carrito => carrito.id_indice === i);
+                            carrito[pos] = { 'obsdet': '' }
+                        };
+                    }
+                    $("#total").val(formatea_miles(valor_global));
+                }
+            });
+
+        $(".ok_carrito_eliminar").click(function (e) {
+            e.preventDefault();
+            var indice_eliminar = parseInt($("#id_indice_eliminar_hidden").val());
+            let indexForDelete = carrito.findIndex(carrito => carrito.id_indice === indice_eliminar);
+            carrito.splice(indexForDelete, 1);
+            $("#modal_carrito_eliminar").modal("hide");
+            table_carrito.row($("#nom_prod_" + fila_actual_carro).parents('tr')).remove().draw();
+            cantidad_carro = cantidad_carro - 1;
+            $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>(' + cantidad_carro + ')');
+        });
+
+        $("#btn_vaciar_carro").click(function (e) {
+            e.preventDefault();
+            carrito = [];
+            cantidad_carro = 0;
+            $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>(' + cantidad_carro + ')');
+            if (carrito_producto == 2) {
+                $("#idDivPartialListadeProductos").html("");
+            }
+            $("#modal_carrito_vaciar").modal("hide");
+        });
+
+            $("#btn_vaciarcarro_pedidos").click(function (e) {
+                e.preventDefault();
+                $("#modal_carrito_vaciar").modal("show");
+
+            });
+
+            $("#btn_vercarrito_pedidos").click(function (e) {
+                e.preventDefault();
+                if (carrito.length > 0) {
+                    llenarCarrito();
+                    carrito_producto = 2;//indicador que tiene carrito
+                }
+                $("#idproducto_pedidos").focus();
+
+            });
+
+            $("#btn_buscar_productos_pedidos").click(function (e) {
+                e.preventDefault();
+                listar_Productos(lista_global);
+                carrito_producto = 1;
+                $("#idproducto_pedidos").focus();
+
+            });
+
+            $('.calcula_valor').on('keyup', function (e) {
+                e.preventDefault();
+                var precio =  parseInt(($("#precio_cant_pedidos").val() == "") ? 0 : $("#precio_cant_pedidos").val().replace(/\./g, ''));
+                var cantidad = parseFloat(($("#cantidad_cant_pedidos").val() == "") ? 0 : $("#cantidad_cant_pedidos").val().replace(/\,/g, '.'));
+                var valor = (precio * cantidad);
+                $("#valor_cant_pedidos").val(formatea_miles(parseInt(valor)));
+            });
+
+            $('.calcula_valor_editar_pedidos').on('keyup', function (e) {
+                e.preventDefault();
+                var precio = parseInt(($("#precio_editar_pedidos").val() == "") ? 0 : $("#precio_editar_pedidos").val().replace(/\./g, ''));
+                var cantidad = parseFloat(($("#cantidad_editar_pedidos").val() == "") ? 0 : $("#cantidad_editar_pedidos").val().replace(/\,/g, '.'));
+                var valor = (precio * cantidad);
+                $("#valor_editar_pedidos").val(formatea_miles(parseInt(valor)));
+            });
+
+        $('#form_cantidad').validationEngine();
+
+
+            $('.guardarCarrito').on('click', function (e) {
+                e.preventDefault();
+                if (!$("#form_cantidad").validationEngine('validate')) {
+                    return false;
+                }
+                var precio = parseInt(($("#precio_cant_pedidos").val() == "") ? 0 : $("#precio_cant_pedidos").val().replace(/\./g, ''));
+                var cantidad = parseFloat(($("#cantidad_cant_pedidos").val() == "") ? 0 : $("#cantidad_cant_pedidos").val().replace(/\,/g, '.'));
+                var valor = Math.round(precio * cantidad,0);
+                $("#valor_cant_pedidos").val(formatea_miles(parseInt(valor)));
+                var c = parseFloat(($("#costo_cant_pedidos").val() == "") ? 0 : $("#costo_cant_pedidos").val().replace(/\,/g, '.'));
+                var costo = Math.round(c * cantidad,0);
+
+                var codigo = $("#codigo_cant_pedidos").val();
+                var nombre = $("#producto_cant_pedidos").val();
+                var cantidad = $("#cantidad_cant_pedidos").val().replace(/\,/g, '.');
+                var presentacion = $("#presentacion_cant_pedidos").val();
+                var nombpresentacion = $("#presentacion_cant_pedidos option:selected").text();
+                var cabeza = "0";
+                if ($("#cabeza_cant_pedidos").prop('checked')) { cabeza = "1" };
+                var esquelon = "0";
+                if ($("#esquelon_cant_pedidos").prop('checked')) { esquelon = "1" };
+                var unidad = $("#unidad_cant_pedidos").val();
+                var precio = $("#precio_cant_pedidos").val().replace(/\./g, '');
+                var valor = $("#valor_cant_pedidos").val().replace(/\./g, '');
+                var obsdet = $("#obsdet_cant_pedidos").val();
+                if (parseFloat(cantidad) > 999999999) {
+                    mostrar_msj_error("Cantidad muy grande");
+                    $("#ajax_loader").css("display", "none");
+                    return false;
+                }
+
+                if (cantidad.toString().charAt(cantidad.toString().length - 1) == ".") {
+                    mostrar_msj_error("Cantidad no debe dejar punto final");
+                    $("#ajax_loader").css("display", "none");
+                    return false;
+                }
+                if (obsdet == null) { obsdet = ''; }
+                
+                //debugger
+                if (presentacion != 'n') {
+                    indice_carro = indice_carro + 1;
+
+                    var carrito_cotizacion = {
+                        id_indice: indice_carro,
+                        codigo: codigo,
+                        detalle: nombre,
+                        cantidad: parseFloat(cantidad),
+                        presentacion: presentacion,
+                        nombpresentacion: nombpresentacion,
+                        cabeza: cabeza,
+                        esquelon: esquelon,
+                        unidad: unidad,
+                        precio: precio,
+                        valor: valor,
+                        costo: costo,
+                        obsdet: obsdet
+                    }
+                    carrito.push(carrito_cotizacion);
+
+                    console.log(carrito)
+
+                    cantidad_carro = cantidad_carro + 1;
+                    $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>(' + cantidad_carro + ')');
+
+                    $("#ajax_loader").css("display", "none");
+                    $("#modal_cantidad_pedidos").modal("hide");
+
+                } else {
+
+
+
+                    mostrar_msj_error("Escoja una presentacion");
+                }
+
+
+            });
+
+            $('#form_cantidad_pedidos_call').validationEngine();
+            $('.guardarCarrito_pedidos_call').on('click', function (e) {
+                e.preventDefault();
+                    if (!$("#form_cantidad_pedidos_call").validationEngine('validate')) {
+                    return false;
+                }
+                var precio = parseInt(($("#precio_pedidos_call").val() == "") ? 0 : $("#precio_pedidos_call").val().replace(/\./g, ''));
+                var cantidad = parseFloat(($("#cantidad_pedidos_call").val() == "") ? 0 : $("#cantidad_pedidos_call").val().replace(/\,/g, '.'));
+                var valor = Math.round(precio * cantidad, 0);
+                $("#valor_pedidos_call").val(formatea_miles(parseInt(valor)));
+                var c = parseFloat(($("#costo_pedidos_call").val() == "") ? 0 : $("#costo_pedidos_call").val().replace(/\,/g, '.'));
+                var costo = Math.round(c * cantidad, 0);
+                var codigo = $("#codigo_pedidos_call").val();
+                var nombre = $("#producto_pedidos_call").val();
+                var cantidad = $("#cantidad_pedidos_call").val().replace(/\,/g, '.');
+                var presentacion = $("#presentacion_pedidos_call").val();
+                var cabeza = "0";
+                if ($("#cabeza_pedidos_call").prop('checked')) { cabeza = "1" };
+                var esquelon = "0";
+                if ($("#esquelon_pedidos_call").prop('checked')) { esquelon = "1" };
+                var unidad = $("#unidad_pedidos_call").val();
+                var precio = $("#precio_pedidos_call").val().replace(/\./g, '');
+                var valor = $("#valor_pedidos_call").val().replace(/\./g, '');
+                var obsdet = $("#obsdet_pedidos_call").val();
+                if (parseFloat(cantidad) > 999999999) {
+                    mostrar_msj_error("Cantidad muy grande");
+                    $("#ajax_loader").css("display", "none");
+                    return false;
+                }
+
+                if (cantidad.toString().charAt(cantidad.toString().length - 1) == ".") {
+                    mostrar_msj_error("Cantidad no debe dejar punto final");
+                    $("#ajax_loader").css("display", "none");
+                    return false;
+                }
+                if (obsdet == null) { obsdet = ''; }
+                indice_carro = indice_carro + 1;
+                var carrito_cotizacion = {
+                    id_indice: indice_carro,
+                    codigo: codigo,
+                    detalle: nombre,
+                    cantidad: parseFloat(cantidad),
+                    presentacion: presentacion,
+                    cabeza: cabeza,
+                    esquelon: esquelon,
+                    unidad: unidad,
+                    precio: precio,
+                    valor: valor,
+                    costo: costo,
+                    obsdet: obsdet
+                }
+                carrito.push(carrito_cotizacion);
+
+                cantidad_carro = cantidad_carro + 1;
+                $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>(' + cantidad_carro + ')');
+
+                $("#ajax_loader").css("display", "none");
+                $("#modal_cantidad_pedidos_call").modal("hide");
+
+            });
+
+        $('#form_editar_pedidos').validationEngine();
+
+            $('.guardaredicionCarrito').on('click', function (e) {
+                e.preventDefault();
+                if (!$("#form_editar_pedidos").validationEngine('validate')) {
+                    return false;
+                }
+
+                var cantidad = parseFloat(($("#cantidad_editar_pedidos").val() == "") ? 0 : $("#cantidad_editar_pedidos").val().replace(/\,/g, '.'));
+                var precio = parseInt(($("#precio_editar_pedidos").val() == "") ? 0 : $("#precio_editar_pedidos").val().replace(/\./g, ''));
+                var valor = (precio * cantidad);
+                $("#valor_editar_pedidos").val(formatea_miles(parseInt(valor)));
+
+                $("#ajax_loader").css("display", "");
+
+
+                var codigo = $("#codigo_editar_pedidos").val();
+                var nombre = $("#producto_editar_pedidos").val();
+                var cantidad = $("#cantidad_editar_pedidos").val().replace(/\,/g, '.');
+
+                //var presentacion = $("#presentacion_editar_pedidos").val();
+                //debugger
+                var presentacion = $("#presentacion_cant_pedidos_edit").val();
+                var nombpresentacion = $("#presentacion_cant_pedidos_edit option:selected").text();
+
+                var cabeza = "0";
+                if ($("#cabeza_editar_pedidos").prop('checked')) { cabeza = "1" };
+                var esquelon = "0";
+                if ($("#esquelon_editar_pedidos").prop('checked')) { esquelon = "1" };
+                var unidad = $("#unidad_editar_pedidos").val();
+                var precio = $("#precio_editar_pedidos").val().replace(/\./g, '');
+                var valor = $("#valor_editar_pedidos").val().replace(/\./g, '');
+                var obsdet = $("#obsdet_editar_pedidos").val();
+                if (parseFloat(cantidad) > 999999999) {
+                    mostrar_msj_error("Cantidad muy grande");
+                    $("#ajax_loader").css("display", "none");
+                    return false;
+                }
+                if (cantidad.toString().charAt(cantidad.toString().length - 1) == ".") {
+                    mostrar_msj_error("Cantidad no debe dejar punto final");
+                    $("#ajax_loader").css("display", "none");
+                    return false;
+                }
+                var id_indice = $("#id_indice_editar_pedidos").val();
+                if (obsdet == null) { obsdet = ''; }
+                var fila_carrito = {
+                    id_indice: id_indice,
+                    codigo: codigo,
+                    detalle: nombre,
+                    cantidad: parseFloat(cantidad),
+                    presentacion: presentacion,
+                    nombpresentacion: nombpresentacion,
+                    cabeza: cabeza,
+                    esquelon: esquelon,
+                    unidad: unidad,
+                    precio: precio,
+                    valor: valor,
+                    obsdet: obsdet
+                }
+
+                var foundIndex = carrito.findIndex(x => x.id_indice == id_indice);
+                carrito[foundIndex] = fila_carrito;
+
+                $("#ajax_loader").css("display", "none");
+                $("#modal_editar_pedidos").modal("hide");
+                //debugger
+                //console.log(carrito)
+
+                llenarCarrito();
+
+
+            });
+
+            $('#modal_cantidad_pedidos').on('hidden.bs.modal', function () {
+                $("#idproducto_pedidos").focus();
+            });
+
+        $('#form_guardar_pedidos').validationEngine();
+
+            var opcion_empqrest = 0;
+            $('#container_tipodoc').css("display", "none");
+
+
+            $('#empaq_restaurant').click(function () {
+                if ($('#empaq_restaurant').prop('checked')) {
+                    opcion_empqrest = 1;
+                    $('#container_tipodoc').css("display", "block");
+                }
+                else {
+                    opcion_empqrest = 0;
+                    $('#container_tipodoc').css("display", "none");
+                }
+            });
+          
+            //JQUERY CHECKGROUP EN ETIQUETA name=""
+            $("input:checkbox").on('click', function () {
+
+                var $box = $(this);
+
+                if ($box.is(":checked")) {
+
+                    var group = "input:checkbox[name='" + $box.attr("name") + "']";
+                    $(group).prop("checked", false);
+                    $box.prop("checked", true);
+
+                } else {
+
+                    $box.prop("checked", false);
+                }
+
+            });
+
+            $('.guardarpedidos').on('click', function (e) {
+                e.preventDefault();
+
+                var codigo_tipodoc = "0";
+                if (opcion_empqrest == 1) {
+
+                    if (!$("#factura_tipodoc").is(":checked") && !$("#bit_tipodoc").is(":checked")) {
+                        alert("Debe ingresar una opción")
+                        return;
+
+                    } else {
+                        //debugger
+                        if ($("#factura_tipodoc").is(":checked")) {
+                            codigo_tipodoc = "2";    
+                        }
+
+                        if ($("#bit_tipodoc").is(":checked")) {
+                            codigo_tipodoc = "1";
+                        }
+                    }
+                }
+
+
+                if (!$("#form_guardar_pedidos").validationEngine('validate')) {
+                    return false;
+                }
+                if (global_existecliente == 0) {
+                    mostrar_msj_advertencia("Debe guardar el cliente");
+                    return false;
+                }
+
+                $("#fechaent").val(aaaammdd(new Date()));
+                var he = $("#horaent").val();
+                if (isNaN(he)) { $("#horaent").val(8); }
+
+                var telefono = $("#idtelefono").val().replace(/\./g, '');
+                var cliente = $("#idcliente").val();
+                var direccionenvio = $("#iddireccionenvio").val();
+                var comunaenvio = $("#idcomunaenvio").text();
+                var condominioenvio = $("#idcondominioenvio").text();
+                condominioenvio = (condominioenvio == "" || condominioenvio == "Condominio" || condominioenvio == "Condominio Envio") ? "" : condominioenvio;
+                var categoria = $("#idcategoria").val();
+                var total = $("#total").val().replace(/\./g, '');
+                var fechaent = $("#fechaent").val();
+                var horaent = $("#horaent").val();
+
+                var am = "0";
+                if ($("#am").prop('checked')) { am = "1" };
+                var pm = "0";
+                if ($("#pm").prop('checked')) { pm = "1" };
+                var factura = "0";
+                if ($("#factura").prop('checked')) { factura = "1" };
+
+                if (am == "0" && pm == "0") {
+                    mostrar_msj_advertencia("Debe indicar entrega AM o PM");
+                    return false;
+                }
+
+                var entregaboleta = "0";
+                if ($("#entregaboleta").prop('checked')) { entregaboleta = "1" };
+
+                var obs = $("#observacion").val();
+                var v = carrito;
+                $("#saving").show();
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Guardar_Pedidos/',
+                    data: JSON.stringify({
+                        telefono: telefono,
+                        cliente: cliente,
+                        direccionenvio: direccionenvio,
+                        comunaenvio: comunaenvio,
+                        condominioenvio: condominioenvio,
+                        categoria: categoria,
+                        total: total,
+                        fechaent: fechaent,
+                        horaent: horaent,
+                        am: am,
+                        pm: pm,
+                        factura: factura,
+                        entregaboleta: entregaboleta,
+                        obs: obs,
+                        carrito: carrito,
+                        codtipodoc: codigo_tipodoc,
+                        empaqrestaurant: opcion_empqrest
+                    }),
+                    async: true,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#modal_guardar_pedidos").modal("hide");
+                        $("#saving").hide();
+                        if (data.retornoJson == 1) {
+                            mostrar_msj_success('Pedido guardado');
+                            cantidad_carro = 0;
+                            carrito = [];
+                            valor_flete_global = 0;
+                            $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>(' + cantidad_carro + ')');
+                            $("#idreferencia").val("0");
+                            $("#idtelefono").val("");
+                            $("#idcliente").val("");
+                            $("#iddireccion").val("");
+                            $("#idcomuna").text("");
+                            $("#idcondominio").text("");
+                            $("#iddireccionenvio").val("");
+                            $("#idcomunaenvio").text("");
+                            $("#idcondominioenvio").text("");
+                            $("#idDivPartialListadeProductos").html("");
+                            $("#observacion").val("");
+                            codigo_tipodoc = 0;
+                            opcion_empqrest = 0;
+                            $('#container_tipodoc').css("display", "none");
+                            listar_Productos(lista_global);
+                        } else if (data.retornoJson == -1) {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+
+                        } else {
+                            mostrar_msj_error(data.errorJson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+
+            });//END GUARDAR PEDIDOS
+
+            $(".horacambiar").on('click', function (e) {
+                e.preventDefault();
+
+                valor = parseInt($("#horaent").val());
+                if ($(this).html() == '+')
+
+                { valor++;$("#horaent").val(valor); }
+                else
+                { valor > 1 ? valor-- : valor;$("#horaent").val(valor); }
+            });
+
+            $(".volvercontactar").on('click', function (e) {
+                e.preventDefault();
+
+                var dias = 1;
+
+                var fechatope = fecha_actual.replace(/\//g, '-').split("-");
+                fechatope = new Date(parseInt(fechatope[0]), parseInt(fechatope[1]) - 1, parseInt(fechatope[2]));
+
+                var fecha = $("#fechavolver").val().replace(/\//g, '-').split("-");
+                fecha = new Date(parseInt(fecha[0]), parseInt(fecha[1]) - 1, parseInt(fecha[2]));
+                if ($(this).html() == '+') { fecha.setDate(fecha.getDate() + 1); } else { fecha.setDate(fecha.getDate() - 1); }
+                if (fecha > fechatope) {
+
+                    var curDay = fecha.getDate();
+                    var curMonth = fecha.getMonth() + 1;
+                    var curYear = fecha.getFullYear();
+
+                    fecha = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-" + (curDay < 10 ? "0" + curDay : curDay);
+
+                    $("#fechavolver").val(fecha);
+                }
+            });
+
+            $("#ok_postergar_call").on('click', function (e) {
+                e.preventDefault();
+
+                //alert("++1++");
+
+                var fechamin = fecha_actual.replace(/\//g, '-').split("-");
+                fechamin = new Date(parseInt(fechamin[0]), parseInt(fechamin[1]) - 1, parseInt(fechamin[2]));
+
+                var fechamax = fecha_actual.replace(/\//g, '-').split("-");
+                fechamax = new Date(parseInt(fechamax[0]), parseInt(fechamax[1]) - 1, parseInt(fechamax[2]));
+                fechamax.setDate(fechamax.getDate() + 20);
+
+                var fecha = $("#fechavolver").val().replace(/\//g, '-').split("-");
+                fecha = new Date(parseInt(fecha[0]), parseInt(fecha[1]) - 1, parseInt(fecha[2]));
+                if (fecha <= fechamin) {
+                    mostrar_msj_advertencia("fecha postergacion llamada incorrecta");
+                    return false;
+                }
+                if (fecha > fechamax) {
+                    mostrar_msj_advertencia("fecha postergacion no puede ser mayor a 20 dias");
+                    return false;
+                }
+                var telefono = $("#idtelefono").val().replace(/\./g, '');
+
+                $("#ajax_loader").show();
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Lee_Anotaciones/',
+                    traditional: true,
+                    data: {
+                        telefono: telefono
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+
+                        if (data.retornoJson == "1") {
+                            $("#ajax_loader").hide();
+                            $("#modal_anotaciones").modal("show");
+                            $("#telefono_hidden").val(telefono);
+                            $("#fecha_hidden").val($("#fechavolver").val());
+                            $("#modal_anotaciones #anotaciones_ant").val(data.anotacionesJson);
+                            $("#modal_anotaciones #anotaciones_new").val("");
+                        } else if (data.retornoJson == "-1") {
+                            $("#ajax_loader").hide();
+                            $("#modal_anotaciones").modal("hide");
+                            mostrar_msj_error("error: El tiempo de sesión ha expirado");
+                        } else {
+                            $("#ajax_loader").hide();
+                            $("#modal_anotaciones").modal("hide");
+                            mostrar_msj_error("error interno: " + data.anotacionesJson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error: " + errorThrown);
+                        //alert("errorThrown: " + errorThrown + "XMLHttpRequest: " + XMLHttpRequest + "textStatus: " + textStatus);
+                    }
+                });
+            });
+
+            $("#guardarAnotacion").click(function (e) {
+                e.preventDefault();
+
+                ////alert("++2++");
+
+                var telefono = $("#telefono_hidden").val();
+                var fecha = $("#fecha_hidden").val();
+                var anotacionesant = $("#anotaciones_ant").val();
+                var anotacionesnew = $("#anotaciones_new").val();
+
+                if (anotacionesnew.length == 0) { mostrar_msj_advertencia("Debe señalar motivo !!"); return; }
+
+                $("#ajax_loader").css("display", "");
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Postergar_Llamada_Cliente/',
+                    traditional: true,
+                    data: {
+                        telefono: telefono,
+                        fecha: fecha,
+                        anotacionesant: anotacionesant,
+                        anotacionesnew: anotacionesnew
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+
+                        if (data.retornojson == "1") {
+                            mostrar_msj_success('llamada ha sido postergada');
+                            $("#ajax_loader").hide();
+                            $("#modal_anotaciones").modal("hide");
+                        } else if (data.retornoJson == "-1") {
+                            $("#ajax_loader").hide();
+                            $("#modal_anotaciones").modal("hide");
+                            mostrar_msj_error("error: El tiempo de sesión ha expirado");
+                        } else {
+                            $("#ajax_loader").hide();
+                            $("#modal_anotaciones").modal("hide");
+                            mostrar_msj_error("error interno: " + data.anotacionesJson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error: " + errorThrown);
+                        //alert("errorThrown: " + errorThrown + "XMLHttpRequest: " + XMLHttpRequest + "textStatus: " + textStatus);
+                    }
+                });
+            });
+
+            $("#am").click(function (e) {
+                if ($("#am").prop('checked')) { $("#pm").prop('checked',false)};
+            });
+
+            $("#pm").click(function (e) {
+                if ($("#pm").prop('checked')) { $("#am").prop('checked', false) };
+            });
+
+    //  fin documentos ready
+
+        });
+
+    function listarClientescall(nombre) {
+
+        $.getJSON('/Clientes/BuscarClientes/?nombre_cliente=' + nombre, function (data) {
+
+            var items = "";
+            $("#listado_Clientescall").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.telefono + "' data-nombre='" + district.nombre + "' data-direccion='" + district.direccion + "' data-comuna='" +
+                    district.comuna + "' data-condominio='" + district.condominio + "' data-categoria='" + district.categoria + "'>" + district.nombre + "</option>";
+            });
+
+            if (count == 0) {
+                $('#listado_Clientescall').html("<option value='0' data-nombre='' data-direccion='' data-comuna='' data-condominio=''>No hay datos</option>");
+            } else {
+                $('#listado_Clientescall').html(items);
+            }
+        });
+    }
+
+    function listarClientes(nombre) {
+
+        $.getJSON('/Clientes/BuscarClientes/?nombre_cliente=' + nombre, function (data) {
+
+            var items = "";
+            $("#listado_Clientes").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.telefono + "' data-nombre='" + district.nombre + "' data-direccion='" + district.direccion + "' data-comuna='" +
+                    district.comuna + "' data-condominio='" + district.condominio + "' data-categoria='" + district.categoria + "'  data-lista='" + district.lista + "'>" + district.nombre + "</option>";
+            });
+
+            if (count == 0) {
+                $('#listado_Clientes').html("<option value='0' data-nombre='' data-direccion='' data-comuna='' data-condominio=''>No hay datos</option>");
+            } else {
+                $('#listado_Clientes').html(items);
+            }
+            $("#listado_Clientes").selectpicker('refresh');
+
+        });
+    }
+
+    function gc(selectit, hideit, char) {
+        char = String.fromCharCode(char).toUpperCase()
+        hideit = eval("document.forms[0]." + hideit)
+        selectit = eval("document.forms[0]." + selectit)
+        hideit.value += char
+        i = selectit.selectedIndex
+        while (i < selectit.options.length) {
+            if (selectit.options[i].innerText.toUpperCase().indexOf(hideit.value) == 0) {
+                selectit.selectedIndex = i
+                i = selectit.options.length + 1
+            }
+            i++
+        }
+        if (i == selectit.options.length + 2) { return false }
+        else { hideit.value = char; return true }
+    }
+     function listar_Foto() {
+        var url_action = '@Html.Raw(Url.Action("VistaFoto", "Procedimientos"))';
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#documentacion").html(result);
+                }
+            }
+        });
+    }
+    function listar_Video() {
+        var url_action = '@Html.Raw(Url.Action("VistaVideo", "Procedimientos"))';
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#documentacion").html(result);
+                }
+            }
+        });
+    }
+
+    function listar_Cotizaciones(telefono) {
+        var url_action = '@Html.Raw(Url.Action("partialCotizaciones", "Cotizaciones", new { telefono = "telefono_" }))';
+        url_action = url_action.replace("telefono_", telefono);
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#divpartialCotizaciones").html(result);
+                }
+            }
+        });
+    }
+    function listar_Procedimientos() {
+        var url_action = '@Html.Raw(Url.Action("partialListadoProcedimientos", "Procedimientos"))';
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#divpartialprocedimiento").html(result);
+                }
+            }
+        });
+    }
+
+
+    function mostrarWord() {
+        var url_action = '@Html.Raw(Url.Action("GetWord", "Procedimientos"))';
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#documentacion").html(result);
+                }
+            }
+        });
+    }
+
+    function listar_Productos(lista) {
+        var url_action = '@Html.Raw(Url.Action("partialListadoProductos", "Pedidos", new {material = "_material",lista="lista_"}))';
+        url_action = url_action.replace("_material", $('#idproducto_pedidos').val()).replace("lista_", lista);
+
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialListadeProductos").html(result);
+                }
+            }
+        });
+    }
+
+    function UltimasVentas(telefono,fechacall) {
+        $("#ajax_loader").css("display", "");
+
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/partialUltimas_Ventas/',
+            data: JSON.stringify({ telefono: telefono }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+
+                    $("#modal_ultimas_ventas").modal("show");
+                    $("#fechavolver").val(fecha_actual);
+                    $("#clienteultimasventas").html($("#idcliente").val()+"--"+fechacall);
+                    $("#divpartialUltimas_Ventas").html(result);
+                    $("#idtelefono_ultimasventas").html(telefono);
+                                        
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexión: no pudo acceder a la vista");
+            }
+        });
+
+    }
+
+    function llenarCarrito() {
+        $("#ajax_loader").css("display", "");
+
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/partialListadoCarrito/',
+            data: JSON.stringify({ carrito: carrito }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialListadeProductos").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexión: no pudo acceder a la vista");
+            }
+        });
+
+    }
+
+    function obtieneCliente() {
+
+        var telefono = $("#idtelefono").val().replace(/\-/g, '');
+        $("#idreferencia").val("0");
+        $("#idcliente").val("");
+        $("#iddireccion").val("");
+        $("#idcomuna").text("Comuna");
+        $("#idcondominio").text("Condominio");
+        $("#idcategoria").val("");
+        $("#idemail").val("");
+        $("#loading").show();
+        var fd = new FormData();
+        fd.append("telefono", telefono);
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/Leer_Cliente/',
+            data: fd,
+            contentType: false,
+            processData: false,
+            DataType: 'json',
+            success: function (data) {
+                if (data.retornojson == "1") {
+                    var cliente = data.nombrejson.toUpperCase().trim();
+                    var direccion = data.direccionjson.toUpperCase().trim();
+                    var comuna = data.comunajson.toUpperCase().trim();
+                    var condominio = data.condominiojson.toUpperCase().trim();
+                    var categoria = data.categoriajson.toUpperCase().trim();
+                    var email = data.emailjson.toLowerCase().trim();
+                    $("#idcliente").val(cliente);
+                    $("#iddireccion").val(direccion);
+                    $("#idcomuna").text(comuna);
+                    $("#idcondominio").text(condominio);
+                    $("#iddireccionenvio").val("");
+                    $("#idcomunaenvio").text("Comuna Envio");
+                    $("#idcondominioenvio").text("Condominio Envio");
+                    $("#idcategoria").val(categoria);
+                    $("#idemail").val(email);
+                    var lista = data.listajson;
+                    listar_Productos(lista);
+                    carrito = [];
+                    cantidad_carro = 0;
+                    $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>');
+                    $("#lista_restaurant").prop('disabled', false).change();
+                    if (lista == "1") {
+                        $("#lista_restaurant").prop('checked', true).change();
+                    } else {
+                        $("#lista_restaurant").prop("checked", false).change();
+                    }
+                    $("#lista_restaurant").prop('disabled', true).change();
+                    global_existecliente = 1;
+                }
+                else if (data.retornojson == "0") {
+                    global_existecliente = 0;
+                    mostrar_msj_error("No existe el cliente indicado..!!");
+                }
+                else if (data.retornojson = "-1") {
+                    mostrar_msj_error("error +++ " + data.mensajejson);
+                }
+                $("#loading").hide();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    }
+
+    function obtieneProductoPorCodigo() {
+
+        var url_action = '@Url.Action("partialListadoProductos", "Pedidos", new {material = "_material"})';
+        url_action = url_action.replace("_material", $('#idproducto_pedidos').val())
+
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialListadeProductos").html(result);
+                }
+            }
+        });
+    }
+
+    function cargar_otras_comunas(texto) {
+
+            $.ajaxSetup({
+                async: false
+            });
+            var primera = "0";
+            $.getJSON('/Pedidos/GetComunas/?nombre=' + texto, function (data) {
+                //var items = "<option value='0'>--Seleccione--</option>";
+                $("#modal_cambiar_otras_comuna #divlistado_otras_comunas").empty();
+                var count = 0;
+                var items = "";
+                $.each(data, function (i, district) {
+                    if (count == 0) { primera = district.codigo; }
+                    count = 1;
+                    items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+                });
+                if (count == 0) {
+                    $('#modal_cambiar_otras_comuna #divlistado_otras_comunas').html("<select id='otras_comuna' class='form-control form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+                } else {
+                    $('#modal_cambiar_otras_comuna #divlistado_otras_comunas').html("<select id='otras_comuna' class='form-control form-select input-sm' style='width:100%;'>" + items + "</select>");
+                }
+            });
+            return primera;
+            $.ajaxSetup({
+                async: true
+            });
+
+        }
+
+    function cargar_otras_condominios(comuna, nombre) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        var primera = "0";
+        $.getJSON('/Pedidos/GetCondominio/', { comuna: comuna, nombre: nombre }, function (data) {
+            //var items = "<option value='0'>--Seleccione--</option>";
+            $("#modal_cambiar_otras_condominio #divlistado_otras_condominios").empty();
+            var count = 0;
+            var items = "";
+            $.each(data, function (i, district) {
+                if (count == 0) { primera = district.codigo; }
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cambiar_otras_condominio #divlistado_otras_condominios').html("<select id='otras_condominio' class='form-control form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+            } else {
+                $('#modal_cambiar_otras_condominio #divlistado_otras_condominios').html("<select id='otras_condominio' class='form-control form-select input-sm' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        $.ajaxSetup({
+            async: true
+        });
+        return primera;
+    }
+
+    function cargar_comunas(texto) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        var primera = "0";
+        $.getJSON('/Pedidos/GetComunas/?nombre=' + texto, function (data) {
+            //var items = "<option value='0'>--Seleccione--</option>";
+            $("#modal_cambiar_comuna #divlistado_comunas").empty();
+            var count = 0;
+            var items = "";
+            $.each(data, function (i, district) {
+                if (count == 0) { primera = district.codigo;}
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cambiar_comuna #divlistado_comunas').html("<select id='comuna' class='form-control form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+            } else {
+                $('#modal_cambiar_comuna #divlistado_comunas').html("<select id='comuna' class='form-control form-select input-sm' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        return primera;
+        $.ajaxSetup({
+            async: true
+        });
+
+        }
+
+    function cargar_comunasenvio(texto) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        var primera = "0";
+        $.getJSON('/Pedidos/GetComunas/?nombre=' + texto, function (data) {
+            //var items = "<option value='0'>--Seleccione--</option>";
+            $("#modal_cambiar_comunaenvio #divlistado_comunasenvio").empty();
+            var count = 0;
+            var items = "";
+            $.each(data, function (i, district) {
+                if (count == 0) { primera = district.codigo; }
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cambiar_comunaenvio #divlistado_comunasenvio').html("<select id='comunaenvio' class='form-control form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+            } else {
+                $('#modal_cambiar_comunaenvio #divlistado_comunasenvio').html("<select id='comunaenvio' class='form-control form-select input-sm' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        return primera;
+        $.ajaxSetup({
+            async: true
+        });
+        }
+
+    function cargar_condominios(comuna,nombre) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        var primera = "0";
+        $.getJSON('/Pedidos/GetCondominio/',{ comuna : comuna, nombre : nombre  }, function (data) {
+            //var items = "<option value='0'>--Seleccione--</option>";
+            $("#modal_cambiar_condominio #divlistado_condominios").empty();
+            var count = 0;
+            var items = "";
+            $.each(data, function (i, district) {
+                if (count == 0) { primera = district.codigo; }
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cambiar_condominio #divlistado_condominios').html("<select id='condominio' class='form-control form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+            } else {
+                $('#modal_cambiar_condominio #divlistado_condominios').html("<select id='condominio' class='form-control form-select input-sm' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        $.ajaxSetup({
+            async: true
+        });
+        return primera;
+    }
+
+    function agregar_condominios(comuna, nombre) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/Agregar_Condominio/',
+            data: JSON.stringify({
+                comuna: comuna,
+                nombre: nombre
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#saving").hide();
+                if (data.retornojson == 1) {
+                } else if (data.retornojson == -1) {
+                    mostrar_msj_error(data.mensajejson);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexion");
+            }
+        });
+        $.ajaxSetup({
+            async: true
+        });
+    }
+
+    function agregar_otras_condominios(comuna, nombre) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/Agregar_Condominio/',
+            data: JSON.stringify({
+                comuna: comuna,
+                nombre: nombre
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#saving").hide();
+                if (data.retornojson == 1) {
+                } else if (data.retornojson == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    mostrar_msj_error(data.mensajejson);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexion");
+            }
+        });
+        $.ajaxSetup({
+            async: true
+        });
+    }
+
+    function cargar_condominioenvio(comuna, nombre) {
+
+    $.ajaxSetup({
+        async: false
+    });
+    var primera = "0";
+    $.getJSON('/Pedidos/GetCondominio/', { comuna: comuna, nombre: nombre }, function (data) {
+        //var items = "<option value='0'>--Seleccione--</option>";
+        $("#modal_cambiar_condominioenvio #divlistado_condominioenvio").empty();
+        var count = 0;
+        var items = "";
+        $.each(data, function (i, district) {
+            if (count == 0) { primera = district.codigo; }
+            count = 1;
+            items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+        });
+        if (count == 0) {
+            $('#modal_cambiar_condominioenvio #divlistado_condominioenvio').html("<select id='condominioenvio' class='form-control form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+        } else {
+            $('#modal_cambiar_condominioenvio #divlistado_condominioenvio').html("<select id='condominioenvio' class='form-control form-select input-sm' style='width:100%;'>" + items + "</select>");
+        }
+    });
+    $.ajaxSetup({
+        async: true
+    });
+    return primera;
+}
+
+    function agregar_condominioenvio(comuna, nombre) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/Agregar_Condominio/',
+            data: JSON.stringify({
+                comuna: comuna,
+                nombre: nombre
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#saving").hide();
+                if (data.retornojson == 1) {
+                } else if (data.retornojson == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    mostrar_msj_error(data.mensajejson);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexion");
+            }
+        });
+        $.ajaxSetup({
+            async: true
+        });
+    }
+
+
+        function cargar_presentaciones(codigoproducto) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        //$.getJSON('/Productos/GetPresentaciones/', function (data) {
+        //    var items = "<option style='height:30px' value='0'>--Sin presentacion--</option>";
+        //    //$("#modal_producto_agregar #unidad_prod").empty();
+        //    var count = 0;
+        //    $.each(data, function (i, district) {
+        //        count = 1;
+        //        items += "<option style='height:30px' value='" + district.codigo + "' >" + district.nombre + "</option>";
+        //    });
+        //    if (count == 0) {
+        //        $('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'><option value='0'>No hay Presentaciones</option></select>");
+        //    } else {
+        //        $('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+        //    }
+        //});
+        $.getJSON('/Productos/GetPresentacionesCodPres/?codigoproducto=' + codigoproducto, function (data) {
+            //var items = "<option value='n'>--Seleccione--</option>";
+            var items = "";
+            //$("#modal_producto_agregar #unidad_prod").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' >" + district.nombre + "</option>";
+            });
+            //$('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+         
+            if (count == 0) {
+                $('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'><option value='39'>SIN PRESENTACION</option></select>");
+            } else {
+                //items += "<option value='n'>--Seleccione--</option>";
+                $('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+            }
+        
+        });
+
+        $.ajaxSetup({
+            async: true
+        });
+    }
+
+     function cargar_presentaciones_edit(codigoproducto, codpres, nombpres) {
+        $.ajaxSetup({
+            async: false
+        });
+
+         debugger
+         //
+         $.getJSON('/Productos/GetPresentacionesCodPres/?codigoproducto=' + codigoproducto, function (data) {
+             var items = "<option value="+codpres+">" + nombpres + "</option>";
+                //var items = "";
+                //$("#modal_producto_agregar #unidad_prod").empty();
+                var count = 0;
+                $.each(data, function (i, district) {
+                    count = 1;
+                    items += "<option style='height:30px' value='" + district.codigo + "' >" + district.nombre + "</option>";
+                });
+                //$('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+
+                if (count == 0) {
+                    items = "";
+                    $('#divlistado_presentaciones_editar_pedidos').html("<select id='presentacion_cant_pedidos_edit' class='form-control form-select input-sm validate[required]' style='width:100%;'><option value='39'>SIN PRESENTACION</option></select>");
+                } else {
+                    //items += "<option value='n'>--Seleccione--</option>";
+                    $('#divlistado_presentaciones_editar_pedidos').html("<select id='presentacion_cant_pedidos_edit' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+                }
+
+            });
+
+        $.ajaxSetup({
+            async: true
+        });
+    }
+
+    function cargar_presentaciones_call() {
+
+        $.ajaxSetup({
+            async: false
+        });
+        $.getJSON('/Productos/GetPresentaciones/', function (data) {
+            var items = "<option style='height:30px' value='0'>--Sin presentacion--</option>";
+            //$("#modal_producto_agregar #unidad_prod").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cantidad_pedidos_call #divlistado_presentaciones_pedidos_call').html("<select id='presentacion_pedidos_call' class='form-control form-select input-sm validate[required]' style='width:100%;'><option value='0'>No hay Presentaciones</option></select>");
+            } else {
+                $('#modal_cantidad_pedidos_call #divlistado_presentaciones_pedidos_call').html("<select id='presentacion_pedidos_call' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        $.ajaxSetup({
+            async: true
+        });
+    }
+
+    function limpiarGuardar(){
+        $(".limpiar").val("");
+    }
+</script>
+
+

@@ -1,0 +1,295 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<div class="modal fade" id="modal_advertencia_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_elimina" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal_advertencia">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina">Eliminar </h3>
+            </div>
+            <div class="modal-body text-center">
+                ¿Está seguro de eliminar el Operario?<br />
+                <br />
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input id="btn_elimina_operario" type="submit" class="btn btn-danger" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="id_form_insert" method="POST" name="fileinfo" role="form">
+    <div class="modal fade" id="modal_crearoperario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_agregar" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_agregar">Agregar Operario </h3>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Codigo </label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="codigooperario" type="text" class="form-control numerico_int validate[required]" placeholder="00" maxlength="2" data-prompt-position="topRight:-70" style="text-transform: uppercase;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombreoperario" type="text" class="form-control validate[required]" data-prompt-position="topRight:-70">
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <input id="btn_agregar_operario" type="submit" class="btn btn-success" value="Crear" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="id_form_edit" method="POST" name="fileinfo" role="form">
+    <div class="modal fade" id="modal_editaroperario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_editar" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_editar">Editar Operario </h3>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Codigo </label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="codigooperario_edit" type="text" class="form-control validate[required]" placeholder="xxxx" data-prompt-position="topRight:-70" style="text-transform: uppercase;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombreoperario_edit" type="text" class="form-control validate[required]" data-prompt-position="topRight:-70">
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <input id="btn_editar_operario" type="submit" class="btn btn-success" value="Guardar" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-xs-0"></div>
+    <div class="col-lg-3 col-md-3 col-xs-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Administrador Operarios
+        </h3>
+    </div>
+    @*<div class="col-lg-1 col-md-1 col-xs-0"></div>*@
+    <div class="col-lg-1 col-md-1 col-xs-12">
+        <h3>
+            <input id="abreModal_crear_operario" type="submit" class="btn btn-primary" value="+Operario" />
+        </h3>
+    </div>
+    <div class="col-lg-4 col-md-4 col-xs-0"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-xs-0"></div>
+    <div class="col-lg-4 col-md-4 col-xs-12">
+        <div id="partialListadoOperarios">
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-xs-0"></div>
+</div>
+
+
+<script type="text/javascript" class="init">
+
+        var fila_seleccionada = 0;
+        var referencia_seleccionada = 0;
+        var fila_seleccionada_empresa = 0;
+        var operario = "";
+        var table = "";
+
+        $(document).ready(function () {
+
+            cargar_Operarios();
+
+            $('#btn_elimina_operario').on('click', function (e) {
+                e.preventDefault();
+                $("#ajax_loader").css("display", "");
+                $.ajax({
+                    type: "POST",
+                    url: '/Operarios/EliminarOperario/',
+                    traditional: true,
+                    data: {
+                        referencia: referencia_seleccionada
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+                        $("#ajax_loader").hide();
+                        $("#modal_advertencia_eliminar").modal("hide");
+                        if (data == "") {
+                            mostrar_msj_success('Operario eliminado correctamente');
+                            cargar_Operarios();
+                        } else if (data == -1) {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/Usuario/Login";
+
+                        } else {
+                            mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+            });
+
+            $('#abreModal_crear_operario').on('click', function (e) {
+                e.preventDefault();
+                $("#modal_crearoperario").modal("show");
+            });
+
+            $('#id_form_insert').validationEngine();
+            $('#btn_agregar_operario').on('click', function (e) {
+                e.preventDefault();
+                $("#ajax_loader").css("display", "");
+                if (!$("#id_form_edit").validationEngine('validate')) {
+                    return false;
+                    ind_guarda = 0;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '/Operarios/IngresarOperario/',
+                    traditional: true,
+                    data: {
+                        codigo: $("#codigooperario").val().toUpperCase(),
+                        nombre: $("#nombreoperario").val().toLowerCase()
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+                        $("#ajax_loader").hide();
+                        if (data == "0") {
+                            mostrar_msj_advertencia('Operario ya existe con ese codigo');
+                        } else if (data == "1") {
+                            mostrar_msj_success('Operario creado Correctamente');
+                            $("#modal_crearoperario").modal("hide");
+                            cargar_Operarios();
+                        } else if (data == "-1") {
+                            $("#modal_crearoperario").modal("hide");
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/Usuario/Login";
+
+                        } else {
+                            $("#modal_crearoperario").modal("hide");
+                            mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+            });
+
+            $('#id_form_edit').validationEngine();
+            $("#btn_editar_operario").click(function (e) {
+                e.preventDefault();
+
+                var ind_guarda = 1;
+                if (!$("#id_form_edit").validationEngine('validate')) {
+                    return false;
+                    ind_guarda = 0;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '/Operarios/EditarOperario/',
+                    traditional: true,
+                    data: {
+                        codigo: $("#codigooperario_edit").val().toUpperCase(),
+                        nombre: $("#nombreoperario_edit").val().toUpperCase(),
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+                        $("#modal_editaroperario").modal("hide");
+                        $("#ajax_loader").hide();
+                        if (data == "") {
+                            mostrar_msj_success('Operario editado Correctamente');
+                            cargar_Operarios();
+                        } else if (data == -1) {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/Usuario/Login";
+
+                        } else {
+                            mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+            });
+
+         });
+
+        function cargar_Operarios() {
+
+            var url_action = '@Html.Raw(Url.Action("partialListadoOperarios", "Operarios"))';
+            $("#ajax_loader").css("display", "");
+            $.ajax({
+                async: false,
+                contentType: false,
+                prSCessData: false,
+                type: 'POST',
+                url: url_action,
+                success: function (result) {
+
+                    $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+                    } else {$("#partialListadoOperarios").html(result);}
+                }
+            });
+        }
+
+</script>
+

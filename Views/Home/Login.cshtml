@@ -1,0 +1,47 @@
+﻿ 
+@{
+    /**/
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <link rel="icon" href="~/images/OpenCodeGo.png" type="image/x-icon">
+
+    @Styles.Render("~/styles/Login")
+
+</head>
+<body>
+    <div class="container">
+        <div class="card card-container">
+            @*<img id="profile-img" class="profile-img-card" src="../../images/avatar_2x.png" />*@
+            <p id="profile-name" class="profile-name-card"></p>
+            @using (Html.BeginForm("Validar_Login", "Home", null, FormMethod.Post, new { @class = "form-signin" }))
+            {
+                <span id="reauth-email" class="reauth-email"></span>
+                @Html.TextBox("usuario", null, new { @class = "form-control", @required = "", @autofocus = "", PlaceHolder = "nombre usuario" })
+                @Html.Password("clave", null, new { @class = "form-control", @required = "", PlaceHolder = "pasword" })
+                <div id="remember" class="checkbox">
+                    <label>
+                        <input type="checkbox" value="remember-me">
+                        Recordarme
+
+                    </label>
+                </div>
+                <button class="btn btn-lg btn-ingresar-login btn-block btn-signin" type="submit">Iniciar Sesión</button>
+            } <!-- /form -->
+            <a href="@Url.Action("RecuperarPassword", "Home")" class="forgot-password">¿Olvidó su contraseña?  </a>
+            <div id="log_incorrecto" style="color: red">@ViewData["MensajeErrorAcceso"]</div>
+
+        </div>
+        <!-- /card-container -->
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>

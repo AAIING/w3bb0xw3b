@@ -1,0 +1,184 @@
+﻿@model IEnumerable<WebBox.Models.OrdenesModels>
+
+@{
+                /**/
+
+                Layout = null;
+                int fila = 1;
+}
+
+<table id="table_ocompras" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%" style="margin-bottom:0 !important">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width: 7%">Numero</th>
+            <th style="width: 7%">Fecha</th>
+            <th style="width: 10%">Rut</th>
+            <th style="width: 35%">Nombre</th>
+            <th style="width: 13%">Cond. Pago</th>
+            <th style="width: 13%">Cond. Entrega</th>
+            <th style="width: 11%">Total</th>
+            <th style="width: 2%" class="text-center">
+                <i class="fa fa-folder-open" style="font-size: 20px; color: #ff6a00;"></i>
+            </th>
+            <th style="width: 2%" class="text-center">
+                <i class="fa fa-paper-plane" style="font-size: 20px; color: #ff6a00;"></i>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            fila++;
+        <tr data-fila="@fila" data-numero="@item.numero">
+            <td>
+                <div id="idnumero_@fila.ToString()">@item.numero</div>
+            </td>
+            <td>
+                <div id="idfecha_@fila.ToString()">@item.fecha</div>
+            </td>
+            <td>
+                <div id="idrut_@fila.ToString()">@item.rut</div>
+            </td>
+            <td>
+                <div id="idnombre_@fila.ToString()">@item.nombre_proveedor</div>
+            </td>
+            <td>
+                <div id="idcondicionpago_@fila.ToString()">@item.nombrecondiciondep</div>
+            </td>
+            <td>
+                <div id="idcondicionentrega_@fila.ToString()">@item.nombrecondiciondee</div>
+            </td>
+            <td class="text-right">
+                <div id="idtotal_@fila.ToString()">@item.total.ToString("N0")</div>
+            </td>
+            <td class="text-center ver_detalle" title="Ver detalle de la orden de compra" data-numero="@item.numero">
+                <i class="glyphicon glyphicon-plus" style="font-size: 22px; color: #2bba8b; cursor: pointer" data-fila="@fila.ToString()"></i>
+            </td>
+            <td class="pdfVBuno text-center" data-fila="@fila" data-fecha="@item.fecha" data-numero="@item.numero" data-rutprov="@item.rut" data-nombrecondiciondep="@item.nombrecondiciondep" data-nombrecondiciondee="@item.nombrecondiciondee"
+                data-subtotal="@item.subtotal" data-exento="@item.exento" data-afecto="@item.afecto" data-iva="@item.iva" data-total="@item.total" data-observacion="@item.observacion" data-plazo="@item.plazo" data-email="@item.email_prov">
+                <i class="fa fa-file-pdf-o" style="font-size: 20px; color: red; cursor: pointer"></i>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var table = $('#table_ocompras').DataTable({
+            destroy: true,
+            "bInfo": false,
+            "bPaginate": false,
+            "scrollX": true,
+            "scrollY": "200px",
+            "scrollCollapse": true,
+            "searching": false,
+            "lengthusuario": [[10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+        $('#table_ocompras tbody').on('click', 'td.pdfVBuno', function (e) {
+            e.preventDefault();
+            $(".table_filatablecida").removeClass("table_filatablecida");
+            $(this).addClass("table_filatablecida");
+            numero_orden_global = $(this).data("numero");
+            var numero = $(this).data("numero");
+            var rut_prov = $(this).data("rutprov");
+            var nombrecondiciondep = $(this).data("nombrecondiciondep");
+            var nombrecondiciondee = $(this).data("nombrecondiciondee");
+            var subtotal = $(this).data("subtotal");
+            var exento = $(this).data("exento");
+            var afecto = $(this).data("afecto");
+            var iva = $(this).data("iva");
+            var total = $(this).data("total");
+            var observacion = $(this).data("observacion");
+            var plazo = $(this).data("plazo");
+            var email = $(this).data("email");
+            var fecha = $(this).data("fecha");
+
+            $.ajax({
+                type: "POST",
+                url: '/OrdenCompras/ocPDF/',
+                traditional: true,
+                data: {
+                    fecha: fecha,
+                    numero: numero,
+                    rut_prov: rut_prov,
+                    nombrecondiciondep: nombrecondiciondep,
+                    nombrecondiciondee: nombrecondiciondee,
+                    plazo: plazo,
+                    subtotal: subtotal,
+                    exento: exento,
+                    afecto: afecto,
+                    iva: iva,
+                    total: total,
+                    observacion: observacion
+                },
+                DataType: 'json',
+                success: function (data) {
+                    if (data.retornoJson == "1") {
+                        $("#ajax_loader").hide();
+                        $('#dte_preview').html("");
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe',
+                            'src': data.documentoDteJson
+                        });
+                        $('#dte_preview').css('background', 'url(../images/loading_page.gif) center center no-repeat');
+                        $('#dte_preview').html(
+                            iframe
+                        );
+                        $("#id_email_destinatario").val(email);
+                        $("#modal_odencompra").modal("show");
+
+                    } else if (data.retornoJson == "-2") {
+                        $("#ajax_loader").hide();
+                        mostrar_msj_error("error: No se pudo generar documento: " + data);
+                    } else if (data.retornoJson == "-1") {
+                        $("#ajax_loader").hide();
+                        mostrar_msj_error_volverIniciar("Sus variable de Sessión ha expirado, debe volver a loguearse", "/../Home/Login")
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error: " + errorThrown);
+                    //alert("errorThrown: " + errorThrown + "XMLHttpRequest: " + XMLHttpRequest + "textStatus: " + textStatus);
+                }
+            });
+
+        });
+        $('#table_ocompras tbody').on('click', 'tr .ver_detalle', function (e) {
+            e.preventDefault();
+            var numero = $(this).data("numero");
+            listar_DetalleOrdenes(numero)
+        });
+
+
+    });
+
+
+</script>

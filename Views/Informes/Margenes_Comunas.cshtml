@@ -1,0 +1,171 @@
+﻿
+@{
+
+    Layout = null;
+}
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<br />
+
+<div class="row">
+    <label class="col-lg-12 control-label text-center">Fecha inicio</label>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><input type="date" id="idfechainicio" class="form-control fecha" /></div>
+        <div class="col-lg-5"></div>
+    </div>
+    <label class="col-lg-12 control-label text-center">Fecha corte</label>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><input type="date" id="idfechacorte" class="form-control fecha" /></div>
+        <div class="col-lg-5"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><button type="button" id="idcomuna" class="form-control comuna">Comuna</button>></div>
+        <div class="col-lg-5"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><button type="button" id="btn_generar_informe" class="btn btn-primary" style="width:100%">Generar Informe</button></div>
+        <div class="col-lg-5"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_comuna" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_comuna">Comuna</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscacomuna" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscacomuna" value="Buscar" title="buscar comuna" />
+                <div id="divlistado_comunas">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" data-dismiss="modal" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_comuna" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+    <div class="col-lg-6 col-md-6 col-xs-12" id="divpartialMargenesComunas"></div>
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        var d = new Date();
+        var curDay = d.getDate();
+        var curMonth = d.getMonth() + 1;
+        var curYear = d.getFullYear();
+
+        var fi = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-01";
+        var ft = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-" + (curDay < 10 ? "0" + curDay : curDay);
+
+        $('#idfechainicio').val(fi);
+        $("#idfechacorte").val(ft);
+        $("#idcomuna").val("");
+
+        cargar_informe("");
+
+        $("#idcomuna").click(function (e) {
+
+            $("#modal_cambiar_comuna").modal("show");
+            cargar_comunas("");
+        });
+
+        $("#ok_cambiar_comuna").click(function (e) {
+            e.preventDefault();
+            var arreglo = $("#modal_cambiar_comuna #comuna").val();
+            var comuna = arreglo[0];
+            var nombre = $("#comuna option:selected").val();
+            $("#idcomuna").text(nombre);
+            $("#modal_cambiar_comuna").modal("hide");
+        });
+
+        $("#btn_generar_informe").on('click', function (e) {
+            e.preventDefault();
+
+
+            cargar_informe("");
+        });
+
+    });
+
+    function cargar_comunas(texto) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        var primera = "0";
+        $.getJSON('/Pedidos/GetComunas/?nombre=' + texto, function (data) {
+            var items = "<option value='TODAS'>--TODAS--</option>";
+            $("#modal_cambiar_comuna #divlistado_comunas").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                if (count == 0) { primera = district.codigo; }
+                count = 1;
+                items += "<option style='height:30px' value='" + district.nombre + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cambiar_comuna #divlistado_comunas').html("<select id='comuna' multiple='multiple' size='15' class='form-select input-sm' style='width:100%;'><option value='' data-nombre=''>No hay datos</option></select>");
+            } else {
+                $('#modal_cambiar_comuna #divlistado_comunas').html("<select id='comuna' multiple='multiple' size='15' class='form-select input-sm' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        return primera;
+        $.ajaxSetup({
+            async: true
+        });
+
+    }
+
+    function cargar_informe(nombre_insumo) {
+        var fechai = $('#idfechainicio').val();
+        var fechac = $('#idfechacorte').val();
+        var comuna = $('#idcomuna').text();
+        $("#loading").show();
+        $.ajax({
+            type: "POST",
+            url: '/Informes/partialMargenesComunas/',
+            data: JSON.stringify({ fechai: fechai, fechac: fechac, comuna: comuna }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+
+                $("#loading").hide();
+                if (result == -1) {
+                    mostrar_msj_error_volverIniciar("Su Sessión a ha expirado. Ingrese al Sistema nuevamente", "/../Home/Login");
+                } else {
+                    $("#divpartialMargenesComunas").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexion");
+            }
+        });
+
+    }
+</script>

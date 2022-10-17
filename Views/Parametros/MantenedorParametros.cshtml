@@ -1,0 +1,318 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Mantenedor de Parámetros
+        </h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <form id="id_form_parametros" method="POST" name="fileinfo" class="" role="form">
+            <fieldset class="scheduler-border-interno" style="background-color:#e4dfdf">
+                <legend class="scheduler-border" style="text-align:center"></legend>
+                <fieldset class="scheduler-border-adentro-interno-izquierda">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Tope Peso</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <input id="pesotope" type="text" class="form-control validate[required] text-right" onfocus="this.select()" value="@ViewData["pesotope"]" onkeypress="return SoloNumerosDecimales(event, '0.0', 2, 2);">
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <h5>%</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Banda Informativa</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <textarea id="bandainfo" class="form-control" rows="3">@ViewData["bandainfo"]</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Iva</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="iva" type="text" class="form-control validate[required] text-right" onfocus="this.select()" value="@ViewData["iva"]" onkeypress="return SoloNumerosDecimales(event, '0.0', 2, 2);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Tramo1</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="tramo1" type="text" class="form-control validate[required] text-right" value="@ViewData["tramo1"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Tramo2</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="tramo2" type="text" class="form-control validate[required] text-right" value="@ViewData["tramo2"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Tope Descuento</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="topedescuento" type="text" class="form-control validate[required] text-right" value="@ViewData["topedescuento"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Valor Tramo 1</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="valort1" type="text" class="form-control validate[required] text-right" value="@ViewData["valort1"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Valor Tramo 2</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="valort2" type="text" class="form-control validate[required] text-right" value="@ViewData["valort2"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="email" type="text" class="form-control validate[required]" value="@ViewData["email"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Password</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="password" type="password" class="form-control validate[required]" value="@ViewData["password"]" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Smtp</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="smtp" type="password" class="form-control validate[required]" value="@ViewData["smtp"]" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Puerto</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="puerto" type="text" class="form-control validate[required]" value="@ViewData["puerto"]" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Email Respuesta</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="emailrespuesta" type="text" class="form-control validate[required]" value="@ViewData["emailrespuesta"]" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Compra Mínima</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="compraminima" type="text" class="form-control validate[required] text-right" value="@ViewData["compraminima"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Título Notificación</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="tituloNotificacion" type="text" class="form-control" value="@ViewData["tituloNotificacion"]" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Color Notificación</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="colorNotificacion" type="text" class="form-control" value="@ViewData["colorNotificacion"]" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Días morosos 1</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="diasmorosos1" type="text" class="form-control validate[required] text-right" value="@ViewData["diasmorosos1"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Días morosos</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="diasmorosos2" type="text" class="form-control validate[required] text-right" value="@ViewData["diasmorosos2"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label>Días morosos 3</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="diasmorosos3" type="text" class="form-control validate[required] text-right" value="@ViewData["diasmorosos3"]" onfocus="this.select()" onkeypress="return validateEnteroKeyPress(this,event);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <button type="button" id="btn_guardar_parametro" class="btn btn-primary" style="width:100%">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <br />
+
+
+            </fieldset>
+
+        </form>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+<script type="text/javascript" class="init">
+    $(document).ready(function () {
+        $('#id_form_parametros').validationEngine();
+
+
+        $("#btn_guardar_parametro").click(function (e) {
+            e.preventDefault();
+
+            if (!$("#id_form_parametros").validationEngine('validate')) {
+                return false;
+            }
+            var iva = parseFloat($("#iva").val());
+            var tramo1 = $("#tramo1").val().replace(/\./g, '');
+            var tramo2 = $("#tramo2").val().replace(/\./g, '');
+            var topedescuento = $("#topedescuento").val().replace(/\./g, '');
+            var valort1 = $("#valort1").val().replace(/\./g, '');
+            var valort2 = $("#valort2").val().replace(/\./g, '');
+            var email = $("#email").val();
+            var password = $("#password").val();
+            var smtp = $("#smtp").val();
+            var puerto = $("#puerto").val();
+            var emailrespuesta = $("#emailrespuesta").val();
+            var compraminima = $("#compraminima").val().replace(/\./g, '');
+            var tituloNotificacion = $("#tituloNotificacion").val();
+            var colorNotificacion = $("#colorNotificacion").val();
+            var diasmorosos1 = $("#diasmorosos1").val();
+            var diasmorosos2 = $("#diasmorosos2").val();
+            var diasmorosos3 = $("#diasmorosos3").val();
+            var bandainfo = $("#bandainfo").val();
+            var pesotope = $("#pesotope").val();
+
+            debugger;
+            var parametro = {};
+            parametro.iva = iva;
+            parametro.tramo1 = tramo1;
+            parametro.tramo2 = tramo2;
+            parametro.topedescuento = topedescuento;
+            parametro.valort1 = valort1;
+            parametro.valort2 = valort2;
+            parametro.email = email;
+            parametro.password = password;
+            parametro.smtp = smtp;
+            parametro.puerto = puerto;
+            parametro.emailrespuesta = emailrespuesta;
+            parametro.compraminima = compraminima;
+            parametro.tituloNotificacion = tituloNotificacion;
+            parametro.colorNotificacion = colorNotificacion;
+            parametro.diasmorosos1 = diasmorosos1;
+            parametro.diasmorosos2 = diasmorosos2;
+            parametro.diasmorosos3 = diasmorosos3;
+            parametro.bandainfo = bandainfo;
+            parametro.pesotope = parseFloat(pesotope.replace(',','.'));
+
+            $.ajax({
+                type: "POST",
+                url: '/Parametros/GuardarParametros/',
+                data: JSON.stringify({
+                    parametro: parametro
+                }),
+                DataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#ajax_loader").hide();
+                    if (data == "") {
+                        mostrar_msj_success('Parametros guardado Correctamente');
+                    } else {
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexion");
+                }
+            });
+        });
+
+    });
+
+</script>

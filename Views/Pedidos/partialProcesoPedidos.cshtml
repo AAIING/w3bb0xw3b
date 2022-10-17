@@ -1,0 +1,474 @@
+﻿@model IEnumerable<WebBox.Models.PedidosMaestroModels>
+@{
+    Layout = null;
+    int i = 0;
+    string class_pedido_fbx = "";
+    string title = "";
+    string opt_proc = "";
+    string hidden = "";
+    string hidden2 = "";
+    string disable = "";
+    string btncolor = "";
+    string btnnombre = "";
+    opt_proc = ViewData["opt_procesopedido"].ToString();
+    if (!opt_proc.Equals("1"))
+    {
+        hidden2 = "hidden";
+    }
+}
+
+<style>
+    tr.iniciado td {
+        background-color: #ffd800;
+        color: black;
+    }
+
+    tr.incompleto td {
+        background-color: #ff6a00;
+        color: black;
+    }
+
+    tr.completado td {
+        background-color: #b6ff00;
+        color: black;
+    }
+</style>
+<table id="table_pedidos_maestro" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th class="text-center" style="width: 7%">#Pedido</th>
+            <th class="text-center" style="width: 5%">Fec-Ent</th>
+            <th style="width: 6%">Hora Ent.</th>
+            <th style="width: 6%">Empacador</th>
+            <th style="width: 20%">Cliente</th>
+            <th style="width: 10%">Comuna</th>
+            <th style="width: 20%">Direccion</th>
+            <th style="width: 20%">Condominio</th>
+            <th style="width: 15%" @hidden2>Patente</th>
+            <th style="width: 15%" @hidden2>Cargado?</th>
+            <th style="width: 15%" @hidden2>Entregado?</th>
+            <th style="width: 15%" @hidden2>Hora Entrega</th>
+            <th style="width: 20%">Tipo Pedido</th>
+            <th style="width: 4%" class="text-center">Real</th>
+            <th hidden style="width: 4%" class="text-center">Real</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            string fecha = "";
+            class_pedido_fbx = "";
+            title = "Pedido WebBox";
+
+            string style = "", cargado = "NO", entrega = "NO", hiddenEntr = "hidden";
+            if (item.empaqrestaurant.Equals("1"))
+            {
+                btncolor = "#FF9A00";
+                btnnombre = "RESTAURANT";
+            }
+            else
+            {
+                btncolor = "#2bb004";
+                btnnombre = "FISHBOX";
+            }
+            if (Convert.ToInt32(item.avancereales) > 0)
+            {
+                style = (item.avancereales == "0") ? "background-color:White" : (item.avancereales == "1") ?
+                "background-color:Yellow" : (item.avancereales == "2") ?
+                "background-color:Orange" : "background-color:#88F256 ";
+            }
+            else
+            {
+                    
+              if (item.estado.Equals("1"))
+              {
+                  class_pedido_fbx = "table_pedido_cerrado_fbx";
+                  title = "Pedido CERRADO";
+              }
+              else
+              {
+                  if (item.web == "1")
+                  {
+                      class_pedido_fbx = "table_pedido_fbx ";
+                      title = "Pedido de FBX";
+                  }
+              }              
+            }
+
+
+            if (opt_proc.Equals("1"))
+            {
+                hidden = "hidden";
+                disable = "disabled";
+
+                if (item.traspasochofer.Equals("1"))
+                {
+                    cargado = "SI";
+                }
+                if (item.entrega.Equals("1"))
+                {
+                    entrega = ""; //
+                    hiddenEntr = "";
+                }
+            }
+          
+
+            if (item.fechaent == "00/00/0000")
+            {
+                fecha = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                fecha = DateTime.Parse(item.fechaent).ToString("yyyy-MM-dd");
+            }
+
+            string fechaent = fecha;
+
+            <tr style="@style" id="fila_@i" data-fila="@i" class="@class_pedido_fbx" title="@title">
+
+                <td class="text-center">
+                    @item.registro
+                </td>
+                <td class="text-right">
+                    @item.fechaent
+                </td>
+                <td class="text-center">
+                    @item.horaent
+                    @*<input type="button" id="estado_@i" class="btn btn-default cambiarestado @class_pedido_fbx" value="@item.nombreestado" style="font-size:10px;@style"
+                        data-fila="@i"
+                        data-am="@item.am"
+                        data-pm="@item.pm"
+                        data-entregaboleta="@item.entregaboleta"
+                        data-operario="@item.nombreoperario"
+                        data-obs="@item.obs"
+                        data-cajas="@item.cajas"
+                        data-bolsas="@item.bolsas"
+                        data-pesototal="@item.pesototal"
+                        data-registro="@item.registro" />*@
+                </td>
+                <td class="text-center">
+                    <input type="button" id="operario_@i" class="btn btn-default cambiaroperario @class_pedido_fbx" value="@item.nombreoperario"
+                           style="width:100%;font-size:10px;@style"
+                           data-fila="@i"
+                           data-registro="@item.registro"
+                           data-operario="@item.operario"
+                           data-nombreoperario="@item.nombreoperario"
+                           data-am="@item.am"
+                           data-pm="@item.pm"
+                           data-entregaboleta="@item.entregaboleta"
+                           data-obs="@item.obs"
+                           data-cajas="@item.cajas"
+                           data-bolsas="@item.bolsas"
+                           data-pesototal="@item.pesototal"
+                           data-cliente="@item.cliente" @disable />
+                </td>
+                <td class="text-left">
+                    @item.cliente
+                </td>
+                <td class="text-left">
+                    @item.comuna
+                </td>
+                <td class="text-left">
+                    @item.direccion
+                </td>
+                <td class="text-left">
+                    @item.condominio
+                <td @hidden2>
+                    @item.patente
+                </td>
+                <td @hidden2>
+                    @cargado
+                </td>
+                <td @hidden2>
+                    <button type="button"
+                            class="verfotosentrega"
+                            id="btnverfotos_@i"
+                            data-registro="@item.registro"
+                            style="width: 100%; color:black"
+                            title="Ver Fotos" @hiddenEntr>
+                        SI
+                    </button>
+                    @entrega
+                </td>
+                <td @hidden2>
+                    @item.horaentrega
+                </td>
+                <td>
+                    <button type="button"
+                            style="width: 100%;
+                            background-color:@btncolor">
+                        @btnnombre
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="editarpedido" id="btneditar_@i"
+                            data-fila="@i"
+                            data-cliente="@item.cliente"
+                            data-registro="@item.registro"
+                            data-estado="@item.estado"
+                            data-avancereales="@item.avancereales"
+                            data-total="@item.total"
+                            data-cajas="@item.cajas"
+                            data-bolsas="@item.bolsas"
+                            data-obs="@item.obs"
+                            data-web="@item.web"
+                            data-am="@item.am"
+                            data-pm="@item.pm"
+                            data-entregaboleta="@item.entregaboleta"
+                            data-operario="@item.nombreoperario"
+                            data-pesototal="@item.pesototal"
+                            data-nombrevendedor="@item.nombrevendedor"
+                            data-lista="@item.lista"
+                            data-descuento="@item.descuentos"
+                            data-propina="@item.propina"
+                            data-costoenvio="@item.costoenvio"
+                            data-status="@item.status"
+                            style="width: 100%" title="Modificar">
+                        ?
+                    </button>
+                </td>
+
+                <td hidden>
+                    <input type="hidden" id="hidden_@i" value="@item.avancereales">
+                </td>
+            </tr>
+        }
+
+    </tbody>
+    <tfoot>
+        <tr style="background-color: #fff;">
+            <td style="font-weight: Bold;" class="text-right">Pedidos:</td>
+            <td style="font-weight: Bold;" class="text-right">@i.ToString("N0")</td>
+            <td><p style="background-color: #f00; color: #fff;">PEDIDO CERRADO</p></td>
+            <td><p style="background-color: #fff;">PEDIDO MANUAL WEBBOX</p></td>
+            <td><p style="background-color: #2bb004; color: #fff;">PEDIDO INSPECCIONADO</p></td>
+            <td><p style="background-color: #0a00ff; color:#fff;">PEDIDO WEB FISHBOX</p></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
+
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        table_pedidos_maestro = $('#table_pedidos_maestro').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": true,
+            "searching": false,
+            "ordering": false,
+            "bFilter": true,
+            "scrollX": true,
+            "bLengthChange": false,
+            "lengthMenu": [[195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            },
+            "columns": [
+                { "data": "pedido" }, //0
+                { "data": "fecent" }, //1
+                { "data": "estado" }, //2
+                { "data": "empacador" }, //3
+                { "data": "cliente" },//4
+                { "data": "comuna" }, //5
+                { "data": "direccion" },//6
+                { "data": "condominio" }, //7
+                { "data": "patente" }, //7
+                { "data": "cargado?" }, //7
+                { "data": "entregado?" }, //7
+                { "data": "hora entrega" }, //7
+                { "data": "tipo pedido" }, //7
+                { "data": "btnreal" }, //8
+                { "data": "avancereal" }, //9
+            ],
+            "rowCallback": function (row, data) {
+                if (row["avancereal"] == "0") {
+                    $(row).css('background-color:Yellow')
+                }
+                else if (row["avancereal"] == "1") {
+                    $(row).css('background-color:Yellow')
+                }
+                else if (row["avancereal"] == "2") {
+                    $(row).css('background-color:Green')
+                }
+                return row;
+            }
+        });
+
+        //cargar_presentaciones_modifica_peso_Item_pedido();
+
+        $(".cambiarestado").click(function (e) {
+
+            $("#modal_cambiar_estado").modal("show");
+            $("#ok_cambiar_estado").prop('disabled', false);
+            cargar_estados("");
+            fila_proceso = $(this).data("fila");
+            global_am = $(this).data("am");
+            global_pm = $(this).data("pm");
+            global_entregaboleta = $(this).data("entregaboleta");
+            global_nombreoperario = $(this).data("nombreoperario");
+            global_obs = $(this).data("obs");
+            global_lista = $(this).data("lista");
+
+            global_registro = $(this).data("registro");
+            $("#cajas").val($(this).data("cajas"));
+            $("#bolsas").val($(this).data("bolsas"));
+            if (global_entregaboleta == 1) {
+                $("#entregaboleta").prop("checked", true);
+            }
+            else {
+                $("#entregaboleta").prop("checked", false);
+            }
+        });
+
+        $(".cambiaroperario").click(function (e) {
+
+            $("#modal_cambiar_operario").modal("show");
+            fila_proceso = $(this).data("fila");
+            global_registro = $(this).attr("data-registro");
+            global_operario = $(this).attr("data-operario");
+            global_nombreoperario = $(this).data("nombreoperario");
+            global_cliente = $(this).data("cliente");
+
+            $("#modal_cambiar_operario #operario").val(global_operario);
+        });
+
+        $('.seleccionados').click(function (e) {
+            //e.preventDefault();
+
+            if ($('.seleccionados').prop('checked')) {
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+
+        $('#table_pedidos_maestro tbody').on('click', '.verfotosentrega', function (e) {
+            e.preventDefault();
+            var numpedido = $(this).data("registro");
+
+            ver_fotos_pedido(numpedido);
+        });
+
+        $('#table_pedidos_maestro tbody').on('click', '.editarpedido', function (e) {
+            e.preventDefault();
+
+            fila_proceso = $(this).data("fila");
+            global_cliente = $(this).data("cliente");
+            global_registro = $(this).data("registro");
+            global_total = $(this).data("total");
+            global_obs = $(this).data("obs");
+            global_web = web;
+            global_nombrevendedor = $(this).data("nombrevendedor");
+            global_descuento = $(this).data("descuento");
+            global_propina = $(this).data("propina");
+            global_costoenvio = $(this).data("costoenvio");
+            global_avancereales = $(this).data("avancereales");
+            //Nuevo codigo
+            global_am = $(this).data("am");
+            global_pm = $(this).data("pm");
+            global_entregaboleta = $(this).data("entregaboleta");
+            global_nombreoperario = $(this).data("nombreoperario");
+            global_obs = $(this).data("obs");
+            global_registro = $(this).data("registro");
+            $("#cajas").val($(this).data("cajas"));
+            $("#bolsas").val($(this).data("bolsas"));
+            $("#registro_cant_pedidos").val($(this).data("registro"));
+
+            //debugger
+            var status = $(this).data("status");
+            var web = $(this).data("web");
+
+            if (web === 1) {
+
+                if (status === 'billed') {
+
+                    if (global_entregaboleta == 1) {
+                        $("#entregaboleta").prop("checked", true);
+                    }
+                    else {
+                        $("#entregaboleta").prop("checked", false);
+                    }
+
+                    if (global_avancereales > 0) {
+                        $("#apruebainspeccion").prop("checked", true);
+                        $("#ok_facturar").prop("disabled", false);
+                    }
+                    else {
+                        $("#apruebainspeccion").prop("checked", false);
+                        $("#ok_facturar").prop("disabled", true);
+                    }
+                    //fin
+
+                    global_avancereales = 3;//$(this).data("avancereales");
+                    cargar_detalle_pedido(global_registro);
+                    //cargar_presentaciones_modifica_peso_Item_pedido(global_registro)
+                    editar_detalle_pedido();
+
+                }
+                else {
+                    mostrar_msj_advertencia("Pedido WEB aun SIN PAGAR..(pendiente)");
+                }
+
+            }
+            else {
+                if (global_entregaboleta == 1) {
+                    $("#entregaboleta").prop("checked", true);
+                }
+                else {
+                    $("#entregaboleta").prop("checked", false);
+                }
+
+                if (global_avancereales > 0) {
+                    $("#apruebainspeccion").prop("checked", true);
+                    $("#ok_facturar").prop("disabled", false);
+                }
+                else {
+                    $("#apruebainspeccion").prop("checked", false);
+                    $("#ok_facturar").prop("disabled", true);
+                }
+                //fin
+
+                global_avancereales = 3;//$(this).data("avancereales");
+                cargar_detalle_pedido(global_registro);
+                //cargar_presentaciones_modifica_peso_Item_pedido(global_registro)
+                editar_detalle_pedido();
+            }
+
+
+        });
+
+    });
+
+</script>

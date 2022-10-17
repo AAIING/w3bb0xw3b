@@ -1,0 +1,131 @@
+﻿@model IEnumerable<WebBox.Models.VendedoresModels>
+
+@{
+    Layout = null;
+    int fila = 1;
+}
+
+<div class="responsiva_tabla">
+    <table id="table_vendedores" class="table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+        <thead>
+            <tr style="background-color: #FF9A00; color: #fff">
+                <th>Vendedor</th>
+                <th>Nombre</th>
+                <th class="text-center">%Comision</th>
+                <th class="text-center"><i class="fa fa-edit" aria-hidden="true" style="font-size: 16px"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr title="seleccione con doble Click para la edición" data-fila="@fila" data-referencia="@item.codigo">
+                <td>
+                    <div id="idcodigo_@fila.ToString()">@item.codigo</div>
+                </td>
+                <td>
+                    <div id="idnombre_@fila.ToString()">@item.nombre</div>
+                </td>
+                <td class="text-center">
+                    <div id="idcomision1_@fila.ToString()">@item.comision1</div>
+                </td>
+                <td class="text-center">
+                    <i class="glyphicon glyphicon-edit editar_fila_vendedor text-center"
+                       data-fila="@fila"
+                       data-codigo="@item.codigo"
+                       data-nombre="@item.nombre"
+                       data-comision1="@item.comision1.ToString("N2").Replace(",",".")"
+                       style="font-size: 22px; color: orange; cursor: pointer"></i>
+                    <i class="glyphicon glyphicon-trash eliminar_fila_vendedor text-center"
+                       data-fila="@fila"
+                       data-codigo="@item.codigo"
+                       data-nombre="@item.nombre"
+                       data-comision1="@item.comision1.ToString("N2").Replace(",",".")"
+                       style="font-size: 22px; color: orange; cursor: pointer"></i>
+                </td>
+            </tr>
+                fila++;
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script type="text/javascript" class="init">
+    var fila_seleccionada = 0;
+    var table = "";
+
+    $(document).ready(function () {
+
+        table = $('#table_vendedores').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": true,
+            "searching": true,
+            "lengthvendedor": [[ 25, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        $('#table_vendedores tbody').on('click', 'tr .eliminar_fila_vendedor', function (e) {
+            e.preventDefault();
+            global_vendedor = $(this).data("codigo");
+            $("#modal_advertencia_eliminar").modal("show");
+        });
+
+        $('#table_vendedores tbody').on('click', 'tr', function (e) {
+            e.preventDefault();
+            $(".ediciones").removeAttr('disabled');
+            $(".table_filatablecida").removeClass("table_filatablecida");
+            $(this).addClass("table_filatablecida");
+            fila_seleccionada = $(this).data("fila");
+            vendedor = $("#idcodigo_" + fila_seleccionada).html();
+        });
+
+        $('#table_vendedores tbody').on('click', '.editar_fila_vendedor', function (e) {
+            //$("#abreModal_editar_vendedor").on('click', function (e) {
+            e.preventDefault();
+            $("#ajax_loader").css("display", "");
+
+            fila_seleccionada = $(this).data("fila");
+            
+            var codigovendedor = $(this).data("codigo");
+            var nombrevendedor = $(this).data("nombre");
+            var comision1vendedor = $(this).data("comision1");
+
+            $("#modal_editarvendedor").modal("show");
+            $("#modal_editarvendedor #codigovendedor_edit").val(codigovendedor);
+            $("#modal_editarvendedor #nombrevendedor_edit").val(nombrevendedor);
+            $("#modal_editarvendedor #comision1vendedor_edit").val(comision1vendedor);
+
+            $("#ajax_loader").css("display", "none");
+        });
+
+    });
+
+</script>
+
+

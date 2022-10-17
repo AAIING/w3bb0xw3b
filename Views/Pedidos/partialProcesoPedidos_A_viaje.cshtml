@@ -1,0 +1,173 @@
+﻿@model IEnumerable<WebBox.Models.PedidosMaestroModels>
+@{
+    Layout = null;
+    int i = 0;
+    double ttotal = 0;
+    string class_pedido_fbx = "";
+    string title = "";
+    double margen = 0;
+    string btncolor = "";
+    string btnnombre = "";
+}
+
+<table id="table_pedidos_maestro" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="text-center" style="width: 5%">#Pedido</th>
+            <th class="text-center" style="width: 5%">Fec-Ent</th>
+            <th style="width: 25%">Cliente</th>
+            <th style="width: 25%">Comuna</th>
+            <th style="width: 25%">Dirección</th>
+            <th style="width: 10%">Condominio</th>
+            <th style="width: 10%">Tipo Pedido</th>
+            <th style="width: 5%" class="text-center">
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <input class="seleccionados" type="checkbox">
+                    </label>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+
+            string fecha = "";
+            class_pedido_fbx = "";
+            title = "Pedido WebBox";
+            if (item.empaqrestaurant.Equals("1"))
+            {
+                btncolor = "#FF9A00";
+                btnnombre = "RESTAURANT";
+            }
+            else
+            {
+                btncolor = "#2bb004";
+                btnnombre = "FISHBOX";
+            }
+            if (item.web == "1")
+            {
+                class_pedido_fbx = "table_pedido_fbx ";
+                title = "Pedido de FBX";
+            }
+            if (item.fecha == "00/00/0000")
+            {
+                fecha = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                fecha = DateTime.Parse(item.fechaent).ToString("yyyy-MM-dd");
+
+            }
+            string fechaent = fecha;
+        <tr id="fila_@i" class="@class_pedido_fbx" title="@title">
+            <td class="text-center">
+                @item.registro
+            </td>
+            <td class="text-center">
+                @item.fechaent
+            </td>
+            <td class="text-center">
+                @item.cliente
+            </td>
+            <td class="text-left">
+                @item.comuna.ToString()
+            </td>
+            <td class="text-center">
+                @item.direccion.ToString()
+            </td>
+            <td class="text-center">
+                @item.condominio.ToString()
+            </td>
+            <td>
+                <button type="button"
+                        style="width: 100%;
+                            background-color:@btncolor">
+                    @btnnombre
+                </button>
+            </td>
+            <td class="text-center">
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <input id="selected_@i.ToString()" class="seleccionado" type="checkbox"
+                               data-registro="@item.registro"
+                               data-fila="@i">
+                    </label>
+                </div>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+
+<script type="text/javascript" class="init">
+
+    var count_prioridad = 0;
+    var num_filas = 0;
+    $(document).ready(function () {
+        table_pedidos_maestro = $('#table_pedidos_maestro').DataTable({
+            destroy: true,
+            "bInfo": false,
+            "bPaginate": false,
+            "searching": false,
+            "ordering": false,
+            "bFilter": false,
+            "scrollX": true,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        $('#table_pedidos_maestro tbody').on('click', '.seleccionado', function (e) {
+            var fila = $(this).data('fila');
+
+            if ($(this).prop('checked')) {
+
+                count_prioridad++;
+                $("#numprioridad_" + fila).html("<p>" + count_prioridad + "</p>")
+                $("#selected_" + fila).attr("data-prioridad", count_prioridad)
+            }
+            else
+            {
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    $(this).prop("checked", false);
+                    num_filas++;
+                    count_prioridad = 0;
+                    $("#numprioridad_" + num_filas).html("<p>#</p>")
+                });
+            }
+        });
+    });
+
+</script>
+
+
+

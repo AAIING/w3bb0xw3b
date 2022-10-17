@@ -1,0 +1,20 @@
+﻿.cuadro-dialog .modal-dialog {
+    width: 300px;
+    min-width: 25%;
+    max-width: 98%;
+    margin-top: 80px;
+}
+
+.tipo_msj_success {
+    color: #3C763D;
+    text-align: center;
+}
+
+.tipo_msj_error {
+    color: #d81c1c;
+    text-align: center;
+}
+
+.tipo_msj_warning {
+    color: #d87b1f;
+}

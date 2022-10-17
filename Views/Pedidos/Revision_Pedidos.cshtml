@@ -1,0 +1,1717 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div id="saving" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>Guardando...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-9 col-xs-9">
+        <input type="text" class="form-control text-left" id="idcliente" placeholder="Nombre cliente o #pedido" autofocus>
+    </div>
+    <div class="col-lg-3 col-xs-3">
+        <input type="button" class="form-control btn btn-danger text-right" id="aprobar_seleccion" title="Aprobar pedidos seleccionados" value="Aprobar Seleccionados" autofocus>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12">
+        <div id="idDivPartialRevisionPedidos">
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade actualiza_scroll" id="modal_detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="max-width:1200px;width:100%">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                @*<button id="close_modal_detalle_pedido" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>*@
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_modifica_item_pedido">Modifica pedido</h3>
+            </div>
+            <div class="modal-body">
+                <div id="divpartialdetallepedido">
+
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-4 col-xs-4">
+                                <button type="button" id="btn_cerrar_modal_revisar_pedido" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-4 col-xs-4">
+                                <button type="button" id="btn_agregar_item_pedido" class="btn btn-danger center-block">Agregar</button>
+                            </div>
+                            <div class="col-lg-4 col-xs-4">
+                                <button type="button" id="btn_abre_modal_guardar_modificacion_pedido" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" id="form_modifica_item_pedido" class="form_modifica_item_pedido" role="form">
+    <div class="modal fade" id="modal_modifica_item_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_modifica_item_pedido" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-sm">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    @*<button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>*@
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_modifica_item_pedido">Edita detalle<span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="referencia_modifica_item_pedido" />
+                    <input type="hidden" id="codigo_modifica_item_pedido" />
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Nombre
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" id="producto_modifica_item_pedido" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-9">
+                            Cantidad
+                        </div>
+                        <div class="col-lg-9 col-xs-9">
+                            <div class="row">
+                                <div class="col-lg-8 col-xs-8" style="padding-right:0">
+                                    <input type="text" class="form-control validate[required] calcula_valor_modifica_item_pedido numerico_dec" id="cantidad_modifica_item_pedido" value="1" onfocus="this.select()">
+                                </div>
+                                <div class="col-lg-4 col-xs-4" style="padding-left:0">
+                                    <input type="text" id="unidad_modifica_item_pedido" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12">
+                            Presentacion
+                        </div>
+                        <div class="col-lg-9 col-xs-12" id="divlistado_presentaciones_modifica_item_pedido" style="width:75%">
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Cabeza
+                            <input id="cabeza_modifica_item_pedido" type="checkbox" />
+                        </div>
+                        <div class="col-lg-1 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Esquelon
+                            <input id="esquelon_modifica_item_pedido" type="checkbox" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Precio
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]] calcula_valor_modifica_item_pedido numerico_int" id="precio_modifica_item_pedido" onfocus="this.select()">
+                            <input type="hidden" id="costo_modifica_item_pedido" onfocus="this.select()">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Valor
+                        </div>
+                        <div class="col-lg-9">
+                            <!--validate[custom[ValidaNumero]]-->
+                            <input type="text" class="form-control " id="valor_modifica_item_pedido" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Observación
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="obsdet_modifica_item_pedido" class="form-control limpiar" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <div class="row">
+                            <div class="col-lg-6 col-cs-6">
+                                <button type="button" class="btn btn-default cerrar_item_modificado pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-cs-6">
+                                <input type="submit" class="btn btn-primary guardar_item_modificado pull-right" value="Guardar" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="POST" id="form_guardar_pedido_modificado" class="form_guardar_pedido" role="form" onsubmit="return false">
+    <div class="modal fade" id="modal_guardar_pedido_modificado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_guardar" aria-hidden="true" data-focus-on="input:first" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="min-width: 50% !important; max-width:85% !important">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_guardar">Guardar <span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" class="limpiar" id="registro_pedido">
+                    <input type="hidden" class="limpiar" id="fecha_pedido">
+
+                    <input value="" class="validate[required,past[#fechaent_pedido]]" type="hidden" id="fechaactual_pedido" name="fechaactual_pedido" />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Vendedor</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <select id="vendedor_pedido" class="form-select input-sm"></select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Telefono</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-left validate[required] limpiar numerico_int" id="telefono_pedido" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Cliente</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-left validate[required] limpiar" id="cliente_pedido" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Direccion</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea type="text" class="form-control text-left validate[required] limpiar" id="direccion_pedido" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Comuna</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="button" class="form-control btn btn-warning text-center validate[required] limpiar" id="comuna_pedido">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Condominio</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="button" class="form-control btn btn-success text-center" id="condominio_pedido" placeholder="Condominio" autofocus>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Total</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control text-left validate[required] limpiar" id="total_pedido" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Fecha Ent</label>
+                        </div>
+                        <div class="col-lg-9">
+                            @*<input type="date" data-date-format='yyyy-mm-dd' class="form-control text-left validate[required] limpiar" id="fechaent_pedido">*@
+                            <input value="" class="validate[required,future[#fechaactual_pedido]]" type="date" id="fechaent_pedido" name="fechaent_pedido" style="height:30px;font-size: 13px;" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3  col-xs-12">
+                            <label>Hora Ent</label>
+                        </div>
+                        <div class="col-lg-2 col-xs-6">
+                            <input type="text" class="form-control text-left validate[required] limpiar numerico_int" maxlength="2" id="horaent_pedido">
+                        </div>
+                        <div class="col-lg-3 col-xs-6">
+                            <button type="button" class="btn btn-danger horacambiar">+</button>
+                            <button type="button" class="btn btn-danger horacambiar">-</button>
+                        </div>
+
+                        <div class="col-lg-1 col-xs-6">
+                            AM
+                            <input id="am_pedido" type="checkbox" class="ampm_pedido" />
+                        </div>
+                        <div class="col-lg-1 col-xs-6">
+                            PM
+                            <input id="pm_pedido" type="checkbox" class="ampm_pedido" />
+                        </div>
+                        <div class="col-lg-1 col-xs-6">
+                            Factura
+                            <input id="factura_pedido" type="checkbox" />
+                        </div>
+                        <div class="col-lg-1 col-xs-6">
+
+                        </div>
+
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Observación</label>
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="observacion_pedido" class="form-control limpiar" rows="3"></textarea>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <div class="row">
+                            <div class="col-lg-5 col-xs-4">
+                                <button type="button" class="btn btn-default cerrarpedidoModificado pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-2 col-xs-4">
+                                A proceso
+                                <input id="ok_pedido" type="checkbox" />
+                            </div>
+                            <div class="col-lg-5 col-xs-4">
+                                <input type="submit" class="btn btn-primary guardarpedidomodificado pull-right" value="Guardar" />
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modal_cambiar_comuna" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_comuna">Comuna</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscacomuna" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscacomuna" value="Buscar" title="buscar comuna" />
+                <div id="divlistado_comunas">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" data-dismiss="modal" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_comuna" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_condominio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_condominio">Condominio</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscacondominio" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscacondominio" value="Buscar" title="buscar condominio" />
+                <input type="button" id="btn_textoagregarcondominio" value="Agregar" title="agregar condominio" />
+                <div id="divlistado_condominios">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" data-dismiss="modal" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_condominio" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_carrito_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_obra">Eliminar Producto</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar el Producto?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" id="id_indice_eliminar_hidden" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="ok_carrito_eliminar btn btn-danger" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_eliminar_item_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog_modal_detalle_Venta_eliminar_item">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_modal_detalle_Venta_eliminar_item">Eliminar Item</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar el Producto?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" id="referencia_item_pedido_eliminar" />
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" class="btn btn-primary cerrar_detalle_Venta_eliminar_item pull-left" data-dismiss="modal">Cancelar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <input type="submit" class="btn btn-danger ok_eliminar_item_pedido pull-right" value="Eliminar" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_eliminar_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog_modal_eliminar_pedido">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_modal_eliminar_pedido">Eliminar Pedido</h3>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="registro_pedido_eliminar" />
+                ¿Está seguro de eliminar pedido?<br />
+                <br />
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left cerrar_modal_eliminar_pedido" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-danger ok_eliminar_pedido" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_resumen_insumos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_modifica_item_pedido">Modifica pedido</h3>
+            </div>
+            <div class="modal-body">
+                <div id="divpartialresumeninsumos">
+
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="btn_cerrar_modal_revisar_pedido" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="btn_generar_abastecimiento" class="btn btn-primary pull-right">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade actualiza_scroll" id="modal_agregar_item" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm" style="max-width:800px;width:95%">
+        <div class="modal-content" @*style="max-height: 55vh;"*@>
+            @*<div class="modal-content" style="max-height: 55vh;overflow: scroll;">*@
+            <div class="modal-header header_modal">
+                <button id="close_modal_agregar_item" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_vaciar_carrito">Agregar Producto</h3>
+            </div>
+
+            <br />
+            <div class="row">
+                <div class="col-lg-1 col-xs-0"></div>
+                <div class="col-lg-4 col-xs-4">
+                    <input type="text" class="form-control" id="idproducto_agregar" placeholder="Producto" autofocus>
+                </div>
+                <div class="col-lg-2 col-xs-2">
+                    <button type="button" class="btn btn-warning" id="btn_buscar_productos_agregar" style="width: 100%;padding-left:0;padding-right:0" title="Buscar"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+                <div class="col-lg-3 col-xs-3"></div>
+                <div class="col-lg-2 col-xs-2">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            <br />
+
+            <div class="modal-body">
+                <div id="divpartialListadoProductos">
+                </div>
+                @*<div class="form-horizontal">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+                            <input id="btn_guardar_carrito" type="submit" class="btn btn-danger" value="Vaciar" />
+                        </div>
+                    </div>*@
+            </div>
+
+            <div class="modal-footer">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<form method="POST" id="form_cantidad" class="form_cantidad" role="form">
+    <div class="modal fade" id="modal_cantidad_pedidos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_cantidad" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_cantidad">Detalle Producto <span style="font-size: 16px"></span></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="codigo_cant_pedidos" />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Nombre
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control" id="producto_cant_pedidos" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-3">
+                            Cantidad
+                        </div>
+                        <div class="col-lg-9 col-xs-9">
+                            <div class="row">
+                                <div class="col-lg-8 col-xs-8" style="padding-right:0">
+                                    <input type="text" class="form-control validate[required] calcula_valor numerico_dec" id="cantidad_cant_pedidos" value="1" onfocus="this.select()">
+                                </div>
+                                <div class="col-lg-4 col-xs-4" style="padding-left:0">
+                                    <input type="text" id="unidad_cant_pedidos" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12">
+                            Presentacion
+                        </div>
+                        <div class="col-lg-9 col-xs-12" id="divlistado_presentaciones_pedidos" style="width:75%">
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Cabeza
+                            <input id="cabeza_cant_pedidos" type="checkbox" />
+                        </div>
+                        <div class="col-lg-1 col-xs-12"></div>
+                        <div class="col-lg-4 col-xs-6">
+                            Esquelon
+                            <input id="esquelon_cant_pedidos" type="checkbox" />
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Precio
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]] calcula_valor numerico_int" id="precio_cant_pedidos" onfocus="this.select()">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Valor
+                        </div>
+                        <div class="col-lg-9">
+                            <input type="text" class="form-control validate[custom[ValidaNumero]]" id="valor_cant_pedidos" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            Observación
+                        </div>
+                        <div class="col-lg-9">
+                            <textarea id="obsdet_cant_pedidos" class="form-control limpiar" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" id="guardar_item_agregar" class="btn btn-primary" value="Agregar" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+        var indice_carro = "";
+        var cantidad_carro = 0;
+        var table_pedidos = "";
+        var table_carrito = "";
+    var carrito = [];
+    var carrito_eliminado = [];
+        var carrito_producto = 0;//1: producto, 2:carrito
+
+        var global_fila = 0;
+        var global_fecha = "";
+        var global_telefono = "";
+        var global_cliente = "";
+        var global_direccion = "";
+        var global_comuna = "";
+        var global_condominio = "";
+        var global_total = "";
+        var global_fechaent = "";
+        var global_horaent = "";
+        var global_am = "";
+        var global_pm = "";
+        var global_factura = "";
+        var global_facturado = "";
+        var global_ok = "";
+        var global_obs = "";
+        var global_vendedor = "";
+        var global_nombrevendedor = "";
+        var global_registro = "";
+        var global_web_mod=""
+        $(document).ready(function () {
+
+
+            $("#fechaactual_pedido").val(aaaammdd(new Date()));
+
+            cargar_pedidos("");
+            cargar_vendedores();
+
+            $('#idcliente').on({
+                keypress: function () { typed_into = true; },
+                change: function () {
+
+                    if (isNaN(parseFloat($('#idcliente').val()))) {
+                        cargar_pedidos($('#idcliente').val());
+                    } else {
+                        cargar_el_pedido($('#idcliente').val());
+                    }
+
+                    $("#idcliente").focus();
+                }
+            });
+
+            $("#comuna_pedido").click(function (e) {
+
+                $("#modal_cambiar_comuna").modal("show");
+                cargar_comunas("");
+            });
+
+            $("#ok_cambiar_comuna").click(function (e) {
+                e.preventDefault();
+                var arreglo = $("#modal_cambiar_comuna #comuna").val();
+                var comuna = arreglo[0];
+                var nombre = $("#comuna option:selected").text();
+                $("#comuna_pedido").val(nombre);
+                $("#modal_cambiar_comuna").modal("hide");
+            });
+
+            $("#condominio_pedido").click(function (e) {
+
+                $("#modal_cambiar_condominio").modal("show");
+                var comuna = $("#comuna_pedido").val().trim();
+                cargar_condominios(comuna, "");
+            });
+
+            $("#ok_cambiar_condominio").click(function (e) {
+                e.preventDefault();
+                var arreglo = $("#modal_cambiar_condominio #condominio").val();
+                var condominio = arreglo[0];
+                var nombre = $("#condominio option:selected").text();
+                $("#condominio_pedido").val(nombre);
+                $("#modal_cambiar_condominio").modal("hide");
+            });
+
+            $("#btn_textobuscacondominio").on('click', function (e) {
+
+                var cond = $("#textobuscacondominio").val().toUpperCase();
+                $("#textobuscacondominio").val(cond);
+                var co = cargar_condominios($("#comuna_pedido").val(), cond);
+                $("#textobuscacondominio").val("");
+                $("#condominio option[value=" + co + "]").attr("selected", true);
+            })
+
+            $("#btn_textoagregarcondominio").on('click', function (e) {
+
+                var cond = $("#textobuscacondominio").val().toUpperCase();
+                $("#textobuscacondominio").val(cond);
+                if (!cond == "") {
+                    agregar_condominios($("#comuna_pedido").val(), cond);
+                    var co = cargar_condominios($("#comuna_pedido").val(), $("#textobuscacondominio").val());
+                    $("#textobuscacondominio").val("");
+                    $("#condominio option[value=" + co + "]").attr("selected", true);
+                }
+            })
+            $("#btn_agregar_item_pedido").click(function (e) {
+                e.preventDefault();
+
+                $("#modal_agregar_item").modal("show");
+
+                listar_Productos_agregar();
+            });
+
+            /**AL CERRAR MODAL*/
+            $('#modal_agregar_item').on('hide.bs.modal', function () {
+                editar_detalle_pedido();
+            });
+
+            $("#btn_buscar_productos_agregar").click(function (e) {
+                e.preventDefault();
+
+                listar_Productos_agregar();
+            });
+
+            $("#aprobar_seleccion").click(function (e) {
+                e.preventDefault();
+                debugger
+                pedidos = [];
+                c = 0;
+
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    if ($(this).prop('checked')) {
+                        c++;
+                        pedidos.push($(this).data("registro"));
+                    };
+                });
+
+                if (c == 0) {
+                    mostrar_msj_advertencia("Debe seleccionar pedidos");
+                    return false;
+                }
+
+                $("#saving").css("display", "");
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Aprobacion_Seleccionados/',
+                    data: JSON.stringify(
+                        {
+                            pedidos: pedidos
+                        }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.retornojson == "1") {
+                            mostrar_msj_success("Pedidos aprobados !!");
+                            cargar_pedidos("");
+                        } else if (data.retornojson == "-1") {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+
+                        } else {
+                            mostrar_msj_error(data);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+                $("#saving").css("display", "none");
+
+
+            });
+
+            $('#form_cantidad').validationEngine();
+
+            $('#guardar_item_agregar').on('click', function (e) {
+                e.preventDefault();
+                if (!$("#form_cantidad").validationEngine('validate')) {
+                    return false;
+                }
+                var precio = parseInt(($("#precio_cant_pedidos").val() == "") ? 0 : $("#precio_cant_pedidos").val().replace(/\./g, ''));
+                var cantidad = parseFloat(($("#cantidad_cant_pedidos").val() == "") ? 0 : $("#cantidad_cant_pedidos").val().replace(/\,/g, '.'));
+                var valor = (precio * cantidad);
+                $("#valor_cant_pedidos").val(formatea_miles(parseInt(valor)));
+
+                var codigo = $("#codigo_cant_pedidos").val();
+                var nombre = $("#producto_cant_pedidos").val();
+                var cantidad = $("#cantidad_cant_pedidos").val().replace(/\,/g, '.');
+                var presentacion = $("#presentacion_cant_pedidos").val();
+                var nombpresentacion = $("#presentacion_cant_pedidos option:selected").text();
+                var cabeza = "0";
+                if ($("#cabeza_cant_pedidos").prop('checked')) { cabeza = "1" };
+                var esquelon = "0";
+                if ($("#esquelon_cant_pedidos").prop('checked')) { esquelon = "1" };
+                var unidad = $("#unidad_cant_pedidos").val();
+                var precio = $("#precio_cant_pedidos").val().replace(/\./g, '');
+                var valor = $("#valor_cant_pedidos").val().replace(/\./g, '');
+                var obsdet = $("#obsdet_cant_pedidos").val();
+                if (parseFloat(cantidad) > 999999999) {
+                    mostrar_msj_error("Cantidad muy grande");
+                    $("#ajax_loader").css("display", "none");
+                    return false;
+                }
+
+                if (cantidad.toString().charAt(cantidad.toString().length - 1) == ".") {
+                    mostrar_msj_error("Cantidad no debe dejar punto final");
+                    $("#ajax_loader").css("display", "none");
+                    return false;
+                }
+                if (obsdet == null) { obsdet = ''; }
+                indice_carro = indice_carro + 1;
+                var carrito_cotizacion = {
+                    id_indice: indice_carro,
+                    codigo: codigo,
+                    detalle: nombre,
+                    cantidad: parseFloat(cantidad),
+                    presentacion: presentacion,
+                    nombpresentacion: nombpresentacion,
+                    cabeza: cabeza,
+                    esquelon: esquelon,
+                    cantidadreal: "0",
+                    unidad: unidad,
+                    precio: precio,
+                    valor: valor,
+                    obsdet: obsdet,
+                    referencia:"0"
+                }
+                carrito.push(carrito_cotizacion);
+
+                cantidad_carro = cantidad_carro + 1;
+                $("#btn_vercarrito_pedidos").html('<i class="glyphicon glyphicon-shopping-cart"></i>(' + cantidad_carro + ')');
+
+                $("#ajax_loader").css("display", "none");
+                $("#modal_cantidad_pedidos").modal("hide");
+
+
+            });
+
+            $("#idresumen").click(function (e) {
+                e.preventDefault();
+
+                pedidos = [];
+                c =0;
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    c++;
+                    if ($(this).prop('checked')) {
+                        pedidos.push($(this).data("registro"));
+                    };
+                });
+                if (c == 0) {
+                    mostrar_msj_advertencia("Debe seleecionar pedidos");
+                    return false;
+                }
+
+                $("#loading").css("display", "");
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Resumen_Insumos/',
+                    traditional: true,
+                    data: {
+                        pedidos: pedidos
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+                        $("#modal_resumen_insumos").modal("show");
+                        $("#divpartialresumeninsumos").html(data);
+                     },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error " + XMLHttpRequest + " " + textStatus + " " + errorThrown);
+                    }
+                });
+                $("#loading").css("display", "none");
+            });
+
+            $("#btn_generar_abastecimiento").click(function (e) {
+                e.preventDefault();
+                pedidos = [];
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    if ($(this).prop('checked')) {
+                        pedidos.push($(this).data("registro"));
+                    };
+                });
+
+                $("#loading").css("display", "");
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Generar_Abastecimiento/',
+                    traditional: true,
+                    data: {
+                        pedidos: pedidos
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+                        if (data.retornoJson == 1) {
+                            mostrar_msj_success('Abastecimiento generado');
+                        } else if (data.retornoJson == -1) {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+                        } else {
+                            mostrar_msj_error(data.errorJson);
+                        }                },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error " + XMLHttpRequest + " " + textStatus + " " + errorThrown);
+                    }
+                });
+                $("#loading").css("display", "none");
+            });
+
+            $('#telefono_pedido').on({
+                change: function (e) {
+                    e.preventDefault();
+                    obtieneCliente();
+                    $("#cliente_pedido").focus();
+                }
+            });
+
+            $('#form_guardar_pedido_modificado').on('keypress', function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    $(this).trigger('submit');
+                }
+            });
+
+            $(".calcula_valor_modifica_item_pedido").on('keyup', function (e) {
+                e.preventDefault();
+                var precio = parseInt(($("#precio_modifica_item_pedido").val() == "") ? 0 : $("#precio_modifica_item_pedido").val().replace(/\./g, ''));
+                var cantidad = parseFloat(($("#cantidad_modifica_item_pedido").val() == "") ? 0 : $("#cantidad_modifica_item_pedido").val().replace(/\,/g, '.'));
+                var valor = Math.round(precio * cantidad,0);
+                $("#valor_modifica_item_pedido").val(formatea_miles(parseInt(valor)));
+            });
+
+            $('#form_modifica_item_pedido').validationEngine();
+
+            $('.guardar_item_modificado').on('click', function (e) {
+                e.preventDefault();
+
+                if (!$("#form_modifica_item_pedido").validationEngine('validate')) {
+                    return false;
+                }
+
+                var cantidad = parseFloat(($("#cantidad_modifica_item_pedido").val() == "") ? 0 : $("#cantidad_modifica_item_pedido").val().replace(/\,/g, '.'));
+                var precio = parseInt(($("#precio_modifica_item_pedido").val() == "") ? 0 : $("#precio_modifica_item_pedido").val().replace(/\./g, ''));
+                var valor = Math.round(precio * cantidad,0);
+                $("#valor_modifica_item_pedido").val(formatea_miles(parseInt(valor)));
+                $("#saving").css("display", "");
+                var referencia = $("#referencia_modifica_item_pedido").val();
+                var codigo = $("#codigo_modifica_item_pedido").val();
+                var nombre = $("#producto_modifica_item_pedido").val();
+                var cantidad = $("#cantidad_modifica_item_pedido").val().replace(/\,/g, '.');
+
+                debugger
+                var presentacion = $("#presentacion_modifica_item_pedido").val();
+                var nombpresentacion = $("#presentacion_modifica_item_pedido option:selected").text();
+
+                var cabeza = "0";
+                if ($("#cabeza_modifica_item_pedido").prop('checked')) { cabeza = "1" };
+                var esquelon = "0";
+                if ($("#esquelon_modifica_item_pedido").prop('checked')) { esquelon = "1" };
+
+                var unidad = $("#unidad_modifica_item_pedido").val();
+                var precio = $("#precio_modifica_item_pedido").val().replace(/\./g, '');
+                var valor = $("#valor_modifica_item_pedido").val().replace(/\./g, '');
+                var costo = $("#costo_modifica_item_pedido").val().replace(/\./g, '');
+
+                var obsdet = $("#obsdet_modifica_item_pedido").val();
+                if (parseFloat(cantidad) > 999999999) {
+                    mostrar_msj_error("Cantidad muy grande");
+                    $("#saving").css("display", "none");
+                    return false;
+                }
+
+                if (cantidad.toString().charAt(cantidad.toString().length - 1) == ".") {
+                    mostrar_msj_error("Cantidad no debe dejar punto final");
+                    $("#saving").css("display", "none");
+                    return false;
+                }
+
+                if (obsdet == null) { obsdet = ''; }
+
+                //if (presentacion == 'n') { mostrar_msj_advertencia("Debe seleccionar una presentación"); return false; }
+                //debugger
+                var fila_carrito = {
+                    referencia: referencia,
+                    codigo: codigo,
+                    detalle: nombre,
+                    cantidad: parseFloat(cantidad),
+                    presentacion: presentacion,
+                    nombpresentacion: nombpresentacion,
+                    presentacioncodigo: presentacion,
+                    cabeza: cabeza,
+                    esquelon:esquelon,
+                    unidad: unidad,
+                    cantidadreal: parseFloat(cantidad),
+                    precio: precio,
+                    valor: valor,
+                    costo: costo,
+                    anulado: "0",
+                    obsdet: obsdet
+                }
+
+
+                var foundIndex = carrito.findIndex(x => x.referencia == referencia);
+                carrito[foundIndex] = fila_carrito;
+
+                $("#saving").css("display", "none");
+                $("#modal_modifica_item_pedido").modal("hide");
+
+
+
+                editar_detalle_pedido();
+    
+            });
+
+            $("#btn_abre_modal_guardar_modificacion_pedido").click(function (e) {
+                e.preventDefault();
+                cantidad_carro = carrito.length;
+                if (cantidad_carro == 0) {
+                    mostrar_msj_error("Debe ingresar al menos un elemento al carro");
+                    return false;
+                }
+                var total = 0;
+                for (let pedido of carrito) {
+                    if (pedido.valor == "") { pedido.valor = "0"; }
+                    total += parseInt(pedido.valor);
+                }
+
+                //debugger;
+                $("#modal_guardar_pedido_modificado").modal("show");
+                $("#modal_guardar_pedido_modificado #registro_pedido").val(global_registro);
+                $("#modal_guardar_pedido_modificado #fecha_pedido").val(global_fecha);
+                $("#modal_guardar_pedido_modificado #vendedor_pedido").val(global_vendedor);
+                $("#modal_guardar_pedido_modificado #telefono_pedido").val(global_telefono);
+                $("#modal_guardar_pedido_modificado #cliente_pedido").val(global_cliente);
+                $("#modal_guardar_pedido_modificado #direccion_pedido").val(global_direccion);
+                $("#modal_guardar_pedido_modificado #comuna_pedido").val(global_comuna);
+                $("#modal_guardar_pedido_modificado #condominio_pedido").val(global_condominio);
+                $("#modal_guardar_pedido_modificado #total_pedido").val(formatea_miles(total));
+                $("#modal_guardar_pedido_modificado #fechaent_pedido").val(global_fechaent);
+                $("#modal_guardar_pedido_modificado #horaent_pedido").val(global_horaent);
+                if (global_am == 1) { $("#modal_guardar_pedido_modificado #am_pedido").prop('checked', true) };
+                if (global_pm == 1) { $("#modal_guardar_pedido_modificado #pm_pedido").prop('checked', true) };
+                if (global_factura == 1) { $("#modal_guardar_pedido_modificado #factura_pedido").prop('checked', true) };
+                if (global_ok == "1") { $("#modal_guardar_pedido_modificado #fechaent_pedido").prop("disabled", true) };
+                if (global_ok == "1") { $("#modal_guardar_pedido_modificado #ok_pedido").prop("disabled", true) };
+                if (global_ok == "1") { $("#modal_guardar_pedido_modificado #ok_pedido").prop('checked', true) };
+                $("#modal_guardar_pedido_modificado #observacion_pedido").val(global_obs);
+                $("#modal_guardar_pedido_modificado #telefono_pedido").focus();
+            });
+
+            $('#modal_detalle_pedido').on('shown.bs.modal', function () {
+                var table = $('#table_edicion_pedido').DataTable();
+                table.columns.adjust();
+            });
+
+            $('#form_guardar_pedido_modificado').validationEngine();
+
+            $('.guardarpedidomodificado').on('click', function (e) {
+                e.preventDefault();
+
+                if (global_ok == "1") {
+                    $("#fechaent_pedido").removeClass("validate[required,future[#fechaactual_pedido]]");
+                }
+
+                if (!$("#form_guardar_pedido_modificado").validationEngine('validate')) {
+                    return false; editar_detalleVenta
+                }
+
+               
+                var fechaent = $("#fechaent_pedido").val();
+                if (fechaent)
+                var registro = $("#registro_pedido").val();
+                var telefono = $("#telefono_pedido").val().replace(/\./g, '');
+                var cliente = $("#cliente_pedido").val();
+                var fecha = $("#fecha_pedido").val();
+                var vendedor = $("#vendedor_pedido").val();
+                var direccion = $("#direccion_pedido").val();
+                var comuna = $("#comuna_pedido").val();
+                var condominio = $("#condominio_pedido").val();
+                var total = $("#total_pedido").val().replace(/\./g, '');
+                var fechaent = $("#fechaent_pedido").val();
+                var horaent = $("#horaent_pedido").val();
+                var am = "0";
+                if ($("#am_pedido").prop('checked')) { am = "1" };
+                var pm = "0";
+                if ($("#pm_pedido").prop('checked')) { pm = "1" };
+                if (am == "0" && pm == "0")
+                {
+                mostrar_msj_advertencia("Debe indicar entrega AM o PM");
+                return false;
+                }
+
+                debugger
+                if (vendedor == 'n') {
+                    mostrar_msj_advertencia("Debe indicar vendedor");
+                    return false;
+                }
+
+                var factura = "0";
+                if ($("#factura_pedido").prop('checked')) { factura = "1" };
+                var obs = $("#observacion_pedido").val();
+                var ok = "0";
+                if (global_ok == "1")
+                {
+                    ok = "1";
+                }
+                else
+                {
+                    if ($("#ok_pedido").prop('checked')) { ok = "1" };
+                    $("#saving").css("display", "");
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Guardar_Pedido_Modificado/',
+                    data: JSON.stringify({
+                        registro: registro,
+                        fecha: fecha,
+                        telefono: telefono,
+                        cliente: cliente,
+                        vendedor: vendedor,
+                        direccionenvio: direccion,
+                        comunaenvio: comuna,
+                        condominioenvio: condominio,
+                        total: total,
+                        obs: obs,
+                        fechaent: fechaent,
+                        horaent: horaent,
+                        am: am,
+                        pm: pm,
+                        factura: factura,
+                        facturado: global_facturado,
+                        ok: ok,
+                        carrito: carrito,
+                        carrito_eliminado: carrito_eliminado
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#modal_guardar_pedido_modificado").modal("hide");
+                        $("#modal_detalle_pedido").modal("hide");
+                        $("#saving").hide();
+                        if (data.retornojson == "1") {
+                            mostrar_msj_success(data.mensajejson);
+                            cantidad_carro = 0;
+                            carrito = [];
+                            carrito_eliminado = [];
+                            $("#idDivPartialRevisionPedidos").html("");
+                            cargar_pedidos();
+                        } else if (data.retornojson == "-1") {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+                        } else {
+                            mostrar_msj_error(data.mensajejson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+
+                //var total = 0;
+                //for (let pedido of carrito) {
+                //    var cantidad = parseFloat(pedido.cantidad == "" || pedido.cantidad == "0" ? "0" : pedido.cantidad);
+                //    var precio = parseFloat(pedido.precio);
+                //    pedido.valor = Math.round(precio * cantidad, 0);
+                //    if (pedido.valor == "") { pedido.valor = "0"; }
+                //    total += parseInt(pedido.valor).toString();
+                //}
+
+
+
+            });
+
+            $(".ok_eliminar_pedido").click(function (e) {
+                e.preventDefault();
+
+                $("#saving").css("display", "");
+                var registro = $("#registro_pedido_eliminar").val();
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/Eliminar_Pedido/',
+                    traditional: true,
+                    data: {
+                        registro: registro
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.retornoJson == 1) {
+                            mostrar_msj_success('Datos eliminados exitosamente');
+                            cargar_pedidos("");
+                        } else if (data.retornoJson == -1) {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/../Home/Login";
+
+                        } else {
+                            mostrar_msj_error(data.errorJson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+
+                $("#saving").css("display", "none");
+                $("#modal_eliminar_pedido").modal("hide");
+
+            });
+
+            $(".ok_eliminar_item_pedido").click(function (e) {
+                e.preventDefault();
+                debugger;
+                var referencia = $("#referencia_item_pedido_eliminar").val();
+                let indexForDelete = carrito.findIndex(carrito => carrito.referencia === referencia);
+                carrito.splice(indexForDelete, 1);
+                $("#modal_eliminar_item_pedido").modal("hide");
+                editar_detalle_pedido();
+                var fila = {
+                    referencia: referencia
+                }
+                carrito_eliminado.push(fila);
+
+                $("#modal_detalle_pedido").addClass("actualiza_scroll");
+            });
+
+            $(".horacambiar").on('click', function (e) {
+                e.preventDefault();
+
+                valor = parseInt($("#horaent_pedido").val());
+                if ($(this).html() == '+') { valor++; $("#horaent_pedido").val(valor); }
+                else { valor > 1 ? valor-- : valor; $("#horaent_pedido").val(valor); }
+            });
+
+            $("#am_pedido").click(function (e) {
+                if ($("#am_pedido").prop('checked')) { $("#pm_pedido").prop('checked', false) };
+            });
+
+            $("#pm_pedido").click(function (e) {
+                if ($("#pm_pedido").prop('checked')) { $("#am_pedido").prop('checked', false) };
+            });
+
+            $('.calcula_valor').on('keyup', function (e) {
+                e.preventDefault();
+                var precio = parseInt(($("#precio_cant_pedidos").val() == "") ? 0 : $("#precio_cant_pedidos").val().replace(/\./g, ''));
+                var cantidad = parseFloat(($("#cantidad_cant_pedidos").val() == "") ? 0 : $("#cantidad_cant_pedidos").val().replace(/\,/g, '.'));
+                var valor = (precio * cantidad);
+                $("#valor_cant_pedidos").val(formatea_miles(parseInt(valor)));
+            });
+    //  fin documentos ready
+
+        });
+
+    function cargar_comunas(texto) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        var primera = "0";
+        $.getJSON('/Pedidos/GetComunas/?nombre=' + texto, function (data) {
+            //var items = "<option value='0'>--Seleccione--</option>";
+            $("#modal_cambiar_comuna #divlistado_comunas").empty();
+            var count = 0;
+            var items = "";
+            $.each(data, function (i, district) {
+                if (count == 0) { primera = district.codigo; }
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cambiar_comuna #divlistado_comunas').html("<select id='comuna' multiple='multiple' size='15' class='form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+            } else {
+                $('#modal_cambiar_comuna #divlistado_comunas').html("<select id='comuna' multiple='multiple' size='15' class='form-select input-sm' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        return primera;
+        $.ajaxSetup({
+            async: true
+        });
+
+    }
+
+
+    function agregar_condominios(comuna, nombre) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/Agregar_Condominio/',
+            data: JSON.stringify({
+                comuna: comuna,
+                nombre: nombre
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#saving").hide();
+                if (data.retornojson == 1) {
+                } else if (data.retornojson == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    mostrar_msj_error(data.mensajejson);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexion");
+            }
+        });
+        $.ajaxSetup({
+            async: true
+        });
+    }
+
+    function cargar_condominios(comuna, nombre) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        var primera = "0";
+        $.getJSON('/Pedidos/GetCondominio/', { comuna: comuna, nombre: nombre }, function (data) {
+            //var items = "<option value='0'>--Seleccione--</option>";
+            $("#modal_cambiar_condominio #divlistado_condominios").empty();
+            var count = 0;
+            var items = "";
+            $.each(data, function (i, district) {
+                if (count == 0) { primera = district.codigo; }
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cambiar_condominio #divlistado_condominios').html("<select id='condominio' multiple='multiple' size='15' class='form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+            } else {
+                $('#modal_cambiar_condominio #divlistado_condominios').html("<select id='condominio' multiple='multiple' size='15' class='form-select input-sm' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        $.ajaxSetup({
+            async: true
+        });
+        return primera;
+    }
+
+    function listar_Productos() {
+        var url_action = '@Html.Raw(Url.Action("partialListadoProductos", "Pedidos", new {material = "_material"}))';
+        url_action = url_action.replace("_material", $('#idproducto_pedidos').val());
+
+        $("#saving").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#saving").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialListadeProductos").html(result);
+                }
+            }
+        });
+    }
+
+    function listar_Productos_agregar() {
+        var url_action = '@Html.Raw(Url.Action("partialListadoProductosRevision", "Pedidos", new {material="_material",lista="lista_"}))';
+        url_action = url_action.replace("_material", $('#idproducto_agregar').val()).replace("lista_", 0);
+
+        $("#saving").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#saving").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#divpartialListadoProductos").html(result);
+                }
+            }
+        });
+    }
+
+    function cargar_pedidos(cliente) {
+        var url_action = '@Html.Raw(Url.Action("partialRevisionPedidos", "Pedidos", new {cliente = "_cliente"}))';
+        url_action = url_action.replace("_cliente", $('#idcliente').val());
+
+        $("#saving").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+
+                $("#saving").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialRevisionPedidos").html(result);
+                }
+            }
+        });
+    }
+
+    function cargar_el_pedido(pedido) {
+        var url_action = '@Html.Raw(Url.Action("partialRevisionPedidos", "Pedidos", new {cliente = "_cliente"}))';
+        url_action = url_action.replace("_cliente",pedido);
+
+        $("#saving").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+
+                $("#saving").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialRevisionPedidos").html(result);
+                }
+            }
+        });
+    }
+
+    function cargar_detalle_pedido(registro) {
+
+        carrito = [];
+
+        $.ajaxSetup({
+            async: false
+        });
+
+        $.getJSON('/Pedidos/GetDetallePedido/?registro=' + registro.toString(), function (data) {
+
+            //debugger
+            //console.log(data)
+            var count = 0;
+            $.each(data, function (i, item) {
+                count = 1;
+                var codigo = item.codigo;
+                var detalle = item.detalle;
+                var cantidad = item.cantidad;
+                var presentacion = item.presentacion;
+                var cabeza = item.cabeza;
+                var esquelon = item.esquelon;
+                var cantidadreal = item.cantidadreal;
+                var unidad = item.unidad;
+                var precio = item.precio;
+                var valor = item.valor;
+                var anulado = item.anulado;
+                var costo = item.costo;
+                var obsdet = item.obsdet;
+                var referencia = item.referencia;
+                var fila = {
+                    codigo: codigo,
+                    detalle: detalle,
+                    cantidad: cantidad,
+                    presentacion: presentacion,
+                    nombpresentacion: item.nombpresentacion,
+                    cabeza: cabeza,
+                    esquelon:esquelon,
+                    unidad: unidad,
+                    cantidadreal: cantidadreal,
+                    precio: precio,
+                    valor: valor,
+                    anulado: anulado,
+                    costo: costo,
+                    obsdet: obsdet,
+                    ok: global_ok,
+                    referencia: referencia,
+                }
+                carrito.push(fila);
+            });
+        });
+
+        $.ajaxSetup({
+            async: true
+        });
+    }
+
+    function editar_detalle_pedido() {
+
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/partialEdicionPedido/',
+            data: JSON.stringify({ carrito: carrito }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+
+                $("#loading").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#modal_detalle_pedido").on("shown.bs.modal", function () {
+                        var table = $('#table_carrito_pedidos').DataTable();
+                        table.columns.adjust();
+                    });
+                    $("#modal_detalle_pedido").modal("show");
+                    $("#divpartialdetallepedido").html(result);
+
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexión: no pudo acceder a la vista");
+            }
+        });
+    }
+
+    function llenarCarrito() {
+        $("#saving").css("display", "");
+
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/partialListadoCarrito/',
+            data: JSON.stringify({ carrito: carrito }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+
+                $("#saving").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialListadeProductos").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexión: no pudo acceder a la vista");
+            }
+        });
+
+    }
+
+    function obtieneCliente() {
+
+        var telefono = $("#telefono_pedido").val().replace(/\-/g, '');
+        $("cliente_pedido").val("");
+        $("direccion_pedido").val("");
+        $("dcomuna_pedido").val("");
+        $("#loading").show();
+        var fd = new FormData();
+        fd.append("telefono", telefono);
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/Leer_Cliente/',
+            data: fd,
+            contentType: false,
+            processData: false,
+            DataType: 'json',
+            success: function (data) {
+                if (data.retornojson == "1") {
+                    var cliente = data.nombrejson;
+                    var direccion = data.direccionjson;
+                    var comuna = data.comunajson;
+                    $("#cliente_pedido").val(cliente);
+                    $("#direccion_pedido").val(direccion);
+                    $("#comuna_pedido").val(comuna);
+                }
+                else if (data.retornojson == "0") {
+                    mostrar_msj_error("No existe el cliente indicado..!!");
+                }
+                else if (data.retornojson = "-1") {
+                    mostrar_msj_error("error +++ " + data.mensajejson);
+                }
+                $("#loading").hide();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    }
+
+    function obtieneProductoPorCodigo() {
+
+        var url_action = '@Url.Action("partialListadoProductos", "Pedidos", new {material = "_material"})';
+        url_action = url_action.replace("_material", $('#idproducto_pedidos').val())
+
+        $("#saving").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#saving").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialListadeProductos").html(result);
+                }
+            }
+        });
+    }
+
+    function cargar_vendedores() {
+            $('#vendedor_pedido').html("<option value='0'>Cargando ...</option>");
+            $.getJSON('/Pedidos/GetVendedores/', function (data) {
+                var items = "<option value='n'>--Seleccione--</option>";
+                $("#vendedor_pedido").empty();
+                var count = 0;
+                $.each(data, function (i, district) {
+                    count = 1;
+                    items += "<option value='" + district.codigo + "'>" + district.nombre + "</option>";
+                });
+                if (count == 0) {
+                    $('#vendedor_pedido').html("<option value='0'>No hay datos</option>");
+                } else {
+                    $('#vendedor_pedido').html(items);
+                }
+            });
+    }
+
+
+    function cargar_presentaciones(codigoproducto) {
+
+        $.getJSON('/Productos/GetPresentacionesCodPres/?codigoproducto=' + codigoproducto, function (data) {
+            //var items = "<option value='n'>--Seleccione--</option>";
+            var items = "";
+            //$("#modal_producto_agregar #unidad_prod").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' >" + district.nombre + "</option>";
+            });
+            //$('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+
+            if (count == 0) {
+                $('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'><option value='39'>SIN PRESENTACION</option></select>");
+            } else {
+                //items += "<option value='n'>--Seleccione--</option>";
+                $('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+            }
+
+        });
+
+        /*
+        $.getJSON('/Productos/GetPresentaciones/', function (data) {
+            var items = "<option value='0'>--Sin presentacion--</option>";
+            //$("#modal_producto_agregar #unidad_prod").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-select input-sm validate[required]' style='width:100%;'><option value='0'>No hay Presentaciones</option></select>");
+            } else {
+                $('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        */
+    }
+
+
+    function cargar_presentaciones_modifica_Item_pedido(codigoproducto, nombprod, codprod) {
+
+        $.getJSON('/Productos/GetPresentacionesCodPres/?codigoproducto=' + codigoproducto, function (data) {
+            var items = "<option value="+codprod+">" + nombprod + "</option>";
+            //var items = "";
+            //$("#modal_producto_agregar #unidad_prod").empty();
+            var count = 0;
+            $.each(data, function (i, item) {
+                count = 1;
+                items += "<option style='height:30px' value='" + item.codigo + "' >" + item.nombre + "</option>";
+            });
+            //$('#modal_cantidad_pedidos #divlistado_presentaciones_pedidos').html("<select id='presentacion_cant_pedidos' class='form-control form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+
+            if (count == 0) {
+                $('#modal_modifica_item_pedido #divlistado_presentaciones_modifica_item_pedido').html("<select id='presentacion_modifica_item_pedido' class='form-select input-sm validate[required]' style='width:100%;'><option value='39'>SIN PRESENTACION</option></select>");
+            } else {
+                $('#modal_modifica_item_pedido #divlistado_presentaciones_modifica_item_pedido').html("<select id='presentacion_modifica_item_pedido' class='form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+            }
+
+        });
+           
+    }
+
+    function limpiarGuardar() {
+        $(".limpiar").val("");
+    }
+
+</script>

@@ -1,0 +1,103 @@
+﻿@model IEnumerable<WebBox.Models.CotizacionesModels>
+
+@{
+    Layout = null;
+    int i = 0;
+}
+
+
+<table id="table_cotizaciones" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%" style="margin-bottom:0">
+    <thead>
+        <tr>
+            <th>
+                N°
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Total
+            </th>
+            <th class="text-center">
+                Agregar
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.numero)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.fecha)
+                </td>
+                <td>
+                    @item.total.ToString("N0")
+                </td>
+                <td>
+                    <button class="btn btn-success cotizacion_seleccionada btn-sm center-block" data-registro="@item.registro"  title="Seleccione la cotización para cargar en pedidos"><i class="glyphicon glyphicon-plus-sign"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<input type="hidden" id="contado_cotizaciones" value="@i"/>
+<script type="text/javascript" class="init">
+
+
+    $(document).ready(function () {
+        table_cotizaciones = $('#table_cotizaciones').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": false,
+            "searching": false,
+            "ordering": false,
+            "bFilter": false,
+            "scrollY": true,
+            "scrollX": true,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No existe cotizaciones asociadas al cliente",
+                "sEmptyTable": "No existe cotizaciones asociadas al cliente",
+                "sInfo": " _START_ al _END_ de  _TOTAL_ ",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        //cargar_presentaciones_modifica_peso_Item_pedido();
+
+
+        $('#table_cotizaciones tbody').on('click', '.cotizacion_seleccionada', function (e) {
+            e.preventDefault();
+            var registro = $(this).data("registro");
+            cargarCotizacionAcarrito(registro);
+            $("#modal_mostrar_listadocotizaciones").modal("hide");
+            llenarCarrito();
+        });
+    });
+
+</script>

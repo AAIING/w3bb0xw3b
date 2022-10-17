@@ -1,0 +1,127 @@
+﻿@model IEnumerable<WebBox.Models.ChoferesModels>
+
+@{
+    Layout = null;
+    int i = 0;
+}
+
+<table id="listado_table_choferes" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width:10%">Rut</th>
+            <th style="width:20%">Nombre</th>
+            <th style="width:20%">Dirección</th>
+            <th style="width:10%">Ciudad</th>
+            <th style="width:6%">Teléfono</th>
+            <th style="width:15%">Email</th>
+            <th style="width:2%" class="text-center"></th>
+            <th style="width:2%" class="text-center"></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td>
+                @item.rutcompleto
+            </td>
+            <td>
+                @item.nombre
+            </td>
+            <td>
+                @item.direccion
+            </td>
+            <td>
+                @item.ciudad
+            </td>
+            <td>
+                @item.telefono
+            </td>
+            <td>
+                @item.email
+            </td>
+            <td class="text-center editar_chofer" title="Editar Chofer"
+                data-rut="@item.rutcompleto"
+                data-direccion="@item.direccion"
+                data-nombre="@item.nombre"
+                data-ciudad="@item.ciudad"
+                data-email="@item.email">
+                <i class="glyphicon glyphicon-edit" style="font-size: 18px;cursor: pointer" data-fila="@i.ToString()"></i>
+            </td>
+            <td class="text-center eliminar_chofer" title="Eliminar Chofer"
+                data-rut="@item.rut">
+                <i class="glyphicon glyphicon-remove" style="font-size: 18px; cursor: pointer" data-fila="@i.ToString()"></i>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript" class="init">
+    $(document).ready(function () {
+        var table_choferes = $('#listado_table_choferes').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": true,
+            "searching": true,
+            "lengthMenu": [[10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+       
+        $('#listado_table_choferes tbody').on('click', '.eliminar_chofer', function (e) {
+            e.preventDefault();
+            var rut = $(this).data('rut');
+            $("#modal_eliminar_maestro").modal("show");
+            $("#modal_eliminar_maestro input[id=rut_hidden]").val(rut);
+
+        });
+        $('#listado_table_choferes tbody').on('click', '.editar_chofer', function (e) {
+            e.preventDefault();
+            var rut = $(this).data('rut');
+            var nombre = $(this).data('nombre');
+            var direccion = $(this).data('direccion');
+            var ciudad = $(this).data('ciudad');
+            var telefono = $(this).data('telefono');
+            var email = $(this).data('email');
+            $("#modal_editar").modal("show")
+            $("#modal_editar input[id=rut_maestro_edit]").val(rut);
+            $("#modal_editar input[id=nombre_maestro_edit]").val(nombre);
+            $("#modal_editar input[id=direccion_maestro_edit]").val(direccion);
+            $("#modal_editar input[id=ciudad_maestro_edit]").val(ciudad);
+            $("#modal_editar input[id=telefono_maestro_edit]").val(telefono);
+            $("#modal_editar input[id=email_maestro_edit]").val(email);
+        });
+    });
+
+
+
+
+</script>

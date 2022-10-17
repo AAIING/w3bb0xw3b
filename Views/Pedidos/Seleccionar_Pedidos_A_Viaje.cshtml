@@ -1,0 +1,348 @@
+﻿
+@{
+    Layout = null;
+    DateTime oPrimerDiaDelMes = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+}
+
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div id="saving" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>Guardando...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-1">
+        Tipo Zona
+    </div>
+
+    <div class="col-lg-2">
+        <select id="listado_zonas" class="form-control" data-live-search="true">
+            <option value="0">--Cargando Datos--</option>
+        </select>
+    </div>
+
+    <div class="col-lg-1">
+        Comuna
+    </div>
+
+    <div class="col-lg-2">
+        <select id="listado_comunas" class="form-control" data-live-search="true">
+            <option value="0">--Seleccione Zona--</option>
+        </select>
+    </div>
+
+    <div class="col-lg-1">
+        Tipo Pedido
+    </div>
+
+    <div class="col-lg-2">
+        <select id="listado_tipopedido" class="form-control" data-live-search="true">
+            <option value="2">Todos</option>
+            <option value="0">Fishbox</option>
+            <option value="1">Restaurant</option>
+        </select>
+    </div>
+    <div class="col-lg-1">
+    </div>
+
+    <div class="col-lg-2">
+        <button class="btn btn-primary" id="idBuscar" title="Buscar" style="width:100%"><i class="glyphicon glyphicon-search"></i> Buscar Pedidos</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-2">
+        <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            Fecha
+            &nbsp;&nbsp;&nbsp;
+            <input type="date" class="form-control" id="idfecha" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+        </div>
+    </div>
+    <div class="col-lg-1">
+        Conductores
+    </div>
+    <div class="col-lg-3">
+        <select id="listado_choferes" class="form-control" data-live-search="true">
+            <option value="0">--Cargando Datos--</option>
+        </select>
+    </div>
+    <div class="col-lg-1">
+        Vehículo
+    </div>
+    <div class="col-lg-3">
+        <select id="listado_patente" class="form-control" data-live-search="true">
+            <option value="0">--Cargando Datos--</option>
+        </select>
+    </div>
+    <div class="col-lg-2 ">
+        <input type="button" class="form-control btn btn-success text-right" id="btn_asignar" style="width:100%" title="Asignar pedidos seleccionados" value="Aprobar Seleccionados" autofocus>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12">
+        <div id="idDivPartialListadoPedidos">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_confirma_pedidos_viaje" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_pesoreal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal_advertencia">
+                <button id="close_modal_confirmaguardar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" >Confirmar </h3>
+                <input type="hidden" id="opcion_cierre_hidden" />
+            </div>
+            <div class="modal-body text-center">
+                <span style="font-size:14px">¿Está seguro que de asignar pedidos al viaje?</span>
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                        <input id="btn_pedidosviaje" type="submit" class="btn btn-primary" data-dismiss="modal" value="Aceptar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var table_pedidos_maestro = "";
+    var lista_pedidos = [];
+        $(document).ready(function () {
+            listarZona();
+            listarPatente("");
+            listarChoferes("");
+
+            cargar_pedidosviaje("2");
+
+            $('#listado_tipopedido').on('change', function () {
+                var value = $(this).val();
+                //cargar_pedido(value);
+                //alert(value);
+            });
+
+            /*
+            $("#listado_tipopedido").on("click", function () {
+                var opt = $(this).val()
+                alert(opt)
+            });
+            */
+
+            $("#listado_zonas").change(function (e) {
+                listarComunas();
+            });
+
+            $("#idBuscar").click(function (e) {
+               
+                cargar_pedidosviaje("");
+            });
+
+            $("#btn_asignar").click(function (e) {
+                $("#modal_confirma_pedidos_viaje").modal("show");
+            });
+
+            $("#btn_pedidosviaje").click(function (e) {
+                var pedidos = [];
+                var c = 0;
+                var chofer = $("#listado_choferes option:selected").text();
+                var rutchofer = $("#listado_choferes").val();                
+                var patente = $("#listado_patente ").val(); //option:selected
+                if (patente == 0) {
+                    mostrar_msj_advertencia("No hay vehiculos registrados");
+                    return false;
+                }
+                var fecha = $("#idfecha").val();
+                //
+                table_pedidos_maestro.$(".seleccionado").each(function () {
+                    if ($(this).prop('checked')) {
+                        c++;
+                        var item_viaje = {
+                            pedido: $(this).data("registro"),
+                            asignado: 1
+                        }
+                        pedidos.push(item_viaje);
+                    };
+                });
+                if (c == 0) {
+                    mostrar_msj_advertencia("Debe seleccionar pedidos");
+                    return false;
+                }
+                //
+                $.ajax({
+                    type: "POST",
+                    url: '/Pedidos/AsignarViajesPedidos_Seleccionadas/',
+                    data: JSON.stringify({
+                        chofer: chofer,
+                        rutchofer: rutchofer,
+                        patente: patente,
+                        fecha: fecha,
+                        pedidos: pedidos
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.retornojson > 0) {
+                            mostrar_msj_success("Pedidos asignado existosamente al viaje N°" + data.retornojson);
+                            cargar_pedidosviaje("2")
+                        } else if (data.retornojson == "-1") {
+                            mostrar_msj_error(data.mensajejson);
+                        } else {
+                            mostrar_msj_error(data.mensajejson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("Error de Conexión");
+                    }
+                });
+            });
+        });
+
+    function listarComunas() {
+        var region = $("#listado_zonas").val();
+        if (region != null) {
+            $.getJSON('/Zonas/BuscarComunas/?region=' + region, function (data) {
+                var items = "";
+                //$("#listado_patente").empty();
+                var count = 0;
+                $.each(data, function (i, district) {
+                    count = 1;
+                    items += "<option value='" + district.nombre + "' >" + district.nombre + "</option>";
+                });
+                if (count == 0) {
+                    $('#listado_comunas').html("<option value='0' >No hay datos</option>");
+                } else {
+                    $('#listado_comunas').html(items);
+                }
+                $("#listado_comunas").selectpicker('refresh');
+
+            });
+        }
+    }
+
+    function listarZona() {
+        $.getJSON('/Zonas/BuscarZonas/', function (data) {
+            var items = "";
+            $("#listado_zonas").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.tipozona + "' >" + district.tipozona + "</option>";
+            });
+
+            if (count == 0) {
+                $('#listado_zonas').html("<option value='0' >No hay datos</option>");
+            } else {
+                $('#listado_zonas').html(items);
+            }
+            $("#listado_zonas").selectpicker('refresh');
+
+        });
+    }
+
+    function listarPatente(nombre) {
+        $.getJSON('/Vehiculos/BuscarPatentes/?nombre_patente=' + nombre, function (data) {
+            var items = "";
+            $("#listado_patente").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.patente + "' >" + district.nombre + "</option>";
+            });
+
+            if (count == 0) {
+                $('#listado_patente').html("<option value='0' >No hay datos</option>");
+            } else {
+                $('#listado_patente').html(items);
+            }
+            $("#listado_patente").selectpicker('refresh');
+
+        });
+    }
+
+    function listarChoferes(nombre) {
+        $.getJSON('/Choferes/BuscarChoferes/?nombre_chofer=' + nombre, function (data) {
+            var items = "";
+            $("#listado_choferes").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.rut + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_choferes').html("<option value='0' >No hay datos</option>");
+            } else {
+                $('#listado_choferes').html(items);
+            }
+            $("#listado_choferes").selectpicker('refresh');
+
+        });
+    }
+
+    function cargar_pedidosviaje(tipopedido){       
+        //debugger
+        var comuna = $("#listado_comunas").val();
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/procesoPedidos_A_viaje_Json/',
+            data: JSON.stringify({
+                comuna: comuna,
+                tipopedido: tipopedido,
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //console.log(data)
+                lista_pedidos = [];
+                $.each(data, function (i, item) {
+                    var item_pedido = {
+                        fecha:  item.fecha,
+                        estado: item.estado,
+                        telefono: item.telefono,
+                        cliente: item.cliente,
+                        direccion: item.direccion,
+                        comuna: item.comuna ,
+                        condominio: item.condominio,
+                        obs: item.obs,
+                        fechaent: item.fechaent,
+                        registro: item.registro,
+                        web: item.web,
+                        empaqrestaurant: item.empaqrestaurant
+                    }
+                    lista_pedidos.push(item_pedido);
+                });
+                //debugger
+                ver_lista_de_pedidos();
+                //console.log(lista_pedidos)
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("Error de Conexión");
+            }
+        });
+    }
+
+    /***/
+    function ver_lista_de_pedidos() {
+        var url_action = '@Html.Raw(Url.Action("partialProcesoPedidos_A_viaje", "Pedidos"))';
+        $.ajax({
+            async: false,
+            data: JSON.stringify({ lista: lista_pedidos }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#idDivPartialListadoPedidos").html(result);
+            }
+        });
+    }
+
+</script>

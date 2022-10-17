@@ -1,0 +1,331 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<div class="modal fade" id="modal_advertencia_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_elimina" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal_advertencia">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina">Eliminar </h3>
+            </div>
+            <div class="modal-body text-center">
+                ¿Está seguro de eliminar el Vendedor?<br />
+                <br />
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input id="btn_elimina_vendedor" type="submit" class="btn btn-danger" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="id_form_insert" method="POST" name="fileinfo" role="form">
+    <div class="modal fade" id="modal_crearvendedor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_agregar" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_agregar">Agregar Vendedor </h3>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Codigo </label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="codigovendedor" type="text" class="form-control numerico_int" value="00" maxlength="2" data-prompt-position="topRight:-70" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombrevendedor" type="text" class="form-control validate[required]" data-prompt-position="topRight:-70"  style="text-transform: uppercase;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Comision</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="comision1vendedor" type="text" class="form-control validate[required]" onfocus="this.select()" onkeypress="return SoloNumerosDecimales(event, '0.0', 7, 2);"  data-prompt-position="topRight:-70">
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <input id="btn_agregar_vendedor" type="submit" class="btn btn-success" value="Crear" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="id_form_edit" method="POST" name="fileinfo" role="form">
+    <div class="modal fade" id="modal_editarvendedor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_editar" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_editar">Editar Vendedor </h3>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Codigo </label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input id="codigovendedor_edit" type="text" class="form-control validate[required]" placeholder="xxxx" data-prompt-position="topRight:-70" style="text-transform: uppercase;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombrevendedor_edit" type="text" class="form-control validate[required]" data-prompt-position="topRight:-70">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Comision</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="comision1vendedor_edit" 
+                                       type="text" class="form-control validate[required] numerico_dec" 
+                                       data-prompt-position="topRight:-70" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <input id="btn_editar_vendedor" type="submit" class="btn btn-success" value="Guardar" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-xs-0"></div>
+    <div class="col-lg-3 col-md-3 col-xs-12">
+        @*<h3 class="page-header-azuloscuro top_tituloencabezado">
+            Administrador Vendedores
+        </h3>*@
+    </div>
+    @*<div class="col-lg-1 col-md-1 col-xs-0"></div>*@
+    <div class="col-lg-1 col-md-1 col-xs-12">
+        <h3>
+            <input id="abreModal_crear_vendedor" type="submit" class="btn btn-primary" value="+Vendedor" />
+        </h3>
+    </div>
+    <div class="col-lg-4 col-md-4 col-xs-0"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-xs-0"></div>
+    <div class="col-lg-4 col-md-4 col-xs-12">
+        <div id="partialListadoVendedores">
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-xs-0"></div>
+</div>
+
+
+
+    <script type="text/javascript" class="init">
+
+        var fila_seleccionada = 0;
+        var referencia_seleccionada = 0;
+        var global_vendedor = 0;
+        var vendedor = "";
+        var table = "";
+
+        $(document).ready(function () {
+
+            cargar_Vendedores();
+
+            $('#btn_elimina_vendedor').on('click', function (e) {
+                e.preventDefault();
+                $("#ajax_loader").css("display", "");
+                $.ajax({
+                    type: "POST",
+                    url: '/Vendedores/EliminarVendedor/',
+                    traditional: true,
+                    data: {
+                        codigo: global_vendedor
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+                        $("#ajax_loader").hide();
+                        $("#modal_advertencia_eliminar").modal("hide");
+                        if (data.retornojson == "1") {
+                            mostrar_msj_success('Vendedor eliminado correctamente');
+                            cargar_Vendedores();
+                        } else if (data.retornojson == "-1") {
+                            mostrar_msj_error(data.mensajejson);
+                        } else {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/Acceso/Login";
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+            });
+
+            $('#abreModal_crear_vendedor').on('click', function (e) {
+                e.preventDefault();
+                $("#modal_crearvendedor").modal("show");
+            });
+
+            $('#id_form_insert').validationEngine();
+            $('#btn_agregar_vendedor').on('click', function (e) {
+                e.preventDefault();
+                $("#ajax_loader").css("display", "");
+                if (!$("#id_form_edit").validationEngine('validate')) {
+                    return false;
+                }
+                var nombre = $("#nombrevendedor").val().toUpperCase();
+                if (nombre == "")
+                {
+                    mostrar_msj_advertencia("Debe indicar nombre");
+                    return false;
+                }
+                var comision1 = $("#comision1vendedor").val();
+                if (comision1 == "")
+                {
+                    mostrar_msj_advertencia("Debe indicar % comision");
+                    return false;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '/Vendedores/IngresarVendedor/',
+                    traditional: true,
+                    data: {
+                        nombre: nombre,
+                        comision1: comision1
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+                        $("#ajax_loader").hide();
+                        if (data == "0") {
+                            mostrar_msj_advertencia('Vendedor ya existe con ese codigo');
+                        } else if (data == "1") {
+                            mostrar_msj_success('Vendedor creado Correctamente');
+                            $("#modal_crearvendedor").modal("hide");
+                            cargar_Vendedores();
+                        } else if (data == "-1") {
+                            $("#modal_crearvendedor").modal("hide");
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/Acceso/Login";
+
+                        } else {
+                            $("#modal_crearvendedor").modal("hide");
+                            mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+            });
+
+            $('#id_form_edit').validationEngine();
+            $("#btn_editar_vendedor").click(function (e) {
+                e.preventDefault();
+                
+                var ind_guarda = 1;
+                if (!$("#id_form_edit").validationEngine('validate')) {
+                    return false;
+                    ind_guarda = 0;
+                }
+                var codigo = $("#codigovendedor_edit").val();
+                var nombre = $("#nombrevendedor_edit").val().toUpperCase();
+                var comision1 = $("#comision1vendedor_edit").val();
+                $.ajax({
+                    type: "POST",
+                    url: '/Vendedores/EditarVendedor/',
+                    traditional: true,
+                    data: {
+                        codigo: codigo,
+                        nombre: nombre,
+                        comision1: comision1
+                    },
+                    DataType: 'json',
+                    success: function (data) {
+                        $("#modal_editarvendedor").modal("hide");
+                        $("#ajax_loader").hide();
+                        if (data == "") {
+                            mostrar_msj_success('Vendedor editado Correctamente');
+                            cargar_Vendedores();
+                        } else if (data == -1) {
+                            mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                            window.location.href = "/Acceso/Login";
+
+                        } else {
+                            mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+            });
+
+         });
+
+        function cargar_Vendedores() {
+            
+            var url_action = '@Html.Raw(Url.Action("partialListadoVendedores", "Vendedores"))';
+            $("#ajax_loader").css("display", "");
+            $.ajax({
+                async: false,
+                contentType: false,
+                prSCessData: false,
+                type: 'POST',
+                url: url_action,
+                success: function (result) {
+                    
+                    $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+                    } else {$("#partialListadoVendedores").html(result);}
+                }
+            });
+        }
+
+    </script>
+
+

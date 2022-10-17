@@ -1,0 +1,38 @@
+﻿@model IEnumerable<WebBox.Models.ResumenInsumosModels>
+
+@{
+    Layout = null;
+    int i = 0;
+}
+
+<table id="table_resumen_insumos" class="table table-striped table-bordered tableSectiona" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th style="width: 8%">Código</th>
+            <th style="width: 60%">Nombre</th>
+            <th style="width: 18%">Cantidad</th>
+            <th style="width: 13%">Un</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td>
+                <input type="submit" class="codigo" style="width:100%" value="@item.codigo" data-codigo="@item.codigo" data-nombre="@item.nombre" data-unidad="@item.unidad" data-cantidad="@item.cantidad" />
+            </td>
+            <td>
+                <div data-fila="@i">@item.nombre</div>
+            </td>
+            <td class="text-right">
+                @item.cantidad.ToString("N0")
+            </td>
+            <td>
+                @item.unidad
+            </td>
+
+        </tr>
+        }
+    </tbody>
+</table>

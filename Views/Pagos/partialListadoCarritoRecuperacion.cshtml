@@ -1,0 +1,60 @@
+﻿@model IEnumerable<WebBox.Models.PagosDCarritoModels>
+
+@{
+    Layout = null;
+    int i = 0;
+}
+
+
+<table id="table_recuperacion" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%" style="margin-bottom:0">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width:20%">
+                TD
+            </th>
+            <th style="width:25%">
+                N°Doc
+            </th>
+            <th style="width:25%">
+                Vencimiento
+            </th>
+            <th style="width:30%">
+                Abono
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.tipodoc
+                </td>
+                <td>
+                    @item.numerodoc
+                </td>
+                <td>
+                    @item.fecha
+                </td>
+                <td>
+                    <input type="text" id="abonar_@item.id" class="form-control_normal abonos_carrito text-right" onblur="actualizar_abono_carrito(this.value,'@item.id');this.value=Moneda(this.value)" onfocus="this.select()" onkeypress="return validateIntKeyPress(this,event);" value="@item.abono.ToString("N0")" />
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="3" class="text-right">
+                TOTAL
+            </th>
+            <th>
+                <div class="total_recuperacion_carrito text-right">@ViewData["total_recuperacion"]</div>
+            </th>
+        </tr>
+    </tfoot>
+</table>
+<script type="text/javascript" class="init">
+    $(document).ready(function () {
+        $("#formapago_total").val($(".total_recuperacion_carrito").html());
+    });
+</script>

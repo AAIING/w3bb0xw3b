@@ -1,0 +1,182 @@
+﻿
+@{
+
+    Layout = null;
+}
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<br />
+
+<div class="row">
+    <label class="col-lg-12 control-label text-center">Fecha inicio</label>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><input type="date" id="idfechainicio" class="form-control fecha" /></div>
+        <div class="col-lg-5"></div>
+    </div>
+    <label class="col-lg-12 control-label text-center">Fecha corte</label>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><input type="date" id="idfechacorte" class="form-control fecha" /></div>
+        <div class="col-lg-5"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><button type="button" id="idvendedor" class="form-control vendedor">Vendedor</button></div>
+        <div class="col-lg-5"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><button type="button" id="btn_generar_informe" class="btn btn-primary" style="width:100%">Buscar</button></div>
+        <div class="col-lg-5"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><button type="button" id="btn_generar_informe_excel" class="btn btn-success" style="width:100%">Generar Excel</button></div>
+        <div class="col-lg-5"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_vendedor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_cambiar_vendedor">vendedor</h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="textobuscavendedor" value="" title="texto busqueda" />
+                <input type="button" id="btn_textobuscavendedor" value="Buscar" title="buscar vendedor" />
+                <div id="divlistado_vendedores">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" data-dismiss="modal" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="ok_cambiar_vendedor" class="btn btn-primary pull-right">Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+    <div class="col-lg-6 col-md-6 col-xs-12" id="divpartialMargenesvendedores"></div>
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var d = new Date();
+        var curDay = d.getDate();
+        var curMonth = d.getMonth() + 1;
+        var curYear = d.getFullYear();
+
+        var fi = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-01";
+        var ft = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-" + (curDay < 10 ? "0" + curDay : curDay);
+
+        $('#idfechainicio').val(fi);
+        $("#idfechacorte").val(ft);
+        $("#idvendedor").val("");
+        cargar_informe("");
+
+        $("#btn_generar_informe_excel").on('click', function () {
+            var fechai = $('#idfechainicio').val();
+            var fechac = $('#idfechacorte').val();
+            var nombre = $('#idvendedor').text();
+            if (nombre == "Vendedor" || nombre == "TODOS") { nombre = ""; }
+            window.open("/Informes/Excel_MargenesVendedores?fechai=" + fechai + "&fechac=" + fechac + "&vendedor=" + nombre, '_blank');
+        });
+        $("#idvendedor").click(function (e) {
+
+            $("#modal_cambiar_vendedor").modal("show");
+            cargar_vendedores("");
+        });
+
+        $("#ok_cambiar_vendedor").click(function (e) {
+            e.preventDefault();
+            var arreglo = $("#modal_cambiar_vendedor #vendedor").val();
+            var vendedor = arreglo[0];
+            var nombre = $("#vendedor option:selected").val();
+            $("#idvendedor").text(nombre);
+            $("#modal_cambiar_vendedor").modal("hide");
+        });
+
+        $("#btn_generar_informe").on('click', function (e) {
+            e.preventDefault();
+
+            var nombre = $('#idvendedor').text();
+            if (nombre == "Vendedor" || nombre == "TODOS") { nombre = ""; }
+            cargar_informe(nombre);
+        });
+
+    });
+
+    function cargar_vendedores(texto) {
+
+        $.ajaxSetup({
+            async: false
+        });
+        var primera = "0";
+        $.getJSON('/Pedidos/GetVendedores/?nombre=' + texto, function (data) {
+            var items = "<option value='TODOS'>--TODOS--</option>";
+            $("#modal_cambiar_vendedor #divlistado_vendedores").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                if (count == 0) { primera = district.codigo; }
+                count = 1;
+                items += "<option style='height:30px' value='" + district.codigo + "' data-nombre='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_cambiar_vendedor #divlistado_vendedores').html("<select id='vendedor' multiple='multiple' size='15' class='form-select input-sm' style='width:100%;'><option value='0' data-nombre=''>No hay datos</option></select>");
+            } else {
+                $('#modal_cambiar_vendedor #divlistado_vendedores').html("<select id='vendedor' multiple='multiple' size='15' class='form-select input-sm' style='width:100%;'>" + items + "</select>");
+            }
+        });
+        return primera;
+        $.ajaxSetup({
+            async: true
+        });
+
+    }
+
+    function cargar_informe(vendedor) {
+        var fechai = $('#idfechainicio').val();
+        var fechac = $('#idfechacorte').val();
+        $("#loading").show();
+        $.ajax({
+            type: "POST",
+            url: '/Informes/partialMargenesvendedores/',
+            data: JSON.stringify({ fechai: fechai, fechac: fechac, vendedor: vendedor }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+
+                $("#loading").hide();
+                if (result == -1) {
+                    mostrar_msj_error_volverIniciar("Su Sessión a ha expirado. Ingrese al Sistema nuevamente", "/../Home/Login");
+                } else {
+                    $("#divpartialMargenesvendedores").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexion");
+            }
+        });
+
+    }
+</script>
+

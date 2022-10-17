@@ -1,0 +1,349 @@
+﻿
+@{
+    Layout = null;
+}
+        
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<div id="saving" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>Guardando...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-2 col-xs-0">
+    </div>
+    <div class="col-lg-5 col-xs-6">
+        <input type="text" class="form-control text-left" id="idcliente" placeholder="Nombre de cliente" autofocus>
+    </div>
+    <div class="col-lg-3 col-xs-6">
+        <input type="button" class="form-control btn btn-danger text-right" id="ok_pdfpedidospendientes" title="PDF Resumen Productos requerido para pedidos seleccionados" value="PDF Resumen Productos">
+    </div>
+    <div class="col-lg-2 col-xs-0">
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12">
+        <div id="idDivPartialRevisionPedidos">
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal_detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="max-width:1200px;width:100%">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                @*<button id="close_modal_detalle_pedido" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>*@
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_modifica_item_pedido">Modifica pedido</h3>
+            </div>
+            <div class="modal-body">
+                <div id="divpartialdetallepedido">
+
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-12 col-xs-12 center-block">
+                                <button type="button" id="btn_cerrar_modal_revisar_pedido" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal_resumen_insumos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content modal-sm center-block">
+            <div class="modal-header header_modal">
+                @*<button id="close_modal_detalle_pedido" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>*@
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_modifica_item_pedido">Pedidos</h3>
+            </div>
+            <div class="modal-body">
+                <div id="divpartialresumeninsumos">
+
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="btn_cerrar_modal_revisar_pedido" class="btn btn-warning pull-left" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="col-lg-6 col-xs-6">
+                                <button type="button" id="btn_generar_abastecimiento" class="btn btn-primary pull-right" data-dismiss="modal">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_pdfpendientes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="max-width:1200px;width:60%">
+        <div class="modal-content modal-lg">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_pdfpedidospendientes">Resumen Productos</h3>
+            </div>
+            <div class="modal-body">
+                <div id="pdfpedidospendientes">
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-12 col-xs-12">
+                                <button type="button" data-dismiss="modal" class="btn btn-primary center-block">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var indice_carro = 0;
+    var fila_actual_carro = 0;
+    var cantidad_carro = 0;
+    var table_pedidos = "";
+    var table_carrito = "";
+    var carrito = [];
+    var carrito_producto = 0;//1: producto, 2:carrito
+
+    var global_fecha = "";
+    var global_telefono = "";
+    var global_cliente = "";
+    var global_direccion = "";
+    var global_comuna = "";
+    var global_total = "";
+    var global_fechaent = "";
+    var global_horaent = "";
+    var global_obs = "";
+    var global_vendedor = "";
+    var global_nombrevendedor = "";
+    var global_registro = "";
+
+    $(document).ready(function () {
+
+
+        cargar_pedidos("");
+
+        $('#idcliente').on({
+            keypress: function () { typed_into = true; },
+            change: function () {
+                cargar_pedidos($('#idcliente').val());
+                $("#idcliente").focus();
+            }
+        });
+
+        $("#idresumen").click(function (e) {
+            e.preventDefault();
+            pedidos = [];
+            c = 0;
+            $("#table_pedidos_maestro .seleccionado").each(function () {
+                if ($(this).prop('checked')) {
+                    c++;
+                    pedidos.push($(this).data("registro"));
+                };
+            });
+            if (c == 0) {
+                mostrar_msj_advertencia("Debe seleecionar pedidos");
+                return false;
+            }
+
+            $("#loading").css("display", "");
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/partialResumenInsumos/',
+                traditional: true,
+                data: {
+                    pedidos: pedidos
+                },
+                DataType: 'json',
+                success: function (data) {
+                    $("#modal_resumen_insumos").modal("show");
+                    $("#divpartialresumeninsumos").html(data);
+                 },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error " + XMLHttpRequest + " " + textStatus + " " + errorThrown);
+                }
+            });
+            $("#loading").css("display", "none");
+        });
+
+        $("#ok_pdfpedidospendientes").click(function (e) {
+            e.preventDefault();
+
+            pedidos = [];
+            c = 0;
+            $("#table_pedidos_maestro .seleccionado").each(function () {
+                if ($(this).prop('checked')) {
+                    c++;
+                    pedidos.push($(this).data("registro"));
+                };
+            });
+            if (c == 0) {
+                mostrar_msj_advertencia("Debe seleecionar pedidos");
+                return false;
+            }
+            $("#saving").css("display", "");
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/ok_PDFPedidosPendientes/',
+                data: JSON.stringify(
+                    {
+                        pedidos: pedidos
+                    }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data.retornoJson == "1") {
+
+                        $("#modal_pdfpendientes").modal("show");
+                        $("#pdfpedidospendientes").html("");
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe',
+                            'src': data.documentoabastecimientoJson
+                        });
+                        $('#pdfpedidospendientes').html(
+                            iframe
+                        );
+                    } else if (data.retornoJson == "-1") {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Home/Login";
+
+                    } else {
+                        mostrar_msj_error(data);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexion");
+                }
+            });
+            $("#saving").css("display", "none");
+        });
+
+       
+
+
+
+
+        $('#modal_detalle_pedido').on('shown.bs.modal', function () {
+            var table = $('#table_edicion_pedido').DataTable();
+            table.columns.adjust();
+        });
+
+
+//  fin documentos ready
+
+    });
+    function cargar_detalle_pedido(registro) {
+
+        carrito = [];
+
+        $.ajaxSetup({
+            async: false
+        });
+
+        $.getJSON('/Pedidos/GetDetallePedido/?registro=' + registro.toString(), function (data) {
+
+            var count = 0;
+            $.each(data, function (i, item) {
+                count = 1;
+                var codigo = item.codigo;
+                var detalle = item.detalle;
+                var cantidad = item.cantidad;
+                var unidad = item.unidad;
+                var precio = item.precio;
+                var valor = item.valor;
+                var costo = item.costo;
+                var obsdet = item.obsdet;
+                var referencia = item.referencia;
+                var fila = {
+                    codigo: codigo,
+                    detalle: detalle,
+                    cantidad: cantidad,
+                    unidad: unidad,
+                    precio: precio,
+                    valor: valor,
+                    costo: costo,
+                    obsdet: obsdet,
+                    referencia: referencia,
+                }
+                carrito.push(fila);
+            });
+        });
+        $.ajaxSetup({
+            async: true
+        });
+    }
+    function editar_detalle_pedido() {
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/partialRevisionDetallePedido/',
+            data: JSON.stringify({ carrito: carrito }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+
+                $("#loading").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#modal_detalle_pedido").on("shown.bs.modal", function () {
+                        var table = $('#table_carrito_pedidos').DataTable();
+                        table.columns.adjust();
+                    });
+                    $("#modal_detalle_pedido").modal("show");
+                    $("#divpartialdetallepedido").html(result);
+
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexión: no pudo acceder a la vista");
+            }
+        });
+    }
+
+    function cargar_pedidos(cliente) {
+        var url_action = '@Html.Raw(Url.Action("partialPedidosPendientes", "Pedidos", new {cliente = "_cliente"}))';
+        url_action = url_action.replace("_cliente",cliente);
+
+        $("#saving").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#saving").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+                    $("#idDivPartialRevisionPedidos").html(result);
+                }
+            }
+        });
+    }
+
+   
+
+</script>

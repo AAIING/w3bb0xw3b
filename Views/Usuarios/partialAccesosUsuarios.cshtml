@@ -1,0 +1,91 @@
+﻿@model IEnumerable<WebBox.Models.AccesosModels>
+
+@{
+    Layout = null;
+    int fila = 1;
+}
+
+<div class="responsiva_tabla">
+    <table id="table_accesos" class="table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+        <thead>
+            <tr style="background-color: #FF9A00; color: #fff;">
+                <th style="width:100px">Opcion</th>
+                <th style="width:100px" class="text-center">Acceso</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <div>@item.opcion</div>
+                    </td>
+                    <td class="text-center">
+                        <i class="glyphicon glyphicon-remove eliminar text-center" data-referencia="@item.referencia" style="font-size: 22px; color: red; cursor: pointer"></i>
+                    </td>
+                </tr>
+                fila++;
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script type="text/javascript" class="init">
+    var fila_seleccionada = 0;
+    var referencia_seleccionada = 0;
+    var table = "";
+
+    $(document).ready(function () {
+        table = $('#table_accesos').DataTable({
+            destroy: true,
+            "bInfo": false,
+            "bPaginate": false,
+            "searching": false,
+            "scrollY": '50vh',
+            "scrollCollapse": true,
+            "paging": false,
+            "columns": [{ "width": "80%" }, null],
+            "lengthusuario": [[10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 15, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+
+
+
+        $('#table_accesos tbody').on('click', 'tr .eliminar', function (e) {
+            e.preventDefault();
+            
+            referencia_seleccionada = $(this).data("referencia");
+            $("#modal_advertencia_eliminar_opcion").modal("show");
+        });
+
+    });
+</script>
+
+

@@ -1,0 +1,238 @@
+﻿@model IEnumerable<WebBox.Models.PedidosDetalleProcesoModels>
+@{
+    Layout = null;
+    int i = 0;
+    double pesototal = 0;
+}
+
+<table id="table_edicion_pedido" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%" style="margin-bottom:0">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width: 10%">Codigo</th>
+            <th style="width: 30%">Producto</th>
+            <th class="text-center" style="width: 6%">Cantidad</th>
+            <th class="text-center" style="width: 6%">Cant.Real</th>
+            <th style="width: 3%">Um</th>
+            <th style="width: 5%">M</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            pesototal += item.cantidadreal;
+            <tr>
+                <td style="vertical-align:middle !important">
+                    @item.codigo
+                </td>
+                <td style="vertical-align:middle !important">
+                    @item.detalle
+                </td>
+                <td class="text-right" style="vertical-align:middle !important">
+                    @item.cantidad.ToString("N2")
+                </td>
+                <td class="text-right" style="vertical-align:middle !important">
+                    <input type="text" class="form-control_normal text-right reales" id="cantreal_@i"
+                           onfocus="this.select()"
+                           value="@item.cantidadreal.ToString().Replace(",",".")"
+                           onkeypress="return validateFloatPuntoKeyPress(this,event);"
+                           data-fila="@i"
+                           data-codigo="@item.codigo"
+                           data-cantidad="@item.cantidad.ToString().Replace(',', '.')"
+                           data-precio="@item.precio.ToString().Replace(',', '.')"
+                           data-valor="@item.valor"
+                           data-obsdet="@item.obsdet"
+                           data-anulado="@item.anulado"
+                           data-pesogrs="@item.pesogrs"
+                           data-descuento1="@item.descuento1"
+                           data-referencia="@item.referencia" />
+                </td>
+                <td style="vertical-align:middle !important">
+                    @item.unidad
+                </td>
+                <td style="vertical-align:middle !important">
+                    <button type="button" class="editaritempedido" id="btn_editar_@i"
+                            data-codigo="@item.codigo"
+                            data-detalle="@item.detalle"
+                            data-cantidad="@item.cantidad.ToString().Replace(',', '.')"
+                            data-presentacion="@item.presentacion"
+                            data-cabeza="@item.cabeza"
+                            data-esquelon="@item.esquelon"
+                            data-cantidadreal="@item.cantidadreal.ToString().Replace(',', '.')"
+                            data-unidad="@item.unidad"
+                            data-precio="@item.precio.ToString().Replace(',', '.')"
+                            data-valor="@item.valor"
+                            data-obsdet="@item.obsdet"
+                            data-anulado="@item.anulado"
+                            data-descuento1="@item.descuento1"
+                            data-referencia="@item.referencia"
+                            style="width: 100%">
+                        M
+                    </button>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript" class="init">
+
+    var pt = 0;
+
+    $(document).ready(function () {
+        table_edicion_pedido = $('#table_edicion_pedido').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": false,
+            "searching": false,
+            "ordering": false,
+            "bFilter": false,
+            "scrollY": true,
+            "scrollX": true,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": " _START_ al _END_ de  _TOTAL_ ",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        //cargar_presentaciones_modifica_peso_Item_pedido();
+
+        sumar_kilos_totales();
+
+
+        $('#table_edicion_pedido tbody').on('blur', '.reales', function (e) {
+            //e.preventDefault();
+            debugger;
+
+            //if (e.which == 13) {
+            var cantidadreal = parseFloat($(this).val());
+            if (cantidadreal.toString().charAt(cantidadreal.toString().length - 1) == ".") {
+                mostrar_msj_error("Cantidad no debe dejar punto final");
+                return false;
+            }
+            fila_carrito = $(this).data("fila");
+            var referencia = $(this).data('referencia');
+            var obsdet = $(this).data('obsdet');
+            var anulado = $(this).data('anulado');
+            var cantidad = parseFloat($(this).data("cantidad"));
+            var precio = parseFloat($(this).data("precio"));
+            if (cantidadreal > cantidad * 4) {
+                mostrar_msj_error("Cantidad muy grande");
+                return false;
+            }
+
+            var precio = parseInt($(this).data("precio"));
+            var valor = redondear(precio * cantidadreal, 0);
+
+            var foundIndex = carrito.findIndex(x => x.referencia == referencia);
+            if (foundIndex >= 0) {
+                carrito[foundIndex].cantidadreal = cantidadreal;
+                carrito[foundIndex].valor = valor;
+                carrito[foundIndex].obsdet = obsdet;
+                carrito[foundIndex].anulado = anulado;
+            }
+            var pctdif = (cantidad - cantidadreal) / cantidad * 100;
+
+            $("#btn_editar_" + fila_carrito).attr("data-cantidadreal", cantidadreal);
+
+            if (Math.abs(pctdif) > 20) {
+                $("#modal_peso_real").modal("show");
+                if (anulado == "1") { $("#anula_peso_real").attr('checked', true) } else { { $("#anula_peso_real").attr('checked', false) } }
+                return false;
+            }
+            $("#btn_editar_" + fila_carrito).attr("data-valor", valor);
+            if (guardar_peso_real(item_carrito) == 1) {
+                //$("#btn_editar_" + fila_carrito).attr("data-cantidadreal", cantidadreal);
+                $("#btn_editar_" + fila_carrito).attr("data-valor", valor);
+                sumar_kilos_totales();
+            }
+            //}
+        });
+
+        $('#table_edicion_pedido tbody').on('click', '.eliminarItemDespacho', function (e) {
+            e.preventDefault();
+            tr_peso_reales = $(this);
+            $("#modal_confirma_eliminar_item_despacho").modal("show");
+        });
+
+        $('#table_edicion_pedido tbody').on('click', '.eliminarItemDetallepedido', function (e) {
+            e.preventDefault();
+
+            if (carrito.length == 1) {
+                mostrar_msj_error("no puede eliminar, al menos debe haber un item");
+                return false;
+            }
+            var referencia = $(this).data('referencia');
+            $("#referencia_item_pedido_eliminar").val(referencia);
+            $("#modal_eliminar_item_pedido").modal("show");
+        });
+
+        $('#table_edicion_pedido tbody').on('click', '.editaritempedido', function (e) {
+            e.preventDefault();
+
+            var precio = $(this).data("precio");
+            $('#form_modifica_peso_item_pedido').validationEngine('hideAll');
+            $("#modal_modifica_peso_item_pedido").modal("show");
+            $("#referencia_modifica_peso_item_pedido").val($(this).data("referencia"));
+            $("#codigo_modifica_peso_item_pedido").val($(this).data("codigo"));
+            $("#producto_modifica_peso_item_pedido").val($(this).data("detalle"));
+            $("#cantidad_modifica_peso_item_pedido").val($(this).data("cantidad"));
+            $("#cantidad_modifica_peso_item_descuento").val($(this).data("descuento1").toString().replace(",", "."));
+
+            cargar_presentaciones_modifica_peso_Item_pedido();
+            //cargar_presentaciones_modifica_peso_Item_pedido_codprod($(this).data("codigo"));
+            presentacion = $(this).data("presentacion").toString();
+            $("#presentacion_modifica_peso_item_pedido").val(presentacion);
+
+            if ($(this).data("cabeza") == "1") {
+                $("#cabeza_modifica_peso_item_pedido").prop("checked", true);
+            } else { $("#cabeza_modifica_peso_item_pedido").prop("checked", false); };
+            if ($(this).data("esquelon") == "1") {
+                $("#esquelon_modifica_peso_item_pedido").prop("checked", true);
+            } else { $("#esquelon_modifica_peso_item_pedido").prop("checked", false); };
+
+            $("#cantidadreal_modifica_peso_item_pedido").val($(this).data("cantidadreal"));
+            $("#unidad_modifica_peso_item_pedido").val($(this).data("unidad"));
+            $("#unidad_modifica_peso_item_pedido_real").val($(this).data("unidad"));
+            $("#precio_modifica_peso_item_pedido").val(formatea_miles($(this).data("precio")));
+            $("#valor_modifica_peso_item_pedido").val(formatea_miles($(this).data("valor")));
+            $("#obsdet_modifica_peso_item_pedido_real").val($(this).data("obsdet"));
+            if ($(this).data("anulado") == "1") {
+                $("#anulado_modifica_peso_item_pedido_real").prop("checked", true);
+            } else {
+                $("#anulado_modifica_peso_item_pedido_real").prop("checked", false);
+            }
+        });
+
+
+    });
+
+
+
+</script>
+

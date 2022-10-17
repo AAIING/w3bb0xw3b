@@ -1,0 +1,449 @@
+﻿
+@{
+    ViewBag.Title = "Maestro_Clientes";
+    Layout = null;
+}
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<form method="POST" class="form_cliente_eliminar" role="form">
+    <!-- Modal Eliminar-->
+    <div class="modal fade" id="modal_cliente_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog_eliminar">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_cliente">Eliminar Cliente</h3>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro de eliminar el Cliente?<br />
+                    <br />
+                    <div class="form-horizontal">
+                        <input type="hidden" name="referencia_hidden" id="referencia_hidden" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="enviar_cliente_eliminar btn btn-danger" value="Eliminar" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="id_form_cliente_edit" method="POST" name="fileinfo" class="form_referencia_insert" role="form">
+    <div class="modal fade" id="modal_cliente_editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_editar">Editar Cliente</h3>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>referencia </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="referencia_edit" type="text" class="form-control modal_clte" placeholder="99999999" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_edit" type="text" name="nombre" class="form-control validate[required] modal_clte" placeholder="Nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Dirección</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="direccion_edit" name="direccion" type="text" class="form-control validate[required] modal_clte" placeholder="Dirección">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Comuna</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="comuna_edit" type="text" class="form-control validate[required] modal_clte" placeholder="Comuna">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Ciudad</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="ciudad_edit" type="text" class="form-control" placeholder="Ciudad">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Condominio</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="condominio_edit" type="text" class="form-control  modal_clte" placeholder="condominio">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Telefono</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefono_edit" type="text" class="form-control validate[required] modal_clte" placeholder="Telefono">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="email_edit" type="text" class="form-control validate[required,custom[ValidaEmail]] modal_clte" placeholder="Email del cliente" maxlength="40">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Restaurant</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="restaurant_edit" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-6 text-center">
+                            <button id="btn_cerrar_cliente_editar" type="button" class="btn btn-default cerrar_editar_cliente" data-dismiss="modal">Cancelar</button>
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <input id="cliente_editar" type="submit" class="btn btn-primary" value="Guardar" data-dismiss="modal" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="id_form_cliente_insert" method="POST" name="fileinfo" class="form_referencia_insert" role="form">
+    <div class="modal fade" id="modal_cliente_insertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_insert">Guardar Cliente</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>referencia </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="referencia" type="text" class="form-control modal_clte" placeholder="99999999" data-prompt-position="topRight:-70" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre" type="text" name="nombre" class="form-control validate[required] modal_clte" placeholder="Nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Dirección</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="direccion" name="direccion" type="text" class="form-control validate[required] modal_clte" placeholder="Dirección">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Comuna</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="comuna" type="text" class="form-control validate[required] modal_clte" placeholder="Comuna">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Condominio</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="condominio" type="text" class="form-control modal_clte" placeholder="condominio">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Telefono</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="telefono" type="text" class="form-control validate[required] modal_clte" placeholder="Telefono">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="email" type="text" class="form-control validate[required,custom[ValidaEmail]] modal_clte" placeholder="Emal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Restaurant</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="restaurant" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-6 text-center">
+                            <button id="btn_cerrar_cliente_ingresar" type="button" class="btn btn-default cerrar_ingresar_cliente" data-dismiss="modal">Cancelar</button>
+
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <input id="cliente_enviar" type="submit" class="btn btn-primary" value="Guardar" data-dismiss="modal" />
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div id="load_carga" style="align-content: center"></div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Clientes
+        </h3>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 -col-xs-12">
+        <div id="ListaParcial_Clientes">
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    var table_clientes = "";
+    function recargar_listado_clientes() {
+        $("#ajax_loader").css("display", "");
+        var url_action = '@Url.Action("partialListadoClientes", "Clientes")';
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                if (result)
+                $("#ListaParcial_Clientes").html(result);
+                $("#ajax_loader").css("display", "none");
+
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        //$('#codigo').numeric_entero();
+        //$('#codigo_edit').numeric();
+        recargar_listado_clientes();
+
+        $('.enviar_cliente_eliminar').click(function (e) {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append("referencia", $("#referencia_hidden").val());
+
+            $.ajax({
+                type: "POST",
+                url: '/Clientes/EliminarCliente/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#modal_cliente_eliminar").modal("hide");
+                    if (data == 1) {
+                        $(".modal_clte").val("");
+                        mostrar_msj_success('Cliente Eliminado Correctamente');
+                        recargar_listado_clientes();
+                    } else if (data == -1) {
+                        mostrar_msj_error("Error al eliminar cliente");
+                    } else if (data == 2) {
+                        mostrar_msj_error("No se puede eliminar debido que hay datos relacionados");
+                    }
+                    else {
+                        mostrar_msj_error("Error al Eliminar el cliente:" + data);
+                    }
+                }
+            });
+        });
+
+        $('#id_form_cliente_edit').validationEngine();
+        $("#cliente_editar").click(function (e) {
+            e.preventDefault();
+
+            if (!$("#id_form_cliente_edit").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            $("#ajax_loader").css("display", "");
+            var restaurant = ($("#restaurant_edit").prop('checked')) ? 1 : 0;
+
+            fd.append("referencia", $("#referencia_edit").val());
+            fd.append("nombre", $("#nombre_edit").val());
+            fd.append("direccion", $("#direccion_edit").val());
+            fd.append("condominio", $("#condominio_edit").val());
+            fd.append("comuna", $("#comuna_edit").val());
+            fd.append("telefono", $("#telefono_edit").val());
+            fd.append("email", $("#email_edit").val());
+            fd.append("lista", restaurant);
+
+            $.ajax({
+                type: "POST",
+                url: '/Clientes/EditarCliente/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+
+                    $("#ajax_loader").css("display", "none");
+                    if (data.retornojson == "1") {
+                        $("#id_form_cliente_edit").each(function () { this.reset(); });
+                        mostrar_msj_success('Datos guardados correctamente');
+                        recargar_listado_clientes();
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conección");
+                }
+            });
+        });
+
+        $('#id_form_cliente_insert').validationEngine();
+        $("#cliente_enviar").click(function (e) {
+            e.preventDefault();
+
+            if (!$("#id_form_cliente_insert").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            $("#ajax_loader").css("display", "");
+            var restaurant = ($("#restaurant").prop('checked')) ? 1 : 0;
+            fd.append("nombre", $("#nombre").val());
+            fd.append("direccion", $("#direccion").val());
+            fd.append("condominio", $("#condominio").val());
+            fd.append("comuna", $("#comuna").val());
+            fd.append("telefono", $("#telefono").val());
+            fd.append("email", $("#email").val());
+            fd.append("lista", restaurant);
+
+            $.ajax({
+                type: "POST",
+                url: '/Clientes/GuardarCliente/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#ajax_loader").css("display", "none");
+                    if (data.retornojson == "1") {
+                        $("#id_form_cliente_insert").each(function () { this.reset(); });
+                        mostrar_msj_success('Cliente Creado Correctamente');
+                        recargar_listado_clientes();
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conección");
+
+                }
+            });
+        });
+    });
+    function cambio_categoria(referencia, categorianueva) {
+        var fd = new FormData();
+        fd.append("referencia", referencia);
+        fd.append("categoria", categorianueva);
+        $.ajax({
+            type: "POST",
+            url: '/Proveedores/Cambiar_Categoria/',
+            data: fd,
+            DataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.retornojson == "1") {
+                    //mostrar_msj_success('Proveedor reclasificado correctamente');
+                } else {
+                    mostrar_msj_error(data.mensajejson);
+                }
+            }
+        });
+    }
+
+
+</script>
+
+

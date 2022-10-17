@@ -1,0 +1,257 @@
+﻿
+
+@{
+    Layout = null;
+}
+
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-4">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+           Libro Recepciones
+        </h3>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-lg-1">
+    </div>
+    <div class="col-lg-1">
+        Bodega
+    </div>
+    <div class="col-lg-2">
+        <select id="bodega" class="form-control " disabled>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+        </select>
+    </div>
+    <div class="col-lg-1">
+    </div>
+    <div class="col-lg-1">Periodo</div>
+    <div class="col-lg-2">
+        <input type="number" class="form-control entero validate[required]" style="max-width: 80%" id="periodo" max="9999" min="2000" value="@DateTime.Today.Year" onkeydown="limit(this,4);" onkeyup="limit(this,4);">
+    </div>
+    <div class="col-lg-1 no-padding_right">&nbsp;&nbsp;Mes</div>
+    <div class="col-lg-1">
+        <input type="number" class="form-control entero validate[required]" id="mes" max="12" min="1" value="@DateTime.Today.Month" onkeydown="limit(this,2);" onkeyup="limit(this,2);">
+    </div>
+    <div class="col-lg-1">
+        <button type="button" id="excel_librorecepcionesdeinsumos" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+    </div>
+    <div class="col-lg-1"></div>
+</div>
+
+    <div class="modal fade" id="modal_mostrar_documento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 95% !important">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel">RECEPCION DE INSUMOS</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="numero_hidden" />
+                    <input type="hidden" id="registro_hidden" />
+
+                    <div id="dte_view_recepcion">
+                        <div style="position: absolute; left: 50%; top: 50%; z-index: 1000;">
+                            <b>cargando ...</b>
+                            <img src="../../../images/loading_page.gif" width="20" height="20" />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="modal-footer">
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12 col-xs-1 center-block">
+                                        <button type="button" id="id_cerrar" class="btn btn-danger pull-right" data-dismiss="modal" style="width:100%">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_confirma_anulacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="min-width: 95% !important">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel">ANULACION RECEPCION</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="tipodoc_hidden" />
+                    <input type="hidden" id="numerodoc_hidden" />
+                    <input type="hidden" id="registro_hidden" />
+
+                    <div id="dte_view_anula_recepcion">
+                        <div style="position: absolute; left: 50%; top: 50%; z-index: 1000;">
+                            <b>cargando ...</b>
+                            <img src="../../../images/loading_page.gif" width="20" height="20" />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="modal-footer">
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-xs-3 col-sm-1 col-md-3">
+                                        <button type="button" id="id_cerrar" class="btn btn-danger pull-left" data-dismiss="modal" style="width:100%">Cerrar</button>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-1 col-md-6"></div>
+                                    <div class="col-xs-3 col-sm-1 col-md-3">
+                                        <button type="button" id="id_aceptar_anulacion" class="btn btn-primary pull-right" style="width:100%">Confirmar Anulación</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-1 col-md-1 col-xs-1"></div>
+        <div class="col-lg-10 col-md-10 col-xs-10">
+            <div id="idPartialLibro_de_Recepciones"></div>
+        </div>
+        <div class="col-lg-1 col-md-1 col-xs-1"></div>
+    </div>
+
+
+    <script type="text/javascript">
+
+    var periodo = "";
+    var mes = "";
+    var fila_global = 0;
+    var registro_global = 0;
+    var numero_global = 0;
+    var table_notadeventa = "";
+
+    $(document).ready(function () {
+
+        periodo = $("#periodo").val();
+        mes = $("#mes").val();
+        listar_libroderecepciones(periodo, mes);
+        $("#bodega").change(function (e) {
+            periodo = $("#periodo").val();
+            mes = $("#mes").val();
+            listar_libroderecepciones(periodo, mes);
+        });
+        $("#excel_librorecepcionesdeinsumos").on('click', function () {
+            periodo = $("#periodo").val();
+            mes = $("#mes").val();
+            var bodega = $('#bodega').val();
+            window.open("/Inventario/Excel_LibrodeRecepciones?periodo=" + periodo + "&mes=" + mes +"&bodega="+bodega, '_blank');
+        });
+
+        $("#id_aceptar_anulacion").on('click', function (ev) {
+            ev.preventDefault();
+
+            $("#ajax_loader").css('display', '');
+            $.ajax({
+                type: "POST",
+                url: '/Inventario/Anular_Recepciones/',
+                traditional: true,
+                data: {
+                    registro: registro_global
+                },
+                DataType: 'json',
+                success: function (data) {
+                    $("#ajax_loader").css('display', 'none');
+                    $("#modal_confirma_anulacion").modal("hide");
+                    switch (data.retornoJson) {
+                        case "1":
+                            mostrar_msj_success("Documento anulado correctamente !!");
+                            listar_libroderecepciones(periodo, mes);
+                            break;
+                        case "-1":
+                            mostrar_msj_error(mensajeJson);
+                            break;
+                        default:
+                            mostrar_msj_error(data);
+                            break;
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error: " + errorThrown);
+                    //alert("errorThrown: " + errorThrown + "XMLHttpRequest: " + XMLHttpRequest + "textStatus: " + textStatus);
+                }
+            });
+
+
+        });
+
+        $("#periodo").bind('keyup mouseup', function () {
+            $("#idPartialLibro_de_Recepciones").html("");
+            var periodo = $("#periodo").val();
+            var mes = $("#mes").val();
+            listar_libroderecepciones(periodo, mes);
+        });
+
+        $("#periodo").bind('keyup mousedown', function () {
+            $("#idPartialLibro_de_Recepciones").html("");
+            var periodo = $("#periodo").val();
+            var mes = $("#mes").val();
+            listar_libroderecepciones(periodo, mes);
+        });
+
+        $("#mes").bind('keyup mouseup', function () {
+            $("#idPartialLibro_de_Recepciones").html("");
+            var periodo = $("#periodo").val();
+            var mes = $("#mes").val();
+            listar_libroderecepciones(periodo, mes);
+        });
+
+        $("#mes").bind('keyup mousedown', function () {
+            $("#idPartialLibro_de_Recepciones").html("");
+            var periodo = $("#periodo").val();
+            var mes = $("#mes").val();
+            listar_libroderecepciones(periodo, mes);
+        });
+
+
+    });
+
+        function listar_libroderecepciones(periodo, mes) {
+            var bodega = $('#bodega').val();
+            var url_action = '@Html.Raw(Url.Action("partialLibro_de_Recepciones", "Inventario", new { periodo = "_periodo", mes = "_mes", bodega = "_bodega" }))';
+            url_action = url_action.replace("_periodo", periodo).replace("_mes", mes).replace("_bodega", bodega);
+            $("#ajax_loader").css("display", "");
+            $.ajax({
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                url: url_action,
+                success: function (result) {
+                    $("#ajax_loader").hide();
+                    if (result == -1) {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Acceso/Login";
+                    } else {
+                        $("#idPartialLibro_de_Recepciones").html(result);
+                    }
+                }
+            });
+        }
+
+    function limit(element, max_chars) {
+
+        if (element.value.length > max_chars) {
+            element.value = element.value.substr(0, max_chars);
+        }
+    }
+
+    </script>
+

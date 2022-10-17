@@ -1,0 +1,205 @@
+﻿@model IEnumerable<WebBox.Models.PedidosMaestroModels>
+@{
+    Layout = null;
+    int i = 0;
+    double ttotal = 0;
+}
+
+<table id="table_pedidos_maestro" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th class="text-center" style="width: 5%">#Pedido</th>
+            <th class="text-center" style="width: 5%">Fec-Ent</th>
+            <th style="width: 23%">Cliente</th>
+            <th style="width: 5%">Telefono</th>
+            <th style="width: 5%">Comuna</th>
+            <th style="width: 20%">Direccion</th>
+            <th style="width: 10%">Condiminio</th>
+            <th style="width: 7%" class="text-right">Total</th>
+            <th style="width: 7%" class="text-right">No.Doc.</th>
+            <th style="width: 3%" class="text-center">I</th>
+            <th style="width: 5%" class="text-center">
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <input class="seleccionados" type="checkbox">
+                    </label>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            string fecha = "";
+            if (item.fecha == "00/00/0000")
+            {
+                fecha = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                fecha = DateTime.Parse(item.fecha).ToString("yyyy-MM-dd");
+
+            }
+            string fechaent = fecha;
+            ttotal += item.total;
+            <tr id="fila_@i">
+                <td class="text-center">
+                    @item.registro
+                </td>
+                <td class="text-center">
+                    @fecha
+                </td>
+                <td class="text-center">
+                    @item.cliente
+                </td>
+                <td class="text-right">
+                    @item.telefono.ToString()
+                </td>
+                <td class="text-left">
+                    @item.comuna.ToString()
+                </td>
+                <td class="text-center">
+                    @item.direccion.ToString()
+                </td>
+                <td class="text-center">
+                    @item.condominio.ToString()
+                </td>
+                <td class="text-right">
+                    @item.total.ToString("N0")
+                </td>
+                <td class="text-right">
+                    @item.numerodoc.ToString()
+                </td>
+                <td>
+                    <button type="button" class="imprimirboleta" id="fila_@i" data-fila="@i" data-registro="@item.registro">I</button>
+                </td>
+                <td class="text-center">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <input id="selected_@i.ToString()" class="seleccionado" type="checkbox" data-registro="@item.registro">
+                        </label>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr style="background-color: #fff;">
+            <td>Pedidos:</td>
+            <td class="text-right">@i.ToString("N0")</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="font-weight: Bold;" class="text-right">TOTAL :</td>
+            <td style="font-weight: Bold;" class="text-right">@ttotal.ToString("N0")</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </tfoot>
+</table>
+
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        table_pedidos_maestro = $('#table_pedidos_maestro').DataTable({
+            destroy: true,
+            "bInfo": false,
+            "bPaginate": false,
+            "searching": true,
+            "ordering": false,
+            "bFilter": false,
+            "scrollX": true,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: false,
+                footer: false
+            }
+        });
+
+        $('.seleccionados').click(function (e) {
+            //e.preventDefault();
+            
+            if ($('.seleccionados').prop('checked')) {
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $("#table_pedidos_maestro .seleccionado").each(function () {
+                    $(this).prop("checked", false);
+                });
+
+            }
+        });
+
+        $('#table_pedidos_maestro tbody').on('click', '.imprimirboleta', function (e) {
+            e.preventDefault();
+            
+            var registro = $(this).data("registro");
+            $("#loading").show();
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/ok_Imprimir_Boletas/',
+                data: JSON.stringify({ registro: registro }),
+                contentType: "application/json; charset=utf-8",
+                dataType: false,
+                success: function (data) {
+                    
+                    $("#loading").hide();
+                    if (data.retornojson == "1") {
+                        $("#modal_boleta").modal("show");
+                        $("#pdfboleta").html("");
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe',
+                            'src': data.boletajson
+                        });
+                        $('#pdfboleta').html(
+                            iframe
+                        );
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexion");
+                }
+            });
+
+        });
+
+    });
+
+</script>
+
+
+
+

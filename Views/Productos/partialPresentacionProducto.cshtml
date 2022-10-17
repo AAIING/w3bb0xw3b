@@ -1,0 +1,107 @@
+﻿@model IEnumerable<WebBox.Models.PresentacionesModels>
+
+@{
+    Layout = null;
+    int i = 0;
+}
+
+<table id="table_presentacion_prod" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width:5%">Codigo</th>
+            <th style="width:39%">Nombre</th>
+            <th style="width:8%">Rendimiento</th>
+            <th style="width:6%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+     
+            <tr>
+                <td>
+                    <div id="cod_prod">@item.codigo</div>
+                </td>
+                <td>
+                    @item.nombre
+                </td>
+                <td>
+
+                    @if (item.rendimiento > 0)
+                    {
+                        if (item.rendimiento != 0.01)
+                        {
+                            <input id="rendimiento_producto_@i" value="@item.rendimiento" class="" type="text" onkeypress="return SoloNumerosDecimales(event, '0.0', 8, 2)" placeholder="0.0" style="width:80%;"  />
+                        }
+                        else
+                        {
+                            <input id="rendimiento_producto_@i" class="" type="text" placeholder="0.0" onkeypress="return SoloNumerosDecimales(event, '0.0', 8, 2)" style="width:80%;" disabled />
+                        }
+                    }
+                    else
+                    {
+                        <input id="rendimiento_producto_@i" class="" type="text" placeholder="0.0" onkeypress="return SoloNumerosDecimales(event, '0.0', 8, 2)" style="width:80%;" />
+                    }
+                </td>
+                <td class="text-center">
+                    <a style="display: inline;"
+                       data-codigo='@item.codigo'
+                       data-nombre='@item.nombre' class="eliminar_presentacion">
+                        <img src="../../images/images_delete.png" width="20" height="20" />
+                    </a>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+
+        var table = $('#table_presentacion_prod').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": false,
+            //"scrollY": "440px",
+            "scrollCollapse": false,
+            "searching": true,
+            "lengthMenu": [[25, 75, 105, 135, 165, 195, 225, 255, 285], [45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sInfo": "_START_ - _END_ de _TOTAL_ registros",
+                "sInfoEmpty": "0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        $('#table_presentacion_prod tbody').on('click', 'a.eliminar_presentacion', function (e) {
+            e.preventDefault();
+            var codigo = $(this).data('codigo');
+            var nombre = $(this).data('nombre');
+            $("#modal_presentacion_eliminar").modal("show");
+
+            $("#modal_presentacion_eliminar #codigo_pres_eliminar").val(codigo);
+            $("#modal_presentacion_eliminar #nombre_pres_eliminar").val(nombre);
+
+        });
+
+    });
+
+</script>

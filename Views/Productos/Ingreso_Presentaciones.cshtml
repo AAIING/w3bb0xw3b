@@ -1,0 +1,295 @@
+﻿
+@{
+    Layout = null;
+}
+
+<br />
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+    <div class="form-inline">
+        <div class="col-lg-6 col-md-6 col-xs-12">
+            <div class="input-group input-group-sm">
+                <button class="btn btn-success text-right" type="button" id="idagregarpresentacion" title="Agregar Presentacion">
+                    +
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+</div>
+
+
+<form method="POST" class="form_presentacion_eliminar" role="form">
+    <div class="modal fade" id="modal_presentacion_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog_eliminar">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_presentacion">Eliminar Presentacion</h3>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro de eliminar la Presentacion?<br />
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-1"></div>
+                            <div class="col-lg-2">
+                                <input type="text" class="form-control" id="codigo_pres_eliminar" readonly />
+                            </div>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="nombre_pres_eliminar" readonly />
+                            </div>
+                            <div class="col-lg-1"></div>
+                        </div>
+                        <br />
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="ok_presentacion_eliminar btn btn-danger" value="Eliminar" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="form_edicion_presentacion" method="POST" name="fileinfo" class="form_presentacion_edit" role="form">
+    <div class="modal fade" id="modal_presentacion_editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_editar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_edit">Editar Presentacion</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Codigo</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="codigo_pres_edit" type="text" class="form-control" placeholder="" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_pres_edit" type="text" class="form-control validate[required]" placeholder="Nombre">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="btn_cerrar_guardar_edicion" type="button" class="btn btn-default cerrar_editar" data-dismiss="modal">Cancelar</button>
+                    <input id="guardar_edicion" type="submit" class="editar_presentacion btn btn-primary" value="Modificar" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<form id="form_guardar_presentacion" method="POST" name="fileinfo" class="form_presentacion_insert" role="form">
+    <div class="modal fade" id="modal_presentacion_agregar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_presentacion" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_presentacion">Ingresar Presentacion</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_pres" type="text" class="form-control validate[required]" placeholder="Nombre del presentacion">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btn_cerrar_guardar_presentacion" type="button" class="btn btn-default cerrar_ingresar" data-dismiss="modal">Cancelar</button>
+                    <input id="guardar_presentacion" type="submit" class="btn btn-primary" value="Guardar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 1000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+    <div class="col-lg-6 col-md-6 col-xs-12" id="ListaParcial_Presentaciones"></div>
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+</div>
+
+
+    <script>
+    var change_edita_insert = 0;
+    var edita_inserta_insumo = 0;
+
+
+        $(document).ready(function () {
+
+        $('#codigo').numeric_entero();
+
+        cargar_presentaciones("0");
+
+        $("#idagregarpresentacion").click(function (e) {
+            $("#modal_presentacion_agregar").modal("show");
+        });
+
+        $('.ok_presentacion_eliminar').click(function (e) {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append("codigo", $("#codigo_pres_eliminar").val());
+            $.ajax({
+                type: "POST",
+                url: '/Productos/EliminarPresentacion/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#close_modal_eliminar").click();
+                    if (data == 1) {
+                        mostrar_msj_success('Presentacion Eliminado Correctamente');
+                        cargar_presentaciones($("#listado_insumos").val());
+                    } else if (data == -1) {
+                        mostrar_msj_error("Error al verificar los datos relacionados");
+                    } else if (data == 2) {
+                        mostrar_msj_error("No se puede eliminar debido que hay datos relacionados con presupuesto");
+                    }
+                    else {
+                        mostrar_msj_error("Error al Eliminar Presentacion:" + data);
+                    }
+                }
+            });
+        });
+
+
+        $('#form_guardar_presentacion').validationEngine();
+        $("#guardar_presentacion").click(function (e) {
+            e.preventDefault();
+            if (!$("#form_guardar_presentacion").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            fd.append("nombre", $("#nombre_pres").val());
+
+            $.ajax({
+                type: "POST",
+                url: '/Productos/GuardarPresentacion/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                async: false,
+                success: function (data) {
+                    if (data == 1) {
+                        $("#form_guardar_presentacion").each(function () { this.reset(); });
+                        mostrar_msj_success('Presentacion Guardado');
+                        cargar_presentaciones($("#listado_insumos").val());
+                    } else {
+
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                    window.scrollTo(0, 0); //Ir hacia arriba
+                    $("#btn_cerrar_guardar_presentacion").click();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexion");
+
+                }
+            });
+
+        });
+
+        $('#form_edicion_presentacion').validationEngine();
+        $("#guardar_edicion").click(function (e) {
+            e.preventDefault();
+            if (!$("#form_edicion_presentacion").validationEngine('validate')) {
+                return false;
+            }
+
+            var fd = new FormData();
+            fd.append("codigo", $("#codigo_pres_edit").val());
+            fd.append("nombre", $("#nombre_pres_edit").val());
+
+            $("#saving").show();
+            $.ajax({
+                type: "POST",
+                url: '/Productos/ModificarPresentacion/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == 1) {
+                        $("#saving").hide();
+                        mostrar_msj_success('Datos Modificados');
+                        $("#listado_insumos").val($("#listado_insumos_pres_edit").val());
+                        cargar_presentaciones($("#listado_insumos_pres_edit").val());
+                        $("#btn_cerrar_guardar_edicion").click();
+
+                    } else {
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                    $("#load_carga").load("../../stop_loading.html");
+                    $("#btn_cerrar_guardar_edicion").click();
+                    //Ir hacia arriba
+                    //window.scrollTo(0, 0);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("Error de Conexion");
+                    $("#btn_cerrar_guardar_edicion").click();
+                }
+            });
+            //}
+        });
+
+        $('#modal_presentacion_agregar').on('show.bs.modal', function () {
+            edita_inserta_insumo = 3;
+        });
+
+    });
+
+
+    function cargar_presentaciones() {
+            
+        $("#loading").css("display", "");
+        var url_action = '@Url.Action("partialListadoPresentaciones", "Productos")';
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ListaParcial_Presentaciones").html(result);
+                $("#loading").css("display", "none");
+            }
+        });
+    }
+
+
+    </script>
+

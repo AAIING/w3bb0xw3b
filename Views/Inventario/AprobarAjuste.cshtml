@@ -1,0 +1,209 @@
+﻿
+@{
+    Layout = null;
+
+}
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-4">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Aprobar Ajuste
+        </h3>
+    </div>
+
+</div>
+<div class="row form-group">
+    <div class="col-lg-1">
+    </div>
+    <div class="col-lg-1">
+        <label>Bodega</label>
+    </div>
+    <div class="col-lg-2">
+        <select id="bodega" class="form-control " disabled>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+        </select>
+    </div>
+    <div class="col-lg-2">
+        <button type="button" class="btn btn-primary" id="btn_aprobar_seleccionados" title="Aprobar Seleccionados">Aprobar Ajuste</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-1 col-md-1 col-xs-0"></div>
+    <div class="col-lg-10 col-md-10 col-xs-12">
+        <div id="idDivPartialListadoInventario">
+        </div>
+    </div>
+    <div class="col-lg-1 col-md-1 col-xs-0"></div>
+</div>
+<div class="modal fade" id="modal_aprobar_ajuste" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3 class="modal-title titulo_modal_h3">Aprobar Ajuste</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de aprobar ajuste de inventario?<br>
+                <br>
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" id="aprobar_ajuste" class="btn btn-danger" value="Aprobar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_obsevaciondetalle" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close cerrar_obs_OrdenCompras" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_obsevaciondetalle">Observación</h3>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" rows="5" id="idobsevaciondetalle" readonly></textarea>
+                <div class="form-horizontal">
+                    <div class="modal-footer">
+                        <div class="text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_inventario_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina">Eliminar Inventario Insumo</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar ?<br>
+                <br>
+                <div class="form-horizontal">
+                    <input type="hidden" id="referencia_eliminar_hidden">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" id="ok_insumo_eliminar" class="btn btn-danger" value="Eliminar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var tabla_inventario = "";
+    var registros = [];
+
+    $(document).ready(function () {
+
+        cargarinventario();
+
+        $("#bodega").change(function (e) {
+            cargarinventario();
+        });
+        $("#btn_aprobar_seleccionados").click(function (e) {
+            $("#modal_aprobar_ajuste").modal("show");
+        });
+        $('#aprobar_ajuste').click(function (e) {
+            e.preventDefault();
+            var registros = [];
+            var q = 0;
+
+            $("#tabla_inventario .aprobar_check").each(function () {
+                var registro = $(this).data("registro");
+                if ($(this).is(':checked')) {
+                    q++;
+                    registros.push(registro);
+                }
+            });
+
+            if (q > 0) {
+                $.ajax({
+                    type: "POST",
+                    url: '/Inventario/AprobarAjuste_Seleccionados/',
+                    data: JSON.stringify({ registros: registros }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.retornoJson == 1) {
+                            cargarinventario();
+                            $("#modal_aprobar_ajuste").modal("hide");
+                            mostrar_msj_success('Inventario Aprobado(s) Correctamente');
+                        } else {
+                            mostrar_msj_error(data.mensajejson);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("Error de Conexion");
+                    }
+                });
+            }
+        });
+     $("#ok_insumo_eliminar").click(function (e) {
+            e.preventDefault();
+            var referencia = $("#referencia_eliminar_hidden").val();
+            var url_action = '@Html.Raw(Url.Action("Eliminar_Inventario", "Inventario", new { referencia = "_referencia" }))';
+            url_action = url_action.replace("_referencia", referencia);
+
+            $("#ajax_loader").css("display", "");
+            $.ajax({
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                url: url_action,
+                success: function (data) {
+                    $("#ajax_loader").hide();
+                    if (data.retorno == "-1") {
+                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                        window.location.href = "/../Acceso/Login";
+                    } else {
+                        $("#modal_inventario_eliminar").modal("hide");
+                        cargarinventario();
+                    }
+                }
+            });
+        });
+        //  +++++++++++++++++++++++++++++++++++++++++  fin document ready
+    });
+
+
+
+    function cargarinventario() {
+        var url_action = '@Html.Raw(Url.Action("partialListadoInventarioAprobar", "Inventario", new { bodega = "bodega_" }))';
+        url_action = url_action.replace("bodega_", $('#bodega').val());
+        $("#ajax_loader").css("display", "");
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Acceso/Login";
+                } else {
+                    $("#idDivPartialListadoInventario").html(result);
+                }
+            }
+        });
+    }
+
+
+</script>

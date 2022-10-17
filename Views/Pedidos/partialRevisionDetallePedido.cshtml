@@ -1,0 +1,168 @@
+﻿@model IEnumerable<WebBox.Models.PedidosDetalleModels>
+@{
+    Layout = null;
+    int i = 0;
+    double q = 0;
+    double tvalor = 0;
+    double tcosto = 0;
+    double tmargen = 0;
+}
+
+<table id="table_edicion_pedido" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width:10%">Codigo</th>
+            <th style="width:35%">Producto</th>
+            <th style="width:10%">Cantidad</th>
+            <th style="width: 5%">Um</th>
+            <th style="width:10%">Prec-Vta</th>
+            <th style="width:10%" class="text-right">Valor</th>
+            <th style="width:10%" class="text-right">Costo</th>
+            <th style="width:10%" class="text-center">Margen</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            q += item.cantidad;
+            double valor = Convert.ToDouble(item.valor);
+            double costounit = Convert.ToDouble(item.costo);
+            double costo = Math.Round(item.cantidad * costounit,0);
+            double margen = Math.Round((valor - costo) / valor * 100);
+            tvalor += valor;
+            tcosto += costo;
+            tmargen = Math.Round((tvalor - tcosto) / tvalor * 100);
+            i++;
+            <tr>
+                <td>
+                    @item.codigo
+                </td>
+                <td>
+                    @item.detalle
+                </td>
+                <td class="text-right">
+                    @item.cantidad.ToString().Replace(',', '.')
+                </td>
+                <td>
+                    @item.unidad
+                </td>
+                <td class="text-right">
+                    @item.precio.ToString("N0")
+                </td>
+                <td class="text-right">
+                    @item.valor.ToString("N0")
+                </td>
+                <td class="text-right">
+                    @costo.ToString("N0")
+                </td>
+                <td class="text-center" style="color:crimson">
+                    @margen.ToString("N2")%
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr style="background-color: #ffd800; color: #000">
+            <th></th>
+            <th>Totales : (@i.ToString("N0"))</th>
+            <th class="text-right">@q</th>
+            <th></th>
+            <th></th>
+            <th class="text-right">@tvalor.ToString("N0")</th>
+            <th class="text-right">@tcosto.ToString("N0")</th>
+            <th class="text-center">@tmargen.ToString("N2")%</th>
+        </tr>
+    </tfoot>
+</table>
+
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        table_edicion_pedido = $('#table_edicion_pedido').DataTable({
+            destroy: true,
+            "bInfo": false,
+            "bPaginate": false,
+            "searching": false,
+            "ordering": false,
+            "bFilter": false,
+            "scrollY": true,
+            "scrollX": true,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": " _START_ al _END_ de  _TOTAL_ ",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        cargar_presentaciones_modifica_Item_pedido();
+
+
+        $('#table_edicion_pedido tbody').on('click', '.eliminarItemDetallepedido', function (e) {
+            e.preventDefault();
+            
+            if (carrito.length == 1) {
+                mostrar_msj_error("no puede eliminar, al menos debe haber un item");
+                return false;
+            }
+            var referencia = $(this).data('referencia');
+            $("#referencia_item_pedido_eliminar").val(referencia);
+            $("#modal_eliminar_item_pedido").modal("show");
+        });
+
+        $('#table_edicion_pedido tbody').on('click', '.editaritempedido', function (e) {
+            e.preventDefault();
+            $('#form_modifica_item_pedido').validationEngine('hideAll');
+            $("#modal_modifica_item_pedido").modal("show");
+            
+            $("#referencia_modifica_item_pedido").val($(this).data("referencia"));
+            $("#codigo_modifica_item_pedido").val($(this).data("codigo"));
+            $("#producto_modifica_item_pedido").val($(this).data("detalle"));
+            $("#cantidad_modifica_item_pedido").val($(this).data("cantidad"));
+            presentacion = $(this).data("presentacion").toString();
+            $("#presentacion_modifica_item_pedido").val(presentacion);
+
+            if ($(this).data("cabeza") == "1") {
+                $("#cabeza_modifica_item_pedido").prop("checked", true);
+            } else { $("#cabeza_modifica_item_pedido").prop("checked", false); };
+            if ($(this).data("esquelon") == "1") {
+                $("#esquelon_modifica_item_pedido").prop("checked", true);
+            } else { $("#esquelon_modifica_item_pedido").prop("checked", false); };
+
+            $("#unidad_modifica_item_pedido").val($(this).data("unidad"));
+            $("#precio_modifica_item_pedido").val(formatea_miles($(this).data("precio")));
+            $("#valor_modifica_item_pedido").val(formatea_miles($(this).data("valor")));
+            $("#obsdet_modifica_item_pedido").val($(this).data("obsdet"));
+
+        });
+
+
+    });
+
+
+</script>
+

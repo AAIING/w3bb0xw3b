@@ -1,0 +1,139 @@
+﻿@model IEnumerable<WebBox.Models.SaldosModels>
+
+@{
+                /**/
+
+                Layout = null;
+                int i = 0;
+}
+
+
+<table id="table_existencias" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%" style="margin-bottom:0">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width:10%">
+                Código
+            </th>
+            <th style="width:35%">
+                Nombre
+            </th>
+            <th style="width:10%">
+                Unidad
+            </th>
+            <th style="width:15%">
+                Stock
+            </th>
+            <th style="width:10%">
+                Stock Min.
+            </th>
+            <th style="width:10%">
+                Stock Max.
+            </th>
+            <th style="width:10%">
+                Ponderado
+            </th>
+            <th style="width:10%">
+                Valor
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td>
+                <button class="btn btn-danger btn-sm center-block ver_cartola" data-codigo="@item.codigo" title="Ver Cartola de existencia">@item.codigo</button>
+            </td>
+            <td>
+                @item.nombre
+            </td>
+            <td>
+                @item.unidad
+            </td>
+            <td>
+                @item.stock.ToString("N2")
+            </td>
+            <td>
+                @item.stockmin.ToString("N2")
+            </td>
+            <td>
+                @item.stockmax.ToString("N2")
+            </td>
+            <td>
+                @item.ponderado.ToString("N2")
+            </td>
+            <td>
+                @item.saldov.ToString("N0")
+            </td>
+            <td class="text-center editar_stock" title="Ingresar Stock minimo y máximo" data-codigo="@item.codigo">
+                <i class="glyphicon glyphicon-edit" style="font-size: 22px; color: red; cursor: pointer"></i>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<script type="text/javascript" class="init">
+
+
+    $(document).ready(function () {
+        var table_existencias = $('#table_existencias').DataTable({
+            destroy: true,
+            "bInfo": true,
+            "bPaginate": false,
+            "searching": true,
+            "ordering": true,
+            "scrollY": 850,
+            "scrollCollapse": true,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No existe datos",
+                "sEmptyTable": "No existe datos",
+                "sInfo": " _START_ al _END_ de  _TOTAL_ ",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        //cargar_presentaciones_modifica_peso_Item_pedido();
+
+
+        $('#table_existencias tbody').on('click', '.ver_cartola', function (e) {
+            e.preventDefault();
+            var codigo = $(this).data("codigo");
+            $("#modal_cartola_exitencia").modal("show");
+            CargaCartolaExistencia(codigo) 
+        });
+
+        $('#table_existencias tbody').on('click', '.editar_stock', function (e) {
+            e.preventDefault();
+            var codigo = $(this).data("codigo");
+            $("#codigo_stock_hidden").val(codigo)
+            $("#modal_stock_min_max").modal("show");
+        });
+    });
+
+</script>

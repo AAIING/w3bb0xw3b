@@ -1,0 +1,291 @@
+﻿@model IEnumerable<WebBox.Models.CarritoChequesModels>
+@{
+    Layout = null;
+    int i = 0;
+    double total = 0;
+}
+
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        table_cheques_fecha = $("#tabla_carrito_cheques_fecha").DataTable({
+            destroy: true,
+            "bInfo": false,
+            "bPaginate": false,
+            "searching": false,
+            "lengthMenu": [[45, 75, 105, 135, 165, 195, 225, 255, 285], [45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        $("#tabla_carrito_cheques_fecha tbody").on('click', '.eliminar_del_carritocheques_fecha', function (e) {
+            e.preventDefault();
+
+            var fila = $(this).data('fila');
+            var valor = $("#idchequefecha_valor_" + fila).val().replace(/\./g, "");
+            $("#fila_carritochequesfecha_a_eliminar_hidden").val(fila);
+            $("#valor_carritochequesfecha_a_eliminar_hidden").val(valor);
+            $("#modal_confirma_eliminar_item_carritochequesfecha").modal("show");
+        });
+
+        $(".agregar_cheque_fecha").on('click', function (e) {
+            var filav = 0;
+
+            table_cheques_fecha.$("input.columna").each(function () {
+                filav = $(this).data("fila");
+            });
+            filav += 1;
+            debugger;
+            var combobox_banco = listarBancosCheqFecha(filav);
+            var combobox_plaza = listarPlazasCheqFecha(filav);
+            table_cheques_fecha.row.add([
+                '<input type="text" id="idchequefecha_serie_' + filav + '" class="form-control_tablegrande text-right" value="0" onfocus="this.select()" />',
+                '<input type="text" id="idchequefecha_numero_' + filav + '" class="form-control_tablegrande numerico_int" value="0" onfocus="this.select()" />',
+                '<input type="text" id="idchequefecha_ctacte_' + filav + '" class="form-control_tablegrande text-center" value="0" onfocus="this.select()" />',
+                combobox_banco,
+                combobox_plaza,
+                '<input type="text" id="idchequefecha_valor_' + filav + '" class="form-control_tablegrande text-right numerico_int" value="0" onfocus="this.select()" onblur="totalizar_cheques_cheqfecha()" />',
+                '<input type="date" id="idchequefecha_fecha_' + filav + '" class="form-control_tablegrande" value="@DateTime.Now.ToString("yyyy-MM-dd")"  />',
+                '<input type="text" id="idchequefecha_nombre_' + filav + '" class="form-control_tablegrande" onfocus="this.select()" />',
+                '<input type="text" id="idchequefecha_rut_' + filav + '" class="form-control_tablegrande" placeholder="1234567-K" onfocus="this.select()" onblur="this.value = FormatearRUT(this.value);" onkeypress="return validateRutKeyPress(this,event);" />',
+                '<input type="text" id="idchequefecha_telefono_' + filav + '" class="form-control_tablegrande" onfocus="this.select()" />',
+                '<input type="text" id="idchequefecha_cover_' + filav + '" class="form-control_tablegrande" onfocus="this.select()" onkeypress="return validateIntKeyPress(this,event);"/>',
+                '<input id="id_item_a_quitar_del_carritochequesfecha_' + filav + '" class="eliminar_del_carritocheques_fecha columna text-center" type="submit" value="X" data-fila="' + filav + '" style="width:100%" />'
+
+            ]).draw(false);
+
+        });
+
+        $(".guardar_cheques_fecha").on('click', function (e) {
+            var filav = 0;
+            carritocheques_fecha = [];
+            var total = 0;
+            var indice = 0;
+            var salir = 0;
+            table_cheques_fecha.$("input.columna").each(function () {
+                indice++;
+                filav = $(this).data("fila");
+                var serie = $("#idchequefecha_serie_" + filav).val();
+                var numero = $("#idchequefecha_numero_" + filav).val();
+                var ctacte = $("#idchequefecha_ctacte_" + filav).val();
+                var banco = $("#id_selector_bancos_cheqfecha_" + filav).val();
+                var plaza = $("#id_selector_plazas_cheqfecha_" + filav).val();
+                var valor = parseInt(($("#idchequefecha_valor_" + filav).val().toString().replace(/\./g, "") == "") ? 0 : $("#idchequefecha_valor_" + filav).val().replace(/\./g, ""));
+                var fecha = $("#idchequefecha_fecha_" + filav).val();
+                var nombre = $("#idchequefecha_nombre_" + filav).val();
+                var rut = $("#idchequefecha_rut_" + filav).val();
+                var telefonogirado = $("#idchequefecha_telefono_" + filav).val();
+                var codversion = parseInt(($("#idchequefecha_cover_" + filav).val().toString().replace(/\./g, "") == "") ? 0 : $("#idchequefecha_cover_" +filav).val());
+                var tipo = 'F';
+
+                if (serie == "") {
+                    salir = 1;
+                    mostrar_msj_error("Debe ingresar serie en fila " + indice);
+                    return false;
+                }
+                if (numero == "" || numero == "0" ) {
+                    salir = 1;
+                    mostrar_msj_error("Debe ingresar numero en fila " + indice);
+                    return false;
+                }
+                if (ctacte == "") {
+                    salir = 1;
+                    mostrar_msj_error("Debe ingresar ctacte en fila " + indice);
+                    return false;
+                }
+                if (valor == 0) {
+                    salir = 1;
+                    mostrar_msj_error("Debe ingresar valor en fila " + indice);
+                    return false;
+                }
+                if (fecha == "") {
+                    salir = 1;
+                    mostrar_msj_error("Debe seleccionar fecha en fila " + indice);
+                    return false;
+                }
+                total = total + valor;
+
+                var rut_sin_dv = rut.split('-')[0];
+                var dv = rut.split('-')[1];
+                var itemcarritocheques = {
+                    fila: filav,
+                    serie: serie,
+                    numero: numero,
+                    ctacte: ctacte,
+                    banco: banco,
+                    plaza: plaza,
+                    valor: valor,
+                    fecha: fecha,
+                    nombre: nombre,
+                    rut: rut,
+                    rut_sin_dv: rut_sin_dv,
+                    dv:dv,
+                    telefonogirado: telefonogirado,
+                    codversion: codversion,
+                    tipo: tipo
+                }
+                carritocheques_fecha.push(itemcarritocheques);
+            });
+            if (salir == 1) {
+                return false;
+            }
+
+            $("#formapago_cheques_fecha").val(Moneda(total));
+            calcular_total();
+            $("#modal_carritocheques_fecha").modal("hide");
+        });
+
+    });
+
+
+</script>
+
+
+<table id="tabla_carrito_cheques_fecha" class="table table-striped table-bordered tableSection_cobranza table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width: 7%">Serie</th>
+            <th style="width: 7%">N°Cheque</th>
+            <th style="width: 7%" class="text-center">Cta.Cte.</th>
+            <th style="width: 8%">Banco</th>
+            <th style="width: 8%">Plaza</th>
+            <th style="width: 9%" class="text-right">Valor</th>
+            <th style="width: 8%" class="text-right">Fecha</th>
+            <th style="width: 23%">Nombre</th>
+            <th style="width: 8%" class="text-right">Rut</th>
+            <th style="width: 7%" class="text-right">Teléfono</th>
+            <th style="width: 6%" class="text-right">Cod-Ver</th>
+            <th style="width: 2%" class="text-right">Quitar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null)
+        {
+            i++;
+            <tr>
+                <td class="text-right">
+                    <input type="text" id="idchequefecha_serie_@i" class="form-control_tablegrande text-right" value="0" onfocus="this.select()" />
+                </td>
+                <td class="text-right">
+                    <input type="text" id="idchequefecha_numero_@i" class="form-control_tablegrande" value="0" onfocus="this.select()" onkeypress="return validateIntKeyPress(this,event);" />
+                </td>
+                <td class="text-center">
+                    <input type="text" id="idchequefecha_ctacte_@i" class="form-control_tablegrande text-center" value="0" onfocus="this.select()" />
+                </td>
+
+                <td class="text-center">
+                    @Html.Action("Selector_Bancos_CheqFecha", "Bancos", new { fila = i, codigo = "0" })
+                </td>
+                <td class="text-center">
+                    @Html.Action("Selector_Plazas_CheqFecha", "Plazas", new { fila = i, codigo = "0" })
+                </td>
+                <td class="text-right">
+                    <input type="text" id="idchequefecha_valor_@i" class="form-control_tablegrande text-right" value="0" onfocus="this.select()" onblur="totalizar_cheques_cheqfecha()" onkeypress="return validateIntKeyPress(this,event);" />
+                </td>
+                <td class="text-center">
+                    <input type="date" id="idchequefecha_fecha_@i" class="form-control_tablegrande" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </td>
+                <td>
+                    <input type="text" id="idchequefecha_nombre_@i" class="form-control_tablegrande" onfocus="this.select()" />
+                </td>
+                <td>
+                    <input type="text" id="idchequefecha_rut_@i" class="form-control_tablegrande" placeholder="1234567-K" onfocus="this.select()" onblur="this.value = FormatearRUT(this.value);" onkeypress="return validateRutKeyPress(this,event);" />
+                </td>
+                <td>
+                    <input type="text" id="idchequefecha_telefono_@i" class="form-control_tablegrande" onfocus="this.select()" />
+                </td>
+                <td>
+                    <input type="text" id="idchequefecha_cover_@i" class="form-control_tablegrande" onfocus="this.select()" onkeypress="return validateIntKeyPress(this,event);" />
+                </td>
+                <td>
+                    <input id="id_item_a_quitar_del_carritochequesfecha_@i" class="eliminar_del_carritocheques_fecha columna text-center" type="submit" value="X" data-fila="@i" style="width:100%" />
+                </td>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                total += item.valor;
+                i++;
+                <tr>
+                    <td class="text-right">
+                        <input type="text" id="idchequefecha_serie_@i" class="form-control_tablegrande text-right" value="@item.serie" onfocus="this.select()" />
+                    </td>
+                    <td class="text-right">
+                        <input type="text" id="idchequefecha_numero_@i" class="form-control_tablegrande text-right numerico_int" value="@item.numero" onfocus="this.select()" onkeypress="return validateIntKeyPress(this,event);" />
+                    </td>
+                    <td class="text-center">
+                        <input type="text" id="idchequefecha_ctacte_@i" class="form-control_tablegrande text-center" value="@item.ctacte" onfocus="this.select()" />
+                    </td>
+                    <td class="text-center">
+                        @Html.Action("Selector_Bancos_CheqFecha", "Bancos", new { fila = i, codigo = item.banco })
+                    </td>
+                    <td class="text-center">
+                        @Html.Action("Selector_Plazas_CheqFecha", "Plazas", new { fila = i, codigo = item.plaza })
+                    </td>
+                    <td class="text-right">
+                        <input type="text" id="idchequefecha_valor_@i" class="form-control_tablegrande text-right" value="@item.valor" onfocus="this.select()" onblur="totalizar_cheques_cheqfecha()" onkeypress="return validateEnteroKeyPress(this,event);" />
+                    </td>
+                    <td class="text-center">
+                        <input type="date" id="idchequefecha_fecha_@i" class="form-control_tablegrande" value="@DateTime.Parse(item.fecha).ToString("yyyy-MM-dd")" />
+                    </td>
+                    <td>
+                        <input type="text" id="idchequefecha_nombre_@i" class="form-control_tablegrande" value="@item.nombre" onfocus="this.select()" />
+                    </td>
+                    <td>
+                        <input type="text" id="idchequefecha_rut_@i" class="form-control_tablegrande" value="@item.rut" placeholder="1234567-k" onfocus="this.select()" onblur="this.value = FormatearRUT(this.value);" onkeypress="return validateRutKeyPress(this,event);" />
+                    </td>
+                    <td>
+                        <input type="text" id="idchequefecha_telefono_@i" class="form-control_tablegrande" value="@item.telefonogirado" onfocus="this.select()" />
+                    </td>
+                    <td>
+                        <input type="text" id="idchequefecha_cover_@i" class="form-control_tablegrande" value="@item.codversion" onfocus="this.select()" onkeypress="return validateIntKeyPress(this,event);" />
+                    </td>
+                    <td>
+                        <input id="id_item_a_quitar_del_carritochequesfecha_@i" class="eliminar_del_carritocheques_fecha columna text-center" type="submit" value="X" data-fila="@i" style="width:100%" />
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="4">
+                <button type="button" class="btn btn-warning agregar_cheque_fecha" id="idgagregar_cheque">Agregar cheque</button>
+            </th>
+            <th class="text-right">Total:</th>
+            <th class="text-right">
+                <input type="text" class="form-control_tablegrande text-right total_chequefecha" value="@total.ToString("N0")" readonly style="width:100%" />
+            </th>
+            <th colspan="6" class="text-right">
+                <button type="button" class="btn btn-primary guardar_cheques_fecha">Guardar cheques</button>
+            </th>
+        </tr>
+    </tfoot>
+</table>

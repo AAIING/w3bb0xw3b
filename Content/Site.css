@@ -1,0 +1,707 @@
+﻿
+body {
+    font-size: 13px !important;
+}
+
+.navbar-inverse {
+    background-color: rgba(0, 29, 63, 1) !important;
+    border-color: #c8faf1 !important;
+}
+
+
+.table_pedido_fbx {
+    color: #fff !important;
+    font-weight: bold !important;
+    background-color: #323fd7 !important;
+}
+
+.table_pedido_cerrado_fbx {
+    color: #fff !important;
+    font-weight: bold !important;
+    background-color: #ff4d4d !important;
+}
+
+.editarpedido {
+    color: #000 !important;
+    font-weight: bold !important;
+}
+.eliminarpedido {
+    color: #000 !important;
+    font-weight: bold !important;
+}
+    
+/*
+.navbar-index {
+    height: 52px !important;
+}
+
+.navbar {
+    position: relative;
+    min-height: 50px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+}
+
+.navbar-fixed-bottom .navbar-collapse, .navbar-fixed-top .navbar-collapse {
+    max-height: 340px;
+}
+*/
+
+.navbar-captel {
+    background-color: #194aa7;
+    background-size: cover;
+    background-repeat: repeat, no-repeat;
+    border-color: #0021ff;
+}
+
+    .navbar-captel .navbar-toggle {
+        border-color: rgba(7, 52, 204, 0.84);
+    }
+
+        .navbar-captel .navbar-toggle .icon-bar {
+            background-color: #888;
+        }
+
+
+.navbar {
+    margin-bottom: 0 !important;
+    min-height: 52px !important;
+}
+@media (min-width: 768px) {
+    .navbar-nav > li > a {
+        padding-top: 16px !important;
+        padding-bottom: 16px !important;
+    }
+}
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+    color: #fff !important;
+    text-decoration: none;
+    background-color: #194aa7;
+}
+
+.navbar-nav > li > a:hover,
+.navbar-nav > li > a:visited,
+.navbar-nav > li > a:focus {
+    background-color: #34b6f0 !important;
+    color: #fff;
+}
+ul.navbar-nav li a {
+    color: #fff !important;
+}
+@media (min-width: 768px) {
+    ul.dropdown-menu li a {
+        color: #194aa7 !important;
+    }
+}
+
+    .navbar-altura-maxima-menu {
+        max-height: 640px !important;
+    }
+    /* Set padding to keep content from hitting the edges */
+    /*.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}*/
+    /* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+    .dl-horizontal dt {
+        white-space: normal;
+    }
+
+    .fondo_headtable {
+        background: -webkit-linear-gradient( #fcb858,#f19927, #fcb858); /* For Safari 5.1 to 6.0 */
+        background: -moz-linear-gradient( #fcb858,#f19927, #fcb858); /* For Firefox 3.6 to 15 */
+        background: linear-gradient( #fcb858,#f19927, #fcb858); /* Standard syntax (must be last) */
+    }
+
+    .actualiza_scroll {
+        overflow-y: scroll;
+    }
+
+    .header_modal_pagos {
+        background-color: #fca326;
+    }
+
+        .header_modal_pagos h3 {
+            color: #fff;
+        }
+
+    .letra_datatable {
+        font-size: 13px !important;
+    }
+
+    .letra_subdatatable {
+        font-size: 11px !important;
+    }
+
+    .titulos_header {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 10px;
+    }
+
+    .form-check {
+        position: relative !important;
+        display: block !important;
+        padding-left: 1.25rem !important;
+    }
+
+    .boton_datable {
+        padding: 3px 5px !important;
+        font-size: 10px !important;
+    }
+
+    .form-check-input:disabled ~ .form-check-label {
+        color: #6c757d !important;
+    }
+
+    .form-check-label {
+        margin-bottom: 0;
+    }
+
+    .form-check-inline {
+        display: -webkit-inline-box !important;
+        display: -ms-inline-flexbox !important;
+        display: inline-flex !important;
+        -webkit-box-align: center !important;
+        -ms-flex-align: center !important;
+        align-items: center !important;
+        padding-left: 0 !important;
+        margin-right: 0.75rem !important;
+    }
+
+        .form-check-inline .form-check-input {
+            position: static !important;
+            margin-top: 0 !important;
+            margin-right: 0.3125rem !important;
+            margin-left: 0 !important;
+        }
+
+    .btn-circle {
+        width: 26px !important;
+        height: 26px !important;
+        text-align: center !important;
+        padding: 4px 0 !important;
+        /*font-size: 12px;*/
+        line-height: 1.428571429 !important;
+        border-radius: 15px !important;
+    }
+
+        .btn-circle.btn-md {
+            width: 10px;
+            height: 10px;
+            padding: 10px 16px;
+            font-size: 18px;
+            line-height: 1.33;
+            border-radius: 25px !important;
+        }
+
+        .btn-circle.btn-xl {
+            width: 70px;
+            height: 70px;
+            padding: 10px 16px;
+            font-size: 24px;
+            line-height: 1.33;
+            border-radius: 35px;
+        }
+    /* Set width on the form input elements since they're 100% wide by default */
+
+    .table_filatablecida {
+        background-color: #cbcfcf !important;
+        text-decoration: underline !important;
+        /*border-bottom: 3px solid !important;*/
+    }
+
+    .form-control_combobox_normal {
+        display: block;
+        width: 100%;
+        padding: 6px 3px;
+        line-height: 1.42857143;
+        color: #050e72;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        /* -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075); */
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        /* -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; */
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+
+    .dataTables_filter {
+        /*width: 50%;*/
+        float: right;
+        text-align: right;
+    }
+
+    .form-control_combobox_achicado {
+        display: block;
+        width: 100%;
+        height: 24px;
+        padding: 6px 3px;
+        font-size: 10px;
+        line-height: 1.42857143;
+        color: #050e72;
+        /*color: #555;*/
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        /* -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075); */
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        /* -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; */
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+
+    /* ESTILOS INGRESO COTIZACIONES */
+
+    table#table_scompras tr:hover {
+        cursor: pointer;
+    }
+
+    .pdfpreview {
+        width: 100%;
+        height: 600px;
+    }
+
+    .table_sobregirado {
+        background-color: red !important;
+        color: #fff !important;
+    }
+
+    .ocultar {
+        display: none;
+    }
+
+    table.table_consulta tr:nth-child(even) {
+        /*background-color: rgb(155, 212, 237);*/
+        background-color: #fff; /*#d7d3d3;*/
+    }
+
+    table.table_consulta tr:nth-child(odd) {
+        /*background-color: rgb(199, 228, 241);*/
+        background-color: #F7F6F3; /*#bdbebf;*/
+    }
+
+    /*table.table_consulta th {
+    background: #5D7B9D no-repeat;  For browsers that do not support gradients 
+    background: -webkit-linear-gradient(#5D7B9D,#89afdb);  For Safari 5.1 to 6.0 
+    background: -o-linear-gradient(#5D7B9D,#89afdb);  For Opera 11.1 to 12.0 
+    background: -moz-linear-gradient(#5D7B9D,#89afdb);  For Firefox 3.6 to 15 
+    background: linear-gradient(#5D7B9D,#89afdb);  Standard syntax
+    background-color: #1742ed;
+    color: white;
+    height: 40px;
+}*/
+
+    table.table_consulta tr:hover {
+        background-color: #89afdb;
+    }
+
+    table.table_consulta td {
+        padding-left: 4px !important;
+        padding-right: 2px !important;
+        /*padding-top: 2px !important;
+    padding-bottom: 2px !important;*/
+    }
+
+    table.table_consulta th {
+        background-color: #194aa7;
+        color: #fff;
+        padding-left: 4px !important;
+        padding-right: 2px !important;
+        /*padding-top: 2px !important;
+    padding-bottom: 2px !important;*/
+    }
+
+    /*table_nuevo*/
+    table.table_consulta_nuevo tr:nth-child(even) {
+        /*background-color: rgb(155, 212, 237);*/
+        background-color: #fff; /*#d7d3d3;*/
+    }
+
+    table.table_consulta_nuevo tr:nth-child(odd) {
+        /*background-color: rgb(199, 228, 241);*/
+        background-color: #F7F6F3; /*#bdbebf;*/
+    }
+
+    .color_head {
+        background: #5D7B9D no-repeat; /* For browsers that do not support gradients */
+        background: -webkit-linear-gradient(#5D7B9D,#89afdb); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(#5D7B9D,#89afdb); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(#5D7B9D,#89afdb); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(#5D7B9D,#89afdb); /* Standard syntax*/
+        /*background-color: #1742ed;*/
+        color: white;
+        /*height: 40px;*/
+    }
+
+    .color_head_detalle {
+        background: #89afdb no-repeat; /* For browsers that do not support gradients */
+        background: -webkit-linear-gradient(#89afdb,#a4caf7); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(#89afdb,#a4caf7); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(#89afdb,#a4caf7); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(#89afdb,#a4caf7); /* Standard syntax*/
+        /*background-color: #1742ed;*/
+        color: white;
+        /*height: 40px;*/
+    }
+
+    table.table_consulta_nuevo tr:hover {
+        background-color: rgba(52, 152, 221, 0.80);
+    }
+
+    table.table_consulta_nuevo td {
+        padding-left: 4px !important;
+        padding-right: 2px !important;
+        padding-top: 2px !important;
+        padding-bottom: 2px !important;
+    }
+
+    /*******/
+
+
+    table.table_consulta_basico tr:nth-child(even) {
+        /*background-color: rgb(155, 212, 237);*/
+        background-color: #fff; /*#d7d3d3;*/
+    }
+
+    table.table_consulta_basico tr:nth-child(odd) {
+        /*background-color: rgb(199, 228, 241);*/
+        background-color: #F7F6F3; /*#bdbebf;*/
+    }
+
+    table.table_consulta_basico thead th {
+        background: #5D7B9D no-repeat; /* For browsers that do not support gradients */
+        background: -webkit-linear-gradient(#5D7B9D,#89afdb); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(#5D7B9D,#89afdb); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(#5D7B9D,#89afdb); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(#5D7B9D,#89afdb); /* Standard syntax*/
+        /*background-color: #1742ed;*/
+        color: white;
+        /*height: 40px;*/
+    }
+
+    table.table_consulta_basico tfoot th {
+        background-color: #e3e3f1 !important; /* For browsers that do not support gradients */
+        /*background-color: #1742ed;*/
+        font-size: 11px;
+        /*height: 40px;*/
+    }
+
+    table.table_consulta_basico tr:hover {
+        background-color: rgba(52, 152, 221, 0.80);
+    }
+
+    table.table_consulta_basico td {
+        padding-left: 4px !important;
+        padding-right: 2px !important;
+        padding-top: 2px !important;
+        padding-bottom: 2px !important;
+    }
+
+    .form-control_tablefiltro {
+        display: block;
+        width: 100%;
+        height: 26px;
+        padding: 6px 7px;
+        font-size: 12px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        /* -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075); */
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        /* -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; */
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+
+    .form-control_normal[disabled], .form-control_normal[readonly], fieldset[disabled] .form-control_normal {
+        background-color: #eee;
+        opacity: 1;
+    }
+
+    .form-control_normal {
+        display: block;
+        width: 100%;
+        padding: 6px 3px;
+        line-height: 1.42857143;
+        color: #050e72;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        /* -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075); */
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        /* -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; */
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+
+    .form-control_tablegrande {
+        display: block;
+        width: 100%;
+        height: 24px;
+        padding: 6px 3px;
+        font-size: 10px;
+        line-height: 1.42857143;
+        color: #050e72;
+        /*color: #555;*/
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        /* -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075); */
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        /* -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; */
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+
+    .fondo_titulo {
+        /*border-bottom: 1px solid #40E0D0;*/
+        background: #1790e1;
+        font-size: 24px;
+        color: white;
+        padding: 7px;
+        /*padding:7px;
+    width:100%;
+    height:100%;*/
+        border-radius: 10px 10px 10px 10px;
+        -moz-border-radius: 10px 10px 10px 10px;
+        -webkit-border-radius: 10px 10px 10px 10px;
+    }
+
+    .minimo-padding_right {
+        padding-right: 1px !important;
+        margin-right: 1px !important;
+    }
+
+    .minimo-padding_left_right {
+        padding-right: 1px !important;
+        margin-right: 1px !important;
+        padding-left: 1px !important;
+        margin-left: 1px !important;
+    }
+
+    .minimo-padding_left {
+        padding-left: 1px !important;
+        margin-left: 1px !important;
+    }
+
+    .minimo-padding {
+        padding: 1px !important;
+        margin: 1px !important;
+    }
+
+    .no-padding {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .no-padding_right {
+        padding-right: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .no-padding_left_right {
+        padding-right: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    .no-padding_left {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    table#table_cotizacion tr:hover {
+        cursor: pointer;
+    }
+
+
+    table.tableSection thead {
+        font-size: 11px !important;
+    }
+
+    table.tableSection tbody {
+        color: #050e72;
+        font-weight: 500;
+        font-size: 11px !important;
+    }
+
+    table.tableSection tfoot th {
+        /*padding: 30px !important;*/
+    }
+
+    table.tableSection {
+        border-collapse: collapse !important;
+        border-top: 0px !important;
+        /*border-top: 1px solid #ddd;*/
+    }
+
+        table.tableSection > thead > tr > th {
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-collapse: collapse !important;
+            border-top: 0px !important;
+            /*border-top: 1px solid #ddd;*/
+        }
+
+        table.tableSection tfoot {
+            color: #050e72 !important;
+            font-size: 11px !important;
+            font-weight: normal !important;
+            background-color: #fbfff6;
+        }
+
+    /**Tablas pequeñas*/
+
+    table.tableSection_chico thead {
+        font-size: 10px !important;
+    }
+
+    table.tableSection_chico tbody {
+        color: #050e72;
+        font-weight: 500;
+        font-size: 10px !important;
+    }
+
+    table.tableSection_chico tfoot th {
+        /*padding: 30px !important;*/
+    }
+
+    table.tableSection_chico {
+        border-collapse: collapse !important;
+        border-top: 0px !important;
+        /*border-top: 1px solid #ddd;*/
+    }
+
+        table.tableSection_chico > thead > tr > th {
+            padding: 10px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-collapse: collapse !important;
+            border-top: 0px !important;
+            /*border-top: 1px solid #ddd;*/
+        }
+
+        table.tableSection_chico tfoot {
+            color: #050e72 !important;
+            font-size: 8px !important;
+            font-weight: normal !important;
+            background-color: #fbfff6;
+        }
+
+    /**cobranzas*/
+    table.tableSection_cobranza thead {
+        font-size: 13px !important;
+    }
+
+    table.tableSection_cobranza tbody {
+        color: #050e72;
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+
+    table.tableSection_cobranza tfoot th {
+        /*padding: 30px !important;*/
+    }
+
+    table.tableSection_cobranza {
+        border-collapse: collapse !important;
+        border-top: 0px !important;
+        /*border-top: 1px solid #ddd;*/
+    }
+
+        table.tableSection_cobranza > thead > tr > th {
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-collapse: collapse !important;
+            border-top: 0px !important;
+            /*border-top: 1px solid #ddd;*/
+        }
+
+        table.tableSection_cobranza tfoot {
+            color: #050e72 !important;
+            font-size: 13px !important;
+            font-weight: normal !important;
+            background-color: #fbfff6;
+        }
+
+    .top_tituloencabezado {
+        color: #194aa7;
+    }
+    /*label {
+    color: #FF9A00;
+}*/
+    @media (min-width: 1200px) {
+        .container_menu {
+            width: auto !important;
+            margin-right: 20px !important;
+        }
+    }
+
+    /*@media all and (max-width: 1200px) and (min-width: 769px) {
+    .top_tituloencabezado {
+        margin-top: 80px !important;
+    }
+}
+
+@media all and (max-width: 1375px) and (min-width: 1201px) {
+    .top_tituloencabezado {
+        margin-top: 80px !important;
+    }
+}*/
+    /*@media (max-width: 844px)  {
+    .top_tituloencabezado {
+        margin-top: 80px !important;
+    }
+}
+@media (min-width: 845px) and (max-width: 1091px) {
+    .top_tituloencabezado {
+        margin-top: 170px !important;
+    }
+}
+@media (min-width: 1092px) and (max-width: 1319px) {
+    .top_tituloencabezado {
+        margin-top: 120px !important;
+    }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+    .top_tituloencabezado {
+        margin-top: 220px !important;
+    }
+}
+@media  (min-width: 1320px) {
+    .top_tituloencabezado {
+        margin-top: 90px !important;
+    }
+}*/
+    /*@media all and (max-width: 1474px) and (min-width: 1375px) {
+        .top_tituloencabezado {
+            margin-top: 60px !important;
+        }
+    }*/
+
+    /*.page-header-azuloscuro {
+        padding-bottom: 9px;
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-bottom: 20px;
+        margin-left: 0px;
+        border-bottom: 1px solid #368adb;
+        color: #0a81cc !important;
+    }*/
+
+    /* FIN ESTILOS INGRESO COTIZACIONES */

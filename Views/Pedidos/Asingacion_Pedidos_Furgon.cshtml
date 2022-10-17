@@ -1,0 +1,645 @@
+﻿
+@{
+    Layout = null;
+    DateTime oPrimerDiaDelMes = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+}
+
+<div id="ajax_loader" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<div class="row">
+
+    <div class="col-lg-12">
+        <h3 class="page-header-azuloscuro top_tituloencabezado">
+            Asignación de Pedido a Furgon
+        </h3>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-lg-1">
+        <input type="text" class="form-control limpiar" placeholder="N° Pedido" id="pedido" style="padding-right:2px !important;padding-left:2px !important" onkeypress="return validateEnteroKeyPress(this,event);">
+    </div>
+    <div class="col-lg-1">
+        <input type="text" class="form-control limpiar" id="patente" placeholder="Patente">
+    </div>
+    <div class="col-lg-3">
+        <input type="text" class="form-control limpiar" id="chofer" placeholder="Nombre Chofer">
+    </div>
+    <div class="col-lg-3">
+        <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+
+            <label>
+                Fecha&nbsp;Inicio
+            </label>&nbsp;&nbsp;
+            <input type="date" class="form-control" id="idfechainicio" value="@oPrimerDiaDelMes.ToString("yyyy-MM-dd")">
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <label>
+                Fecha&nbsp;Termino
+            </label>&nbsp;&nbsp;
+            <input type="date" class="form-control" id="idfechacorte" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+        </div>
+    </div>
+    <div class="col-lg-1">
+        <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <button class="btn btn-success" id="idAgregarMaestro" title="Agregar"><i class="glyphicon glyphicon-plus"></i></button>
+            <button class="btn btn-primary" id="idBuscar" title="Buscar"><i class="glyphicon glyphicon-search"></i></button>
+            <button type="button" class="btn btn-danger" id="btn_limpia_filtros" title="Limpiar Filtros"><i class="fa fa-trash-o"></i></button>
+            <input type="button" class="form-control btn btn-success text-right" id="btn_aplica_prioridad" style="width:100%" title="Despachar"
+                   value="Despachar" autofocus>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+
+<div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-10 ">
+        <div id="idDivPartialListadoPedidos_Furgon">
+        </div>
+    </div>
+    <div class="col-lg-1 "></div>
+</div>
+
+<div class="modal fade" id="modal_ver_detalle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="min-width:75% !important">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel">PEDIDOS DEL VIAJE</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label>Fecha</label>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" id="fecha_encabezado" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label>Patente</label>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" id="patente_encabezado" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label>Chofer</label>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" id="chofer_encabezado" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <br />
+                        <button id="agregar_detalle" type="button" class="btn btn-primary" style="width:100%"><i class="glyphicon glyphicon-floppy-save"></i> Agregar Pedido al Viaje</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <br />
+                        <div id="idPartialDetallePedidosViajeD">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn_pedidosviajesd" type="button" class="btn btn-success">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="id_form_guardar_insert" method="POST" name="fileinfo" role="form">
+    <div class="modal fade" id="modal_insertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_insert">Agregar Viaje</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Fecha</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="fecha_maestro" type="date" class="form-control validate[required]" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Patente</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="patente_maestro" type="text" class="form-control validate[required]">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Chofer</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="chofer_maestro" type="text" class="form-control validate[required]">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Estado</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select name="select" class="form-control" id="estado_maestro">
+                                    <option value="0">Cargando</option>
+                                    <option value="5">Iniciado</option>
+                                    <option value="9">Cerrado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input id="maestro_enviar" type="submit" class=" btn btn-primary" value="Guardar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="id_form_guardardetalle_insert" method="POST" name="fileinfo" role="form">
+    <div class="modal fade" id="modal_detalle_insertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_insert">Agregar Detalle</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Pedido</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="pedido_detalle" type="text" class="form-control validate[required]" maxlength="30" onkeypress="return validateEnteroKeyPress(this,event);"  onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cajas</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="caja_detalle" type="text" class="form-control validate[required]" maxlength="30" onkeypress="return validateEnteroKeyPress(this,event);" value="0"  onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Bolsas</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="bolsa_detalle" type="text" class="form-control validate[required]" maxlength="30" onkeypress="return validateEnteroKeyPress(this,event);" value="0"  onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cajas Cargadas</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="cajascargadas_detalle" type="text" class="form-control validate[required]" maxlength="30" onkeypress="return validateEnteroKeyPress(this,event);" value="0"  onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Bolas Cargadas</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="bolsascargadas_detalle" type="text" class="form-control validate[required]" maxlength="30" onkeypress="return validateEnteroKeyPress(this,event);" value="0"  onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cajas Entregadas</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="cajasentregadas_detalle" type="text" class="form-control validate[required]" maxlength="30" onkeypress="return validateEnteroKeyPress(this,event);" value="0"  onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Bolsas Entregadas</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="bolsasentregadas_detalle" type="text" class="form-control validate[required]" maxlength="30" onkeypress="return validateEnteroKeyPress(this,event);" value="0" onfocus="this.select()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default cerrar_ingresar" data-dismiss="modal">Cancelar</button>
+                    <input id="detalle_enviar" type="submit" class=" btn btn-primary" value="Guardar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modal_eliminar_viaje" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar_viaje" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3">Anular Viaje</h3>
+            </div>
+            <div class="modal-body">
+                    ¿Está seguro de anular el viaje?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" name="referencia_hidden2" id="referencia_hidden2" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="enviar_eliminar_viajes btn btn-danger" value="Anular" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" >Eliminar Detalle</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar el item?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" name="referencia_hidden" id="referencia_hidden" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="enviar_eliminar_viajesd btn btn-danger" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" class="init">
+    var table_detalle = "";
+    var nroviaje_global = 0;
+    var lista_viajes = [];
+    $(document).ready(function () {
+
+        $('#btn_pedidosviajesd').on('click', function () {
+            $("#modal_ver_detalle").modal("hide");
+            /*
+            var pedidos = [];
+            var count =0;
+            $("#table_viajesd .seleccionado").each(function () {
+                count++;
+                if ($(this).prop('checked')) {
+                    var item_viaje = {
+                        pedido: $(this).data("registro"),
+                        prioridad: $(this).data("prioridad")
+                    }
+                    pedidos.push(item_viaje);
+                }
+            });
+
+            if (count != pedidos.length)
+            {
+                alert("Debe seleccionar todas las filas")
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/ActualizarPrioridadViajesPedidos/',
+                data: JSON.stringify({
+                    pedidos: pedidos
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data.retornojson > 0) {
+                        mostrar_msj_success("Actualizado");
+                        $("#modal_ver_detalle").modal("hide");
+                    } else if (data.retornojson == "-1") {
+                        mostrar_msj_error(data.mensajejson);
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("Error de Conexión");
+                }
+            });
+            */
+        });
+
+        $("#btn_aplica_prioridad").on('click', function () {
+            if (lista_viajes.length == 0) {
+                alert("SIN DATOS")
+                return;
+            }                 
+            var rut = "";
+            $("#table_viajes .seleccionado").each(function () {
+                //count++;
+                if ($(this).prop('checked')) {
+                    rut = $(this).data("rutchofer");
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/UpdatePrioridadViajes/',
+                data: JSON.stringify({rutchofer: rut, viajes: lista_viajes }),
+                contentType: "application/json; charset=utf-8",
+                dataType: false,
+                success: function (data) {
+                   alert("actualizado")
+                }
+            });             
+        });
+
+        $("#btn_limpia_filtros").on('click', function () {
+            $(".limpiar").val("");
+        });
+        listar_ViajesMaestro();
+        $("#idAgregarMaestro").on('click', function () {
+            $("#modal_insertar").modal("show");
+        });
+        $("#agregar_detalle").on('click', function () {
+            $("#modal_detalle_insertar").modal("show");
+        });
+
+        $("#idBuscar").on('click', function () {
+            listar_ViajesMaestro();
+        });
+
+        $('#modal_ver_detalle').on('shown.bs.modal', function () {
+            table_detalle.columns.adjust();
+        });
+
+        $('.enviar_eliminar_viajes').click(function (e) {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append("referencia", $("#referencia_hidden2").val());
+                 
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/EliminarViajes/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#close_modal_eliminar").click();
+                    if (data == 1) {
+                        mostrar_msj_success('Item Eliminado Correctamente');
+                        //listar_DetalleViaje(nroviaje_global);
+                    listar_ViajesMaestro();
+                    $("#modal_eliminar_viaje").modal("hide");
+                    } else if (data == -1) {
+                        mostrar_msj_error("Error al verificar los datos relacionados");
+                    } else if (data == 2) {
+                        mostrar_msj_error("No se puede eliminar debido que hay datos relacionados");
+                    }
+                    else {
+                        mostrar_msj_error("Error al Eliminar aplicacion:" + data);
+                    }
+                }
+            });
+
+
+        });
+
+
+
+        $('.enviar_eliminar_viajesd').click(function (e) {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append("referencia", $("#referencia_hidden").val());
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/EliminarViajesD/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#close_modal_eliminar").click();
+                    if (data == 1) {
+                        mostrar_msj_success('Item Eliminado Correctamente');
+                        listar_DetalleViaje(nroviaje_global);
+                    } else if (data == -1) {
+                        mostrar_msj_error("Error al verificar los datos relacionados");
+                    } else if (data == 2) {
+                        mostrar_msj_error("No se puede eliminar debido que hay datos relacionados");
+                    }
+                    else {
+                        mostrar_msj_error("Error al Eliminar aplicacion:" + data);
+                    }
+                }
+            });
+        });
+
+        $('#id_form_guardar_insert').validationEngine();
+
+        $("#maestro_enviar").click(function (e) {
+            e.preventDefault();
+            if (!$("#id_form_guardar_insert").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            fd.append("fecha", $("#fecha_maestro").val());
+            fd.append("patente", $("#patente_maestro").val());
+            fd.append("chofer", $("#chofer_maestro").val());
+            fd.append("estado", $("#estado_maestro").val());
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/GuardarViajes/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == 1) {
+                        $("#id_form_guardar_insert").each(function () { this.reset(); });
+                        listar_ViajesMaestro();
+                        $("#modal_insertar").modal("hide");
+                        mostrar_msj_success('Datos Guardados Correctamente');
+                    } else if (data == 2) {
+                        mostrar_msj_error("Documento electronico ya esta en la tabla");
+                    } else {
+
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                    window.scrollTo(0, 0); //Ir hacia arriba
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de conexión");
+                }
+            });
+
+        });
+
+        $('#id_form_guardardetalle_insert').validationEngine();
+
+        $("#detalle_enviar").click(function (e) {
+            e.preventDefault();
+            if (!$("#id_form_guardardetalle_insert").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            fd.append("nroviaje", nroviaje_global);
+            fd.append("pedido", $("#pedido_detalle").val());
+            fd.append("cajas", $("#caja_detalle").val());
+            fd.append("bolsas", $("#bolsa_detalle").val());
+            fd.append("cajascargadas", $("#cajascargadas_detalle").val());
+            fd.append("bolsascargadas", $("#bolsascargadas_detalle").val());
+            fd.append("cajasentregadas", $("#cajasentregadas_detalle").val());
+            fd.append("bolsasentregadas", $("#bolsasentregadas_detalle").val());
+
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/GuardarViajesD/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == 1) {
+                        $("#id_form_guardardetalle_insert").each(function () { this.reset(); });
+                        listar_DetalleViaje(nroviaje_global);
+                        $("#modal_detalle_insertar").modal("hide");
+                        mostrar_msj_success('Datos Guardados Correctamente');
+                    } else if (data == 2) {
+                        mostrar_msj_error("Documento electrónico ya esta en la tabla");
+                    } else {
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                    window.scrollTo(0, 0); //Ir hacia arriba
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de conexión");
+                }
+            });
+
+        });
+    });
+
+    function listar_DetalleViaje(nroviaje) {
+        $("#loading").show();
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '/Pedidos/partialListadoViajeDetalle/',
+            data: JSON.stringify({ nroviaje: nroviaje }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+                $("#loading").hide();
+                if (result == "-1") {
+                    mostrar_msj_error_volverIniciar("Su Sessión a ha expirado. Ingrese al Sistema nuevamente", "/../Home/Login");
+                } else {
+                    $("#idPartialDetallePedidosViajeD").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("Error de Conexión");
+            }
+        });
+    }
+
+    function listar_ViajesMaestro() {
+        //debugger
+        var fechai = $('#idfechainicio').val();
+        var fechat = $('#idfechacorte').val();
+        var nropedido = $('#pedido').val();
+        var chofer = $('#chofer').val();
+        var patente = $('#patente').val();
+        $("#loading").show();
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/listadoViajeMaestroJson/',
+            data: JSON.stringify({ fechai: fechai, fechat: fechat, chofer: chofer, patente: patente, nropedido: nropedido }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //
+                lista_viajes = [];
+                $.each(data, function (i, item) {
+                    var item_viaje = {
+                        fecha: item.fecha,
+                        nroviaje: item.nroviaje,
+                        chofer: item.chofer,
+                        patente: item.patente,
+                        estado: item.estado,
+                        nestado: item.nestado,
+                        rutchofer: item.Rutchofer,
+                        prioridad: item.Prioridad
+                    }
+                    lista_viajes.push(item_viaje);
+                });
+                ver_lista_de_viajes();
+                $("#loading").hide();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("Error de Conexión");
+            }
+        });
+    }
+
+    /***/
+    function ver_lista_de_viajes() {
+        //
+        var url_action = '@Html.Raw(Url.Action("partialListadoViajeMaestro", "Pedidos"))';
+
+        $.ajax({
+            async: false,
+            data: JSON.stringify({ lista: lista_viajes }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#idDivPartialListadoPedidos_Furgon").html(result);
+            }
+        });
+
+    }
+
+</script>

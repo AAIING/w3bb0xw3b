@@ -1,0 +1,210 @@
+﻿
+@{
+    ViewBag.Title = "Graficos_de_Venta_por_comuna";
+    Layout = null;
+}
+
+
+<div class="row">
+    <label class="col-lg-12 control-label text-center">Fecha inicio</label>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><input type="date" id="idfechainicio" class="form-control fecha" /></div>
+        <div class="col-lg-5"></div>
+    </div>
+    <label class="col-lg-12 control-label text-center">Fecha corte</label>
+    <div class="row">
+        <div class="col-lg-5"></div>
+        <div class="col-lg-2"><input type="date" id="idfechacorte" class="form-control fecha" /></div>
+        <div class="col-lg-1">
+            <input type="button" class="btn btn-primary text-right" id="idcargargrafico_btn" title="Cargar Gráfico" value="Buscar">
+        </div>
+    </div>
+</div>
+
+
+<table id="idgraficoporcomuna" class="table table-striped table-bordered nowrap" cellspacing="0" width="100%" style="margin-bottom: 0 !important;">
+    <thead>
+        <tr>
+            <th>
+                Gráfico de barras
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <div id="chartdiv" style="width: 100%; height: 600px;"></div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="modal fade" id="modal_informedeventasporcomuna" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Informe de ventas por comuna</h4>
+
+            </div>
+            <div class="modal-body">
+
+                <div id="idpartialinformedeventasporcomuna"></div>
+
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var ejeX_array = [];
+    var ejeY_array = [];
+    var chartData2 = [];
+    var total = 0;
+    var chart;
+
+    $(document).ready(function () {
+
+
+        var d = new Date();
+        var curDay = d.getDate();
+        var curMonth = d.getMonth() + 1;
+        var curYear = d.getFullYear();
+
+        var fi = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-01";
+        var ft = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-" + (curDay < 10 ? "0" + curDay : curDay);
+
+        $('#idfechainicio').val(fi);
+        $("#idfechacorte").val(ft);
+
+        datosejesGraficoJS($("#idfechainicio").val(), $("#idfechacorte").val());
+
+        var tabla = $("#idgraficoporcomuna").DataTable({
+            destroy: true,
+            "scrollX": true, "scrollY": "750px", "scrollCollapse": true, "searching": false, "paging": false, "ordering": false, "info": false, "autowidth": false,
+        });
+
+        cargarGraficoTotal(total);
+
+        $("#idcargargrafico_btn").on('click', function (e) {
+            e.preventDefault();
+            ejeX_array = [];
+            ejeY_array = [];
+            chartData2 = [];
+            $("#chartdiv").html("");
+            datosejesGraficoJS($("#idfechainicio").val(), $("#idfechacorte").val());
+            cargarGraficoTotal(total);
+        });
+        $("#idgenerarinforme_btn").on('click', function (e) {
+            e.preventDefault();
+            $("#modal_informedeventasporcomuna").modal("show");
+            var fechainicio = $('#idfechainicio').val();
+            var fechacorte = $("#idfechacorte").val();
+            cargarinforme(fechainicio, fechacorte);
+            //$('#idtabla_insumos_wrapper .buttons-excel').click();
+        });
+    });
+
+    function cargarGraficoTotal() {
+        chart = new AmCharts.AmSerialChart();
+        chart.dataProvider = chartData2;
+        chart.categoryField = "comuna";
+        // this single line makes the chart a bar chart,
+        // try to set it to false - your bars will turn to columns
+        chart.rotate = true;
+        // the following two lines makes chart 3D
+        chart.depth3D = 20;
+        chart.angle = 30;
+
+        // AXES
+        // Category
+        var categoryAxis = chart.categoryAxis;
+        categoryAxis.gridPosition = "start";
+        categoryAxis.axisColor = "#DADADA";
+        categoryAxis.fillAlpha = 1;
+        categoryAxis.gridAlpha = 0;
+        categoryAxis.fillColor = "#FAFAFA";
+
+        // value
+        var valueAxis = new AmCharts.ValueAxis();
+        valueAxis.axisColor = "#DADADA";
+        valueAxis.title = "Total en pesos, $" + formatea_miles(total);
+        valueAxis.gridAlpha = 0.1;
+        chart.addValueAxis(valueAxis);
+
+        // GRAPH
+        var graph = new AmCharts.AmGraph();
+        graph.title = "Comuna";
+        graph.valueField = "total";
+        graph.type = "column";
+        graph.balloonText = "[[category]]:[[value]]";
+        graph.lineAlpha = 0;
+        graph.fillColors = "#FF4933";
+        graph.fillAlphas = 1;
+        chart.addGraph(graph);
+
+        chart.creditsPosition = "top-right";
+
+        chart.export = {
+            enabled: true,
+            position: "bottom-right"
+        }
+        chart.initHC = false;
+        chart.validateNow();
+
+        // WRITE
+        chart.write("chartdiv");
+    }
+
+    function datosejesGraficoJS(fechainicio, fechacorte) {
+
+        var fd = new FormData();
+        fd.append("fechainicio", fechainicio);
+        fd.append("fechacorte", fechacorte);
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '/Informes/datosGrafico_1/',
+            data: fd,
+            DataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                var listado = data.listaDatosJson;
+                total = data.totalJson;
+                $.each(listado, function (index, item) {//index es el indice
+                    ejeX_array.push(item.ejeX);
+                    ejeY_array.push(item.ejeY);
+                    chartData2.push({ "comuna": (item.ejeX).toString(), "total": item.ejeY });
+                });
+            }
+        });
+    }
+    function cargarinforme(fechainicio, fechacorte) {
+        var fd = new FormData();
+        fd.append("fechainicio", fechainicio);
+        fd.append("fechacorte", fechacorte);
+        $("#ajax_loader_global").show();
+        $.ajax({
+            async: false,
+            data: fd,
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: '/Informes/partialGrafico_1/',
+            success: function (result) {
+                $("#ajax_loader_global").hide();
+                $("#idpartialinformedeventasporcomuna").html(result);
+            }
+        });
+    }
+</script>
+

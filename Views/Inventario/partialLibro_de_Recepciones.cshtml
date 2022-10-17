@@ -1,0 +1,215 @@
+﻿@model IEnumerable<WebBox.Models.RecepcionesMaestroModels>
+@{
+    Layout = null;
+    int i = 0;
+    int ttotal = 0;
+}
+
+
+
+<table id="table_libroderecepciones" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width:10%" class="text-center">Número</th>
+            <th style="width:10%" class="text-center">Fecha</th>
+            <th style="width:10%" class="text-center">Rut&nbsp;Proveed&nbsp;</th>
+            <th style="width:38%">Nombre</th>
+            <th style="width:3%" class="text-center">Td</th>
+            <th style="width:7%" class="text-center">Nro.doc.</th>
+            <th style="width:7%" class="text-center">No.OC</th>
+            @*<th style="width:6%" class="text-center">Anulada</th>
+            <th style="width: 2%" class="text-center"></th>*@
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            ttotal += Convert.ToInt32(item.total);
+
+            <tr>
+                <td class="text-right">
+                    <input type="button" class="btn btn-default btn-md text-center mostrardocumento"
+                           data-fila="@i"
+                           data-registro="@item.registro"
+                           value="@item.numero"
+                           title="Mostrar documento" style="width:100%;font-size: 10px" />
+                </td>
+                <td class="text-center">
+                    @item.fecha
+                </td>
+                <td class="text-center">
+                    @item.rut
+                </td>
+                <td>
+                    @item.nombre
+                </td>
+                <td class="text-center">
+                    @item.tipodoc
+                </td>
+                <td class="text-center">
+                    @item.numerodoc
+                </td>
+                <td class="text-center">
+                    @item.odecompra
+                </td>
+                @*<td class="text-center">
+                    @if (item.anulado == "1")
+                    {<input type="checkbox" checked disabled />}
+                    else
+                    {<input type="checkbox" disabled />}
+                </td>
+                <td>
+                    <button type="button" class="anulacion text-center btn btn-danger btn-circle" style="font-size: 10px;" id="btn_anulacion_@i"
+                            data-fila="@i"
+                            data-registro="@item.registro"
+                            data-anulado="@item.anulado"
+                            title="Anular Recepción de Insumos">
+                        X
+                    </button>
+                </td>*@
+            </tr>
+            i++;
+        }
+    </tbody>
+    @*<tfoot>
+            <tr>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right">Total</th>
+                <th class="text-right">@ttotal.ToString("N0")</th>
+            </tr>
+        </tfoot>*@
+</table>
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        table_libroderecepciones = $('#table_libroderecepciones').DataTable({
+            destroy: true,
+            "bInfo": false,
+            "bPaginate": false,
+            "searching": false,
+            "ordering": false,
+            "bFilter": false,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                //"sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                //"sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                //"sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+        $('#table_libroderecepciones tbody').on('click', 'tr .mostrardocumento', function (e) {
+            e.preventDefault();
+
+            fila_global = $(this).data("fila");
+            registro_global = $(this).data("registro");
+            $("#modal_mostrar_documento").modal("show");
+            $.ajax({
+                type: "POST",
+                url: '/Inventario/Mostrar_PDF_Recepciones/',
+                traditional: true,
+                data: { registro: registro_global },
+                DataType: 'json',
+                async: false,
+                success: function (data) {
+
+                    if (data.retornojson == "1") {
+                        $('#dte_view_recepcion').html("");
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe',
+                            'src': data.documentorecepcionjson
+                        });
+                        $('#dte_view_recepcion').css('background', 'url(../../../images/loading_page.gif) center center no-repeat');
+                        $('#dte_view_recepcion').html(iframe);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error: " + errorThrown);
+                    //alert("errorThrown: " + errorThrown + "XMLHttpRequest: " + XMLHttpRequest + "textStatus: " + textStatus);
+                }
+            });
+
+        });
+
+        $('#table_libroderecepciones tbody').on('click', 'tr .anulacion', function (e) {
+            e.preventDefault();
+
+            if ($(this).data("anulado") == "1") {
+                mostrar_msj_advertencia("el documento ya esta anulado !!");
+                return false;
+            }
+            anulado = $(this).data("anulado");
+            if (anulado == "1") {
+                mostrar_msj_advertencia("El documento ya fué anulado");
+                return false;
+            }
+            registrocompras = inttryparse($(this).data("registrocompras"), 0, 10);
+            if (registrocompras > 0) {
+                mostrar_msj_advertencia("El documento esta costeado");
+                return false;
+            }
+            fila_global = $(this).data("fila");
+            registro_global = $(this).data("registro");
+            $("#modal_confirma_anulacion").modal("show");
+            $("#ajax_loader").css('display', '');
+            $.ajax({
+                type: "POST",
+                url: '/Inventario/Mostrar_PDF_Recepciones/',
+                traditional: true,
+                data: { registro: registro_global },
+                DataType: 'json',
+                async: false,
+                success: function (data) {
+
+                    if (data.retornojson == "1") {
+                        $('#dte_view_anula_recepcion').html("");
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe',
+                            'src': data.documentorecepcionjson
+                        });
+                        $('#dte_view_anula_recepcion').css('background', 'url(../../../images/loading_page.gif) center center no-repeat');
+                        $('#dte_view_anula_recepcion').html(iframe);
+                        $("#ajax_loader").css('display', 'none');
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error: " + errorThrown);
+                    //alert("errorThrown: " + errorThrown + "XMLHttpRequest: " + XMLHttpRequest + "textStatus: " + textStatus);
+                }
+            });
+        });
+    });
+
+
+</script>

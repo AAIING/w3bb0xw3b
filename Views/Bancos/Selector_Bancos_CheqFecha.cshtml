@@ -1,0 +1,19 @@
+﻿@model IEnumerable<WebBox.Models.BancosModels>
+
+@{
+    Layout = null;
+}
+
+<select id="id_selector_bancos_cheqfecha_@ViewData["fila"]" class="form-control_combobox_achicado" style="width:100% !important">
+    @foreach (var item in Model)
+    {
+        if (ViewData["codigo"].ToString() == item.codigo)
+        {
+            <option value="@item.codigo" selected>@item.alias</option>
+        }
+        else
+        {
+            <option value="@item.codigo">@item.alias</option>
+        }
+    }
+</select>

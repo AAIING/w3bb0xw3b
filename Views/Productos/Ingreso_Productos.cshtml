@@ -1,0 +1,1308 @@
+﻿
+@{
+
+    Layout = null;
+}
+
+<br />
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+    <div class="form-inline">
+        <div class="col-lg-6 col-md-6 col-xs-12">
+            <div class="input-group input-group-sm">
+
+                <select id="listado_insumos" class="form-control input-lg">
+                    <option value="0" data-cuenta="0" data-tipo="0" data-referencia="0">--------Seleccione--------</option>
+                </select>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" id="idagregarinsumo" title="Agregar insumo">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </button>
+                    <button class="btn btn-warning" type="button" id="edicion_insumo" title="Modificar insumo seleccionado" disabled>
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button class="btn btn-danger" type="button" id="ideliminarinsumo" title="Eliminar insumo seleccionado" disabled>
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                    <button class="btn btn-success text-right" type="button" id="idagregarproducto" title="Agregar Producto">
+                        +
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+</div>
+
+<div class="modal fade" id="modaladvertencia_insumo_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_elimina_insumo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar_insumo" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_insumo">Eliminar insumo</h3>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar la insumo?<br />
+                <br />
+                <div class="form-horizontal">
+                    <input type="hidden" name="referenciainsumo_eliminar_hidden" id="referenciainsumo_eliminar_hidden" />
+                    <input type="hidden" name="codigoinsumo_eliminar_hidden" id="codigoinsumo_eliminar_hidden" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="ok_eliminar_insumo btn btn-danger" value="Eliminar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" class="form_producto_eliminar" role="form">
+    <div class="modal fade" id="modal_producto_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog_eliminar">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_producto">Eliminar Producto</h3>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro de eliminar la Producto?<br />
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-1"></div>
+                            <div class="col-lg-2">
+                                <input type="text" class="form-control" id="codigo_prod_eliminar" readonly />
+                            </div>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="nombre_prod_eliminar" readonly />
+                            </div>
+                            <div class="col-lg-1"></div>
+                        </div>
+                        <br />
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="ok_producto_eliminar btn btn-danger" value="Eliminar" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="form_edicion_producto" method="POST" name="fileinfo" class="form_producto_edit" role="form">
+    <div class="modal fade" id="modal_producto_editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_editar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_edit">Editar Producto</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Codigo</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="codigo_prod_edit" type="text" class="form-control" placeholder="" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_prod_edit" type="text" class="form-control validate[required]" placeholder="Nombre">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Unidad</label>
+                            </div>
+                            <div class="col-lg-3" id="divlistado_unidades_edit">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>insumo</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="listado_insumos_prod_edit" name="listado_Insumos_prod_edit" class="form-select input-sm"></select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Precio Venta</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="precioventa_edit" type="text" class="form-control numerico_int" placeholder="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Familia</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="listado_familias_edit" class="form-control validate[required]">
+                                    <option value="">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Peso Grs.</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="pesogrs_edit" type="text" class="form-control text-right" onkeypress="return validateEnteroKeyPress(this,event);" maxlength="5">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cabeza/Esq.</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="indcabezaesquelon_edit" class="" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Presentacion</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="presentacion_prod_edit" class="pull-left" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>¿Restaurant?</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="restuarant_prod_edit" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Precio Restaurant</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="preciorestaurant_prod_edit" type="text" class="form-control numerico_int" placeholder="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Observación</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <textarea id="observacionesp_edit" class="form-control" rows="3" maxlength="5000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn_cerrar_guardar_edicion" type="button" class="btn btn-default cerrar_editar pull-left" data-dismiss="modal">Cancelar</button>
+                    <input id="guardar_edicion" type="submit" class="editar_producto btn btn-primary" value="Modificar" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<form id="form_nuevo_producto" method="POST" name="fileinfo" class="form_producto_insert" role="form">
+    <div class="modal fade" id="modal_producto_agregar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_producto" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_producto">Ingresar Producto</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Codigo </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="codigo_prod" type="text" class="form-control validate[required,custom[VerificaCodigoExistente_Producto]]" onkeypress="return validateEnteroKeyPress(this,event);" placeholder="xxx">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_prod" type="text" class="form-control validate[required]" placeholder="Nombre Producto">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Unidad </label>
+                            </div>
+                            <div class="col-lg-9" id="divlistado_unidades">
+                            </div>
+                        </div>
+                        @*<div class="row">
+                                <div class="col-lg-3">
+                                    <label>Insumo</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <select id="listado_insumos" class="form-control validate[required]">
+                                        <option value="">--Cargando--</option>
+                                    </select>
+                                </div>
+                            </div>*@
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Familia</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <select id="listado_familias" class="form-control validate[required]">
+                                    <option value="">--Cargando--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Peso Grs.</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="pesogrs" type="text" class="form-control text-right" onkeypress="return validateEnteroKeyPress(this,event);" maxlength="5">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Precio Venta </label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="precioventa" type="text" class="form-control validate[required]" onkeypress="return validateEnteroKeyPress(this,event);" placeholder="Precio" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Presentación</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="presentacion_prod" class="" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Cabeza/Esq.</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="indcabezaesquelon" class="" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>¿Restaurant?</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="restaurant_prod" class="pull-left" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Precio Restaurant</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <input id="preciorestaurant_prod" type="text" class="form-control numerico_int">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Observación</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <textarea id="observacionesp" class="form-control" rows="3" maxlength="5000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <label>Codigo</label>
+                                </div>
+                                <div class="col-lg-2">
+                                    <input id="codigo_prod" type="text" class="form-control numerico_int validate[required,custom[VerificaCodigoExistente_Producto]]" placeholder="Codigo">
+                                </div>
+                                <div class="col-lg-7">
+                                    <button class="btn btn-success" type="button" id="idleerelmar" title="Traer Producto desde ELmar">...</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <label>Nombre</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input id="nombre_prod" type="text" class="form-control validate[required]" placeholder="Nombre del producto" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <label>Unidad</label>
+                                </div>
+                                <div class="col-lg-3" id="divlistado_unidades" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <label>Presentacion</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="checkbox" id="presentacion_prod" class="pull-left" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <label>¿Restaurant?</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="checkbox" id="restaurant_prod" class="pull-left" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <label>Precio Restaurant</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <input id="preciorestaurant_prod" type="text" class="form-control numerico_int" >
+                                </div>
+                            </div>
+                        </div>*@
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <button id="btn_cerrar_guardar_nuevo" type="button" class="btn btn-default cerrar_ingresar" data-dismiss="modal">Cancelar</button>
+                    <input id="guardar_nuevo" type="submit" class="btn btn-primary" value="Guardar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="form_insumo_nuevo" method="POST" name="fileinfo" class="form_insumo_insert" role="form">
+    <div class="modal fade" id="modal_insumo_insertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_fa" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_ingresar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_fa">Ingresar insumo</h3>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_insumo" type="text" class="form-control validate[required]" placeholder="Nombre">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn_cerrar_insumo_ingresar" type="button" class="btn btn-default cerrar_ingresar" data-dismiss="modal">Cancelar</button>
+                    <input id="insumo_enviar" type="submit" class="editar_producto btn btn-primary" data-dismiss="modal" value="Guardar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="form_edicion_insumo" method="POST" name="fileinfo" class="form_insumo_edit" role="form">
+    <div class="modal fade" id="modal_insumo_editar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_fa_edit" aria-hidden="true" style="margin-top: 80px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button type="button" class="close cerrar_editar" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_fa_edit">Editar insumo</h3>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Nombre</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input id="nombre_insumo_edit" type="text" class="form-control validate[required]" placeholder="Nombre">
+                                <input type="hidden" id="codigo_insumo_edit" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="btn_cerrar_insumo_editar" type="button" class="btn btn-default cerrar_editar" data-dismiss="modal">Cancelar</button>
+                    <input id="guardar_edicion_insumo" type="submit" class="btn btn-primary" data-dismiss="modal" value="Guardar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 1000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-xs-0"></div>
+    <div class="col-lg-8 col-md-8 col-xs-12" id="ListaParcial_Productos"></div>
+    <div class="col-lg-1 col-md-1 col-xs-0"></div>
+</div>
+
+<div class="modal fade" id="modal_asignar_presentacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_elimina_insumo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog_eliminar">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button id="close_modal_eliminar_insumo" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title titulo_modal_h3" id="myModalLabel_asignar_presentacion">Asignación de Presentación</h3>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label id="lblCodProd">CODIGO</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label id="lblNombProd">PRODUCTO</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>¿Solo pesaje?</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input id="chk_solopesaje" type="checkbox" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Agregar Presentación</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select id="presentacion_lista" class="form-select input-sm validate[required]" style="width:100%;"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Rendimiento</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input id="rendimiento_producto" class="" type="text" placeholder="0.0" onkeypress="return SoloNumerosDecimales(event, '0.0', 8, 2)" style="width:30%;" />
+                        <button class="btn btn-success " type="button" id="agregapresent" title="Añadir">
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                <div style="padding:5px;" id="idPresentacionesProducto">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sucess pull-left" data-dismiss="modal">Cancelar</button>
+                <input type="submit" id="guardarPresentacionesProd" class="btn btn-primary" value="Guardar" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" class="form_presentacion_eliminar" role="form">
+    <div class="modal fade" id="modal_presentacion_eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog_eliminar">
+            <div class="modal-content">
+                <div class="modal-header header_modal">
+                    <button id="close_modal_eliminar" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title titulo_modal_h3" id="myModalLabel_elimina_presentacion">Eliminar Presentación</h3>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro de eliminar la presentacion?<br />
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <div class="col-lg-1"></div>
+                            <div class="col-lg-2">
+                                <input type="text" class="form-control" id="codigo_pres_eliminar" readonly />
+                            </div>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="nombre_pres_eliminar" readonly />
+                            </div>
+                            <div class="col-lg-1"></div>
+                        </div>
+                        <br />
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cancelar</button>
+                            <!--
+                            <input type="submit" class="ok_present_eliminar btn btn-danger" value="Eliminar" />
+                            -->
+                            <button type="button" class="btn btn-danger" id="ok_present_eliminar"> Eliminar </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    var change_edita_insert = 0;
+    var edita_inserta_insumo = 0;
+
+    var presentaciones_listado = []; //ACTUALES
+    var presentaciones_nuevas = []; //NUEVAS
+    var presentaciones_tabla = []; //AMBAS PARA MOSTRAR EN VISTA
+
+    $(document).ready(function () {
+
+        $("#chk_solopesaje").click(function (e) {
+            if ($(this).is(':checked')) {
+                $("#rendimiento_producto").prop("disabled", true);
+                $("#agregapresent").prop("disabled", true);
+                $("#presentacion_lista").prop("disabled", true);
+            }
+            else {
+                $("#rendimiento_producto").prop("disabled", false);
+                $("#agregapresent").prop("disabled", false);
+                $("#presentacion_lista").prop("disabled", false);
+            }
+        })
+     
+        $("#ok_present_eliminar").click(function (e) {
+
+            var codprod = $("#modal_asignar_presentacion #lblCodProd").val();
+            var codpres = $("#modal_presentacion_eliminar #codigo_pres_eliminar").val();
+
+            var fd = new FormData();
+            fd.append("codprod", codprod);
+            fd.append("codpres", codpres);
+
+            $.ajax({
+                type: "POST",
+                url: '/Productos/Eliminar_Presentacion_Prod/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#modal_presentacion_eliminar").modal("hide");
+
+                    if (data == 1) {
+                        mostrar_msj_error('Error..');
+                        return false;
+                    }
+
+                    mostrar_msj_success('Presentación Eliminado');
+
+                    presentaciones_tabla = presentaciones_tabla.filter(function (el) {
+                        return el.codigo !== codpres;
+                    });
+
+                    llenarListaPresentaciones();
+                    //cargarPresentacionesProducto(codprod)
+                }
+            });
+
+        });
+
+
+            //
+            $("#guardarPresentacionesProd").click(function (e) {
+
+                var presentaciones_temp = [];
+                //var codigoprod = $("#lblCodProd").val();
+                //LEE LOS RENDIMIENTOS ESTABLECIDOS ANTES DE GUARDAR
+
+                if ($("#chk_solopesaje").is(':checked'))
+                {
+                    var item_pres = {
+                        codigo: 39,
+                        //nombre: "SIN PRESENTACION",
+                        rendimiento: 0.01
+                    }
+                    presentaciones_nuevas.push(item_pres);
+                }
+                else
+                {
+                    $.each(presentaciones_listado, function (i, item) {
+                        //
+                        var rend = $("#rendimiento_producto_" + i + "").val();
+                        var item_pres = {
+                            codigo: item.codigo,
+                            nombre: item.nombre,
+                            rendimiento: parseFloat(rend.replace(',', '.'))
+                        }
+                        presentaciones_temp.push(item_pres);
+                    });
+
+                    presentaciones_listado = [];
+                    presentaciones_listado = presentaciones_temp;
+                }
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: '/Productos/Guardar_Presentaciones_Prod/',
+                    data: JSON.stringify({
+                        listapresent: presentaciones_listado,
+                        nuevaspresent: presentaciones_nuevas
+                    }),
+                    DataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data == 1) {
+                            mostrar_msj_error("Error interno. Favor indicar a soporte");
+                            return false;
+                        }
+                        mostrar_msj_success('Presentaciones añadidas.');
+                        //cargarPresentacionesProducto(codigoprod);
+                        $("#modal_asignar_presentacion").modal("hide");
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        mostrar_msj_error("error de Conexion");
+                    }
+                });
+
+            });
+
+            //
+            $("#agregapresent").click(function (e) {
+                //
+                var codpres = $('#presentacion_lista').val();
+                var nombrpres = $('#presentacion_lista option:selected').text();
+                var rendimientopres = $('#rendimiento_producto').val();
+                //debugger
+                const isObjectPresent = presentaciones_tabla.find((o) => o.codigo === codpres);
+                if (!isObjectPresent && rendimientopres > 0) { //
+                    $("#idPresentacionesProducto").html("");
+                    $('#rendimiento_producto').val("");
+                    var item_pres = {
+                        codigo: codpres,
+                        nombre: nombrpres,
+                        rendimiento: parseFloat(rendimientopres)
+                    }
+                    //presentaciones_listado.push(item_pres);
+                    presentaciones_nuevas.push(item_pres);
+                    presentaciones_tabla.push(item_pres);
+                    llenarListaPresentaciones();
+                } else {
+                    if (isObjectPresent)
+                        mostrar_msj_advertencia("La presentacion ya esta registrada");
+                    else if (rendimientopres == 0)
+                        mostrar_msj_advertencia("El rendimiento debe ser mayor a 0");
+                }
+            });
+
+            $('#codigo').numeric_entero();
+
+            cargar_insumos("");
+            cargar_insumos_edicion();
+            cargar_productos("0");
+            cargar_unidades();
+            cargar_unidades_edit();
+            cargar_familia();
+
+        $('#listado_insumos').on('change', function () {
+            cargar_productos($("#listado_insumos").val());
+            if ($('#listado_insumos').val() != "0") {
+                $("#edicion_insumo").prop("disabled", false);
+                $("#ideliminarinsumo").prop("disabled", false);
+                $("#botoncito").prop("disabled", false);
+                change_edita_insert = 1;
+            } else {
+                $("#edicion_insumo").prop("disabled", true);
+                $("#ideliminarinsumo").prop("disabled", true);
+                $("#botoncito").prop("disabled", true);
+                change_edita_insert = 0;
+
+            }
+        });
+
+        $("#idagregarproducto").click(function (e) {
+            if ($("#listado_insumos").val() == "0") {
+                mostrar_msj_advertencia("Debe seleccionar insumo");
+                return false;
+            }
+            $("#modal_producto_agregar").modal("show");
+            $("#codigo_prod").val("");
+            $("#nombre_prod").val("");
+            $("#unidad_prod").val("");
+        });
+
+        $('.ok_producto_eliminar').click(function (e) {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append("codigo", $("#codigo_prod_eliminar").val());
+            $.ajax({
+                type: "POST",
+                url: '/Productos/EliminarProducto/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#close_modal_eliminar").click();
+                    if (data == 1) {
+                        mostrar_msj_success('Producto Eliminado Correctamente');
+                        cargar_productos($("#listado_insumos").val());
+                    } else if (data == -1) {
+                        mostrar_msj_error("Error al verificar los datos relacionados");
+                    } else if (data == 2) {
+                        mostrar_msj_error("No se puede eliminar debido que hay datos relacionados con pedidos");
+                    }
+                    else {
+                        mostrar_msj_error("Error al Eliminar Producto:" + data);
+                    }
+                }
+            });
+        });
+
+        $("#idleerelmar").click(function (e) {
+            e.preventDefault();
+
+            var codigo = $("#codigo_prod").val();
+            if (codigo == "") {
+                mostrar_msj_advertencia("Debe indicar codigo producto Elmar");
+                return false;
+            }
+            $("#saving").show();
+            $.ajax({
+                type: "POST",
+                url: '/Productos/Leer_Producto_Elmar/',
+                data: JSON.stringify({
+                    codigo: codigo
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#saving").hide();
+                    if (data.retornoJson == "1") {
+
+                        $("#nombre_prod").val(data.nombreJson);
+                        $("#unidad_prod").val(data.unidadJson);
+                    } else {
+                        mostrar_msj_error("Error :" + data.mensajeJson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexión");
+                }
+            });
+        });
+
+            $('#form_nuevo_producto').validationEngine();
+
+        $("#guardar_nuevo").click(function (e) {
+            e.preventDefault();
+            if (!$("#form_nuevo_producto").validationEngine('validate')) {
+                return false;
+            }
+            var codigo = $("#codigo_prod").val();
+            if (codigo == "") {
+                mostrar_msj_advertencia("Debe indicar codigo producto Elmar");
+                return false;
+            }
+            var nombre = $("#nombre_prod").val();
+            if (nombre == "") {
+                mostrar_msj_advertencia("Debe indicar nombre del producto");
+                return false;
+            }
+            var unidad = $("#unidad_prod").val();
+            //if (unidad == "") {
+            //    mostrar_msj_advertencia("Debe indicar unidad del producto");
+            //    return false;
+            //}
+            var fd = new FormData();
+            var insumo = $("#listado_insumos").val();
+            var presentacion = "";
+            if ($("#presentacion_prod").is(':checked')) {
+                presentacion = "1";
+            } else {
+                presentacion = "0";
+            }
+            var indcabezaesquelon = ($("#indcabezaesquelon").prop('checked')) ? 1 : 0;
+
+            var restaurant = ($("#restaurant_prod").prop('checked')) ? 1 : 0;
+            var precio_restaurant = ($("#preciorestaurant_prod").val() == "") ? 0 : $("#preciorestaurant_prod").val();
+            var familia = $("#listado_familias").val();
+            var nombre_familia = $('#listado_familias option:selected').text();
+            var nombre_insumo = $('#listado_insumos option:selected').text();
+            var pesogrs = $('#pesogrs').val();
+            var precioventa = $('#precioventa').val().replace(/\./g, '');
+            var observaciones = $('#observacionesp').val();
+
+            fd.append("codigo", codigo);
+            fd.append("nombre", nombre);
+            fd.append("unidad", unidad);
+            fd.append("insumo", insumo);
+            fd.append("presentacion", presentacion);
+            fd.append("restaurant", restaurant);
+            fd.append("precio_restaurant", precio_restaurant);
+            fd.append("familia", familia);
+            fd.append("nombre_familia", nombre_familia);
+            fd.append("nombre_insumo", nombre_insumo);
+            fd.append("pesogrs", pesogrs);
+            fd.append("precioventa", precioventa);
+            fd.append("indcabezaesquelon", indcabezaesquelon);
+            fd.append("observaciones", observaciones);
+
+            $.ajax({
+                type: "POST",
+                url: '/Productos/GuardarProducto/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.retornoJson == "1") {
+                        $("#form_nuevo_producto").each(function () { this.reset(); });
+                        mostrar_msj_success('Producto Guardado');
+                        cargar_productos($("#listado_insumos").val());
+                    } else {
+
+                        mostrar_msj_advertencia(data.mensajeJson);
+                    }
+                    window.scrollTo(0, 0); //Ir hacia arriba
+                    $("#btn_cerrar_guardar_nuevo").click();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexion");
+
+                }
+            });
+
+        });
+
+        //$('#form_edicion_producto').validationEngine();
+        $("#guardar_edicion").click(function (e) {
+            e.preventDefault();
+            if (!$("#form_edicion_producto").validationEngine('validate')) {
+                return false;
+            }
+
+            if ($("#presentacion_prod_edit").is(':checked')) {
+                presentacion = "1";
+            } else {
+                presentacion = "0";
+            }
+            var restaurant = ($("#restuarant_prod_edit").prop('checked')) ? 1 : 0;
+            var precio_restaurant = ($("#preciorestaurant_prod_edit").val() == "") ? 0 : $("#preciorestaurant_prod_edit").val();
+            var precioventa = ($("#precioventa_edit").val() == "") ? 0 : $("#precioventa_edit").val().replace(/\./g, '');
+            var indcabezaesquelon = ($("#indcabezaesquelon_edit").prop('checked')) ? 1 : 0;
+
+            var familia = $("#listado_familias_edit").val();
+            var nombre_familia = $('#listado_familias_edit option:selected').text();
+            var nombre_insumo = $('#listado_insumos_prod_edit option:selected').text();
+            var pesogrs = $('#pesogrs_edit').val();
+            var observaciones = $('#observacionesp_edit').val();
+
+            var fd = new FormData();
+            fd.append("codigo", $("#codigo_prod_edit").val());
+            fd.append("nombre", $("#nombre_prod_edit").val());
+            fd.append("unidad", $("#unidad_prod_edit").val());
+            fd.append("insumo", $("#listado_insumos_prod_edit").val());
+            fd.append("presentacion", presentacion);
+            fd.append("restaurant", restaurant);
+            fd.append("precio_restaurant", precio_restaurant);
+            fd.append("precioventa", precioventa);
+            fd.append("familia", familia);
+            fd.append("nombre_familia", nombre_familia);
+            fd.append("nombre_insumo", nombre_insumo);
+            fd.append("pesogrs", pesogrs);
+            fd.append("precioventa", precioventa);
+            fd.append("indcabezaesquelon", indcabezaesquelon);
+            fd.append("observaciones", observaciones);
+
+            $("#saving").show();
+            $.ajax({
+                type: "POST",
+                url: '/Productos/ModificarProducto/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == 1) {
+                        $("#saving").hide();
+                        mostrar_msj_success('Datos Modificados');
+                        //$("#listado_insumos").val($("#listado_insumos_prod_edit").val());
+                        //cargar_productos($("#listado_insumos_prod_edit").val());
+                        cargar_productos("");
+                        $("#btn_cerrar_guardar_edicion").click();
+
+                    } else {
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                    $("#load_carga").load("../../stop_loading.html");
+                    $("#btn_cerrar_guardar_edicion").click();
+                    //Ir hacia arriba
+                    //window.scrollTo(0, 0);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("Error de Conexion");
+                    $("#btn_cerrar_guardar_edicion").click();
+                }
+            });
+            //}
+        });
+
+        $('#edicion_insumo').on('click', function () {
+            if ($("#listado_insumos").val() == "0") { return false;}
+            edita_inserta_insumo = 2;
+            var codigo = $("#listado_insumos").find(':selected').data('codigo');
+            var nombre = $("#listado_insumos option:selected").text();
+            $("#modal_insumo_editar #nombre_insumo_edit").val(nombre);
+            $("#modal_insumo_editar #codigo_insumo_edit").val(codigo);
+            $("#modal_insumo_editar").modal("show");
+        });
+
+        $('#idagregarinsumo').on('click', function () {
+            edita_inserta_insumo = 1;
+            $("#modal_insumo_insertar").modal("show");
+        });
+        $('#modal_producto_agregar').on('show.bs.modal', function () {
+            edita_inserta_insumo = 3;
+        });
+
+        $('#ideliminarinsumo').on('click', function () {
+            var referencia = $("#listado_insumos").find(':selected').data('referencia');
+            var codigo = $("#listado_insumos").find(':selected').data('codigo');
+            $("#referenciainsumo_eliminar_hidden").val(referencia);
+            $("#codigoinsumo_eliminar_hidden").val(codigo);
+            $("#modaladvertencia_insumo_eliminar").modal("show");
+        });
+
+        $('#form_insumo_nuevo').validationEngine();
+        $("#insumo_enviar").click(function (e) {
+            e.preventDefault();
+            if (!$("#form_insumo_nuevo").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            fd.append("nombre", $("#nombre_insumo").val());
+
+            $.ajax({
+                type: "POST",
+                url: '/Productos/GuardarInsumo/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == 1) {
+                        $("#form_insumo_nuevo").each(function () { this.reset(); });
+                        mostrar_msj_success('Datos Guardados Correctamente');
+                        cargar_insumos("");
+                    } else {
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                    $("#btn_cerrar_insumo_ingresar").click();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexion");
+
+                }
+            });
+
+        });
+
+        $('#form_edicion_insumo').validationEngine();
+        $("#guardar_edicion_insumo").click(function (e) {
+            e.preventDefault();
+            if (!$("#form_edicion_insumo").validationEngine('validate')) {
+                return false;
+            }
+            var fd = new FormData();
+            fd.append("codigo", $("#codigo_insumo_edit").val());
+            fd.append("nombre", $("#nombre_insumo_edit").val());
+            var insumo_seleccionada = $("#listado_insumos").val();
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '/Productos/ModificarInsumo/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data == 1) {
+                        $("#btn_cerrar_insumo_editar").click();
+                        mostrar_msj_success('Datos Modificados Correctamente');
+                        cargar_insumos("");
+                    } else {
+                        mostrar_msj_error("Error interno. Indique a soporte la descripción del error: " + data);
+                    }
+                    $("#btn_cerrar_insumo_ingresar").click();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexion");
+
+                }
+            });
+
+        });
+
+        $('.ok_eliminar_insumo').click(function (e) {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append("codigo", $("#codigoinsumo_eliminar_hidden").val());
+
+            $.ajax({
+                type: "POST",
+                url: '/Productos/Eliminarinsumo/',
+                data: fd,
+                DataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#modaladvertencia_insumo_eliminar").modal("hide");
+                    if (data == 1) {
+                        mostrar_msj_success('insumo Eliminada Correctamente');
+                        cargar_insumos("");
+                    } else if (data == -1) {
+                        mostrar_msj_error("Error al verificar los datos relacionados");
+                    } else if (data == 2) {
+                        mostrar_msj_advertencia("No se puede eliminar debido que hay datos relacionados");
+                    }
+                    else {
+                        mostrar_msj_error("Error al Eliminar insumo:" + data);
+                    }
+                }
+            });
+        });
+
+    });
+
+    function cargar_familia() {
+        $('#listado_familias').html("<option value='0' data-codigo='0'>Cargando ...</option>");
+        $('#listado_familias_edit').html("<option value='0' data-codigo='0'>Cargando ...</option>");
+        $.getJSON('/Familias/GetFamilia/', function (data) {
+            var items = "<option value='0' data-codigo='0'>--Seleccione--</option>";
+            $("#listado_familias").empty();
+            $("#listado_familias_edit").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.codigo + "' data-codigo='" + district.codigo + "'>" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_familias').html("<option value='0' data-codigo='0'>No hay datos</option>");
+                $('#listado_familias_edit').html("<option value='0' data-codigo='0'>No hay datos</option>");
+            } else {
+                $('#listado_familias').html(items);
+                $('#listado_familias_edit').html(items);
+            }
+        });
+    }
+
+    function cargar_insumos_edicion() {
+        $('#listado_insumos_prod_edit').html("<option value='0'>Cargando ...</option>");
+        $.getJSON('/Productos/GetinsumoProd/', function (data) {
+            var items = "<option value='0'>--Seleccione--</option>";
+            $("#listado_insumos_prod_edit").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.codigo + "'>" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_insumos_prod_edit').html("<option value='0'>No hay datos</option>");
+            } else {
+                $('#modal_producto_editar #listado_insumos_prod_edit').html(items);
+            }
+        });
+        }
+
+    function cargar_insumos(nombre_insumo) {
+        $('#listado_insumos').html("<option value='0' data-codigo='0'>Cargando ...</option>");
+        $.getJSON('/Productos/GetInsumo/?nombre_insumo=' + nombre_insumo, function (data) {
+            var items = "<option value='0' data-codigo='0'>--Seleccione--</option>";
+            $("#listado_insumos").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.codigo + "' data-codigo='" + district.codigo + "'>" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#listado_insumos').html("<option value='0' data-codigo='0'>No hay datos</option>");
+            } else {
+                $('#listado_insumos').html(items);
+            }
+        });
+    }
+
+    function cargar_productos(insumo) {
+
+        $("#loading").css("display", "");
+        var url_action = '@Url.Action("partialListadoProductos", "Productos", new {insumo = "insumo_"})';
+        url_action = url_action.replace("insumo_", insumo)
+        $.ajax({
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            url: url_action,
+            success: function (result) {
+                $("#ListaParcial_Productos").html(result);
+                $("#loading").css("display", "none");
+            }
+        });
+    }
+
+    function cargar_unidades() {
+
+        $.getJSON('/Productos/GetUnidades/', function (data) {
+            //var items = "<option value='0'>--Seleccione--</option>";
+            //$("#modal_producto_agregar #unidad_prod").empty();
+            var count = 0;
+            var items = "";
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option style='height:30px' value='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_producto_agregar #divlistado_unidades').html("<select id='unidad_prod' class='form-select input-sm validate[required]' style='width:100%;'><option value='' data-nombre=''>No hay Unds</option></select>");
+            } else {
+                $('#modal_producto_agregar #divlistado_unidades').html("<select id='unidad_prod' class='form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+            }
+        });
+    }
+
+    function cargar_unidades_edit() {
+
+        $.getJSON('/Productos/GetUnidades/', function (data) {
+            //var items = "<option value='0'>--Seleccione--</option>";
+            //$("#modal_producto_editar #unidad_prod_edit").empty();
+            var count = 0;
+            var items = "";
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option style='height:30px' value='" + district.nombre + "' >" + district.nombre + "</option>";
+            });
+            if (count == 0) {
+                $('#modal_producto_editar #divlistado_unidades_edit').html("<select id='unidad_prod_edit' class='form-select input-sm validate[required]' style='width:100%;'><option value='' data-nombre=''>No hay Unds</option></select>");
+            } else {
+                $('#modal_producto_editar #divlistado_unidades_edit').html("<select id='unidad_prod_edit' class='form-select input-sm validate[required]' style='width:100%;'>" + items + "</select>");
+            }
+        });
+    }
+
+    function llenarListaPresentaciones() {
+   
+        $.ajax({
+            type: "POST",
+            url: '/Productos/partialPresentacionProducto/',
+            data: JSON.stringify({ listapresent: presentaciones_tabla }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+                //
+                $("#ajax_loader").hide();
+                if (result == -1) {
+                    mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                    window.location.href = "/../Home/Login";
+                } else {
+
+                    $("#modal_asignar_presentacion #idPresentacionesProducto").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexión: no pudo acceder a la vista");
+            }
+        });
+
+    }
+
+    function cargarPresentacionesProducto(codigo) {
+
+        presentaciones_listado = [];
+        presentaciones_tabla = [];
+
+        var items = "<option value='0'>Cargando..</option>";
+        $('#modal_asignar_presentacion #presentacion_lista').html(items);
+
+        var fd = new FormData();
+        fd.append("codigo", codigo);
+
+        $.ajax({
+            type: "POST",
+            url: '/Productos/Cargar_Presentaciones_Producto/',
+            data: fd,
+            DataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                //
+                if (data == 1) {
+                    mostrar_msj_error("Error base datos");
+                    return false;
+                }
+
+                items = "";
+
+                $.each(data.present, function (i, item) {
+                    //
+                    if (item.codigo != "39") {
+                        items += "<option value='" + item.codigo + "'>" + item.nombre + "</option>";
+                    }
+                });
+
+                $('#modal_asignar_presentacion #presentacion_lista').html(items);
+
+                //
+                $.each(data.prodpresent, function (i, item) {
+                    var item_pres = {
+                        codigo: item.codigo,
+                        nombre: item.nombre,
+                        rendimiento: item.rendimiento
+                    }
+
+                    presentaciones_listado.push(item_pres);
+                    presentaciones_tabla.push(item_pres);
+
+                });
+
+                if (data.solopesaje == 1) {
+                    $("#chk_solopesaje").prop("checked", true);
+                    $("#rendimiento_producto").prop("disabled", true);
+                    $("#agregapresent").prop("disabled", true);
+                    $("#presentacion_lista").prop("disabled", true);
+                } else
+                {
+                    $("#chk_solopesaje").prop("checked", false);
+                    $("#rendimiento_producto").prop("disabled", false);
+                    $("#agregapresent").prop("disabled", false);
+                    $("#presentacion_lista").prop("disabled", false);
+                }
+
+                llenarListaPresentaciones();
+            }
+        });
+    }
+</script>
+

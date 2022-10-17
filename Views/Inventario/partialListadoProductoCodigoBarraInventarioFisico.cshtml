@@ -1,0 +1,119 @@
+﻿@model IEnumerable<WebBox.Models.ProductosModels>
+@{
+    Layout = null;
+    int i = 0;
+
+}
+<table id="table_inventario" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width: 10%">Código</th>
+            <th style="width: 65%">Nombre</th>
+            <th style="width: 15%" class="text-right">Stock</th>
+            <th style="width: 10%" class="text-center">Und</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td>
+                    <input type="submit" class="codigo" style="width:100%" value="@item.codigo"
+                           data-codigo="@item.codigo"
+                           data-nombre="@item.nombre"
+                           data-unidad="@item.unidad" />
+                </td>
+                <td>
+                    <div id="nombre_prod_@i" data-fila="@i">@item.nombre</div>
+                </td>
+                <td class="text-right">
+                    @item.stock.ToString("N2")
+                </td>
+                <td class="text-center">
+                    @item.unidad
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript" class="init">
+
+
+    $(document).ready(function () {
+        table_inventario = $('#table_inventario').DataTable({
+            destroy: true,
+            //"bInfo": false,
+            //"bPaginate": false,
+            "searching": false,
+            "ordering": false,
+            "bFilter": false,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+
+
+        $('#table_inventario tbody').on('click', '.codigo', function (e) {
+            e.preventDefault();
+            var codigo = $(this).data("codigo");
+            var nombre = $(this).data("nombre");
+            var unidad = $(this).data("unidad");
+            var marca = $(this).data("marca");
+            var codigoman = $(this).data("codigoman");
+            var ubicacion = $(this).data("ubicacion");
+            var ok = -1;
+            var foundIndex = carrito.findIndex(x => x.codigo == codigo);
+            if (foundIndex < 0) {
+                var foundIndex = inventario.findIndex(x => x.codigo == codigo);
+                if (foundIndex < 0) {
+                    $('#form_cantidad').validationEngine('hideAll');
+                    $("#modal_cantidad").modal("show");
+                    $("#cantidad_cant").val(0);
+                    $("#unidad_cant").html(unidad);
+                    $("#codigo_cant").val(codigo);
+                    $("#producto_cant").val(nombre);
+                    $("#marca_cant").val(marca);
+                    $("#codigoman_cant").val(codigoman);
+                    $("#ubicacion_cant").val(ubicacion);
+                    $("#valor_cant").val(0);
+                    $("#obsdet_cant").val("");
+                    ok = 1;
+                } else { ok = 2; }
+            } else { ok = 3; }
+            if (ok == 2) { mostrar_msj_advertencia("Codigo ya esta en el inventario !!"); }
+            if (ok == 3) { mostrar_msj_advertencia("Codigo ya esta en el carrito !!"); }
+        });
+
+    });
+
+
+</script>

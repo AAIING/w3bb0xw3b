@@ -1,0 +1,400 @@
+﻿@{
+    /**/
+
+    /**/
+
+    /**/
+
+    /**/
+
+    /**/
+    if (Session["ss_UsuarioCodigo"] == null)
+    {
+        System.Web.HttpContext.Current.Session.Abandon();
+        System.Web.HttpContext.Current.Session.Clear();
+        System.Web.Security.FormsAuthentication.SignOut();
+        System.Web.HttpContext.Current.Response.Cookies.Add(new HttpCookie("ASP.NET_SessionId", ""));
+        Response.Redirect("/");
+    }
+    else
+    {
+        ViewBag.Title = "Home Page";
+        List<WebBox.Models.OpcionesModels> listado_opciones = Session["ss_opciones"] as List<WebBox.Models.OpcionesModels>;
+        string ocultar = "";
+
+        <style>
+            .modal-header {
+                background-color: #a1bdd5;
+                padding: 16px 16px;
+                color: #FFF;
+                /*border-bottom: 2px dashed #337AB7;*/
+            }
+
+            .modal-header_danger {
+                background-color: #f60611;
+                padding: 16px 16px;
+                color: #FFF;
+            }
+
+            @@media(max-width:768px) {
+                .botones {
+                    width: 100% !important;
+                }
+            }
+        </style>
+
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                @*<div class="navbar-header">
+                     <a class="navbar-brand" href="#">WebSiteName</a>
+                </div>*@
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" id="id_menu_responsivo">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="" class="navbar-brand nombreEmpresaEstablecida"></a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+
+                        <li class="dropdown abuelo ocultar_menu">
+                            <a class="dropdown-toggle nombre_menu menu_padre" data-toggle="dropdown" href="#">
+                                Maestros
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Vendedores" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Vendedores" data-vista="administrador_de_vendedores" class="menu_navegacion">Vendedores</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Operarios" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Operarios" data-vista="administrador_de_operarios" class="menu_navegacion">Operarios</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Usuarios" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Usuarios" data-vista="administrador_de_usuarios" class="menu_navegacion">Usuarios</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Productos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Productos" data-vista="Ingreso_Productos" class="menu_navegacion">Productos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Presentaciones" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Productos" data-vista="Ingreso_Presentaciones" class="menu_navegacion">Presentaciones</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Clientes" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Clientes" data-vista="Ingreso_Clientes" class="menu_navegacion">Clientes</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Proveedores" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Proveedores" data-vista="Ingreso_Proveedores" class="menu_navegacion">Proveedores</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Zonas" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Zonas" data-vista="Ingreso_Zonas" class="menu_navegacion">Zonas</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Vehiculos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Vehiculos" data-vista="Ingreso_Vehiculo" class="menu_navegacion">Vehiculos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Choferes" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Choferes" data-vista="Ingreso_Choferes" class="menu_navegacion">Choferes</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Parametros" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Parametros" data-vista="MantenedorParametros" class="menu_navegacion">Parametros</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown abuelo ocultar_menu">
+                            <a class="dropdown-toggle nombre_menu menu_padre " data-toggle="dropdown" href="#">
+                                Precios
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Lista de Precios" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Productos" data-vista="Lista_de_Precios" class="menu_navegacion">Lista de Precios</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Lista de Precios Vendedor" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Productos" data-vista="Lista_de_Precios_Vendedor" class="menu_navegacion">Lista de Precios Vendedor</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Lista de Precios Restaurant" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Productos" data-vista="Lista_de_PreciosRestaurant" class="menu_navegacion">Lista de Precios Restaurant</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown abuelo ocultar_menu">
+                            <a class="dropdown-toggle nombre_menu menu_padre " data-toggle="dropdown" href="#">
+                                Compras
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Generar OC" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a id="genera_oc" href="#" data-controlador="OrdenCompras" data-vista="GenerarOC" class="menu_navegacion">Generar OC</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Aprobar OC" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="OrdenCompras" data-vista="AprobarOC" class="menu_navegacion">Aprobar OC</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "OC Emitidas" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="OrdenCompras" data-vista="OrdenesEmitidas" class="menu_navegacion">OC Emitidas</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "OC Rechazadas" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="OrdenCompras" data-vista="OrdenesRechazadas" class="menu_navegacion">OC Rechazadas</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="dropdown abuelo ocultar_menu">
+                            <a class="dropdown-toggle nombre_menu menu_padre " data-toggle="dropdown" href="#">
+                                Inventario
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @{ ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Recepción de Productos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Recepciones" data-vista="RecepcionInsumo" class="menu_navegacion">Recepción de Productos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Libro Recepciones" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Recepciones" data-vista="Libro_Recepciones" class="menu_navegacion">Libro Recepciones</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Saldo de Existencias" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Inventario" data-vista="SaldoExistencia" class="menu_navegacion">Saldo de Existencias</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Inventario Fisico" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Inventario" data-vista="IngresarCarritoInventarioFisico" class="menu_navegacion">Inventario Fisico</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Aprobar Ajuste" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Inventario" data-vista="AprobarAjuste" class="menu_navegacion">Aprobar Ajuste</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Generar Ajuste" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Inventario" data-vista="GenerarAjuste" class="menu_navegacion">Generar Ajuste</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Libro de Ajustes" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Inventario" data-vista="Libro_de_Inventario" class="menu_navegacion">Libro de Ajustes</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="dropdown abuelo ocultar_menu">
+                            <a class="dropdown-toggle nombre_menu menu_padre " data-toggle="dropdown" href="#">
+                                Pedidos
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Pedidos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Ingreso_Pedidos" class="menu_navegacion">Pedidos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Revisión Pedidos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Revision_Pedidos" class="menu_navegacion">Revisión Pedidos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Proceso Pedidos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Proceso_Pedidos" class="menu_navegacion">Proceso Pedidos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Resumen Productos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Resumen_ProductosPedidos" class="menu_navegacion">Resumen Productos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Resumen Insumos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Resumen_Insumos" class="menu_navegacion">Resumen Insumos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Asingacion_Pedidos_Furgon" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Seleccionar_Pedidos_A_Viaje" class="menu_navegacion">Asignación Pedidos Furgon</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Asingacion_Pedidos_Furgon" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Asingacion_Pedidos_Furgon" class="menu_navegacion">Asignación Manual Pedidos Furgon</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Asingacion_Pedidos_Furgon" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Listado_Pedidos_PorCargar" class="menu_navegacion">Listado de pedidos por cargar</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown abuelo ocultar_menu">
+                            <a class="dropdown-toggle nombre_menu menu_padre " data-toggle="dropdown" href="#">
+                                Pagos
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @{ ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Cuenta Corriente" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pagos" data-vista="DeudaPagosCliente" class="menu_navegacion">Cuenta Corriente</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Aprobar Pagos" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pagos" data-vista="AprobarPagos" a class="menu_navegacion">Aprobar Pagos</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Pagos Aprobados" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pagos" data-vista="PagosAprobados" a class="menu_navegacion">Pagos Aprobados</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Pagos Aprobados" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pagos" data-vista="InformeCaja" a class="menu_navegacion">Informe Caja</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown abuelo ocultar_menu">
+                            <a class="dropdown-toggle nombre_menu menu_padre " data-toggle="dropdown" href="#">
+                                Informes
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Imprimir Boletas" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Imprimir_Boletas" class="menu_navegacion">Imprimir Boletas</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Recuperar Boletas" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Recuperar_Boletas" class="menu_navegacion">Recuperar Boletas</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Margenes Comunas" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Informes" data-vista="Margenes_Comunas" class="menu_navegacion">Margenes Comunas</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Margenes Vendedores" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Informes" data-vista="Margenes_Vendedores" class="menu_navegacion">Margenes Vendedores</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Margenes Clientes" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Informes" data-vista="Margenes_Clientes" class="menu_navegacion">Margenes Clientes</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Exportador Excel" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Informes" data-vista="Exportador_Excel" class="menu_navegacion">Exportador Excel</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Exportador Excel Comisiones Operarios" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Informes" data-vista="Exportador_Excel_Comisiones_Operarios" class="menu_navegacion">Exportador Excel Comisiones Operarios</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Exportador Excel Comisiones Vendedores" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Informes" data-vista="Exportador_Excel_Comisiones_Vendedores" class="menu_navegacion">Exportador Excel Comisiones Vendedores</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Grafico de Ventas por Comuna" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Informes" data-vista="Grafico_1" class="menu_navegacion">Grafico de Ventas por Comuna</a></li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#" id="btn_modal_ingresar" class="btn btn-oscuro"><span class="glyphicon glyphicon-user"></span>@Session["ss_UsuarioCodigo"]</a></li>
+                        <li><a href="@Url.Action("Logout", "Home")" class="btn btn-danger" style="text-align:left !important"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <br /><br /><br />
+        <div class="form-group">
+            <div class="row ">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10 col-xs-12">
+
+                    <div id="divPagina"><br /><br /><img src="~/Upload/logo_fbx.png" style="display: table;margin: 0 auto; height:300px;width:300px" /></div>
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+        </div>
+        <div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+            <b>cargando ...</b>
+            <img src="../../../images/loading_page.gif" width="20" height="20" />
+        </div>
+        <div id="saving" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+            <b>Guardando...</b>
+            <img src="../../../images/loading_page.gif" width="20" height="20" />
+        </div>
+
+                
+        @section Scripts {
+            <script type="text/javascript">
+                var menu_productos = 0;
+                var menu_pedidos = 0;
+                var menu_validacion_pedidos = 0;
+                var menu_pedido = 0;
+                var menu_validacion_pedido = 0;
+                var getBrowserWidth = function () {
+                    if (window.innerWidth < 768) {
+                        // Extra Small Device
+                        return "xs";
+                    } else if (window.innerWidth < 991) {
+                        // Small Device
+                        return "sm"
+                    } else if (window.innerWidth < 1199) {
+                        // Medium Device
+                        return "md"
+                    } else {
+                        // Large Device
+                        return "lg"
+                    }
+                };
+        $(document).ready(function () {
+
+
+            $('.numerico_int').numeric_entero();
+            $('.numerico_dec').numeric(".");
+
+            //Activar_Opciones_Usuario();
+
+            $(".menu_navegacion").click(function (ev) {
+                ev.preventDefault();
+                $("#loading").show();
+                var controlador = $(this).data("controlador");
+                var vista = $(this).data("vista");
+                var href = "/" + $(this).attr('href');
+                href = "/ValidaSesion/esActiva/";
+                $.post(href, function (data) {
+                    /// Ponemos la respuesta de nuestro script en el DIV recargado
+                    if (data == -1) {
+                        mostrar_msj_error_volverIniciar("Sus variable de Sessión ha expirado, debe volver a loguearse", "/../Home/Login")
+                    } else if (data == -3) {
+                        mostrar_msj_error_accionClick("Debe Seleccionar Empresa Primero", "administrar_establecerEmpresa");
+                    } else if (data == -4) {
+                        mostrar_msj_error_accionClick("Debe Seleccionar Obra", "administrar_establecerObra");
+                    }
+                    else if (data == -5) {
+                        mostrar_msj_error_accionClick("Para Ingresar Solicitud, la obra establecida debe tener presupuesto aprobado", "administrar_ingresarPresupuestos");
+                    }
+                    else {
+                        $(".esconder").html("");
+                        href = "/" + controlador + "/" + vista + "/";
+
+                        var device = getBrowserWidth();
+                        if (device === "xs" || device === "sm") {
+                            $("#id_menu_responsivo").click();
+                        }
+                            $.ajax({
+                                type: "POST",
+                                url: href,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: false,
+                                success: function (result) {
+
+                                    $("#loading").hide();
+                                    if (result == -1) {
+                                        mostrar_msj_error("Su Sessión a ha expirado. Ingrese al Sistema nuevamente");
+                                        window.location.href = "/../Home/Login";
+                                    } else {
+                                        $("#divPagina").html(result);
+                                    }
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    mostrar_msj_error(textStatus);
+                                }
+                            });
+
+
+                    }
+                });
+
+            });
+
+        });
+
+        function Activar_Opciones_Usuario() {
+
+
+
+            //$(".ocultar").css('display', 'none');
+            //$(".menu_navegacion").css('display', 'none');
+
+            var usuario = '@Session["ss_UsuarioCodigo"]';
+
+            if (usuario == 'ADMIN') {
+                $(".ocultar").removeClass('ocultar');
+                //$(".menu_navegacion").css('display', '');
+                $("#loading_inicial").css('display', 'none');
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: '/Usuarios/Validar_Acceso/',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.retornojson == 1) {
+                            $.each(data.opcionesjson, function (i, opciones) {
+                                $(".menu_navegacion").each(function () {
+                                    var opcion = $(this).text().trim();
+                                    var nombre = opciones.nombre.trim();
+                                    if (opcion == nombre) {
+                                        $(this).parents('.menu_webbox').removeClass("ocultar");
+                                        //$(this).show();
+                                    }
+                                })
+                            });
+                        }
+                        $(".salir").removeClass("ocultar");
+                        $("#loading_inicial").css('display', 'none');
+                    }
+                });
+            }
+
+            $(".salida").show();
+        }
+
+        function MostrarElementos(elem) {
+
+            var padre = elem.parent();
+            var abuelo = $(padre).parent();
+            var bisabuelo = $(abuelo).parent();
+
+            elem.show();
+            padre.show();
+            abuelo.show();
+            bisabuelo.show();
+
+            var hermano = elem.parent().first();
+
+            while (hermano) {
+                hermano.show();
+                hermano = hermano.next();
+            }
+
+            return;
+
+        };
+
+            </script>
+        }
+        /**/
+
+        /**/
+
+        /**/
+
+
+    } }

@@ -1,0 +1,243 @@
+﻿
+
+@{
+
+    Layout = null;
+}
+
+<div id="loading" style="position: absolute; left: 50%; top: 50%; z-index: 50000; display: none">
+    <b>cargando ...</b>
+    <img src="../../../images/loading_page.gif" width="20" height="20" />
+</div>
+
+<br />
+
+ <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-2 text-right"><b>Fecha inicio</b></div>
+        <div class="col-lg-2"><input type="date" id="idfechainicio" class="form-control fecha" /></div>
+        <div class="col-lg-1 text-right">
+            <b>Fecha corte</b>
+        </div>
+        <div class="col-lg-2"><input type="date" id="idfechatermino" class="form-control fecha" /></div>
+        <div class="col-lg-3"></div>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-4">
+            <div class="input-group">
+                <input type="text" class="form-control" id="idnombrecliente" placeholder="Nombre cliente" autofocus>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" id="btn_buscar_clientes" title="Buscar cliente">..</button>
+                </span>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <input type="text" class="form-control numerico_int" id="idpedido" placeholder="N° Pedido" >
+        </div>
+        <div class="col-lg-3"></div>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-3"><button type="button" id="btn_generar_informe" class="btn btn-primary" style="width:100%">Mostrar Boletas</button></div>
+        <div class="col-lg-3"><button type="button" id="btn_generar_pdf_seleccionadas" class="btn btn-danger" style="width:100%">Imprimir Seleccionadas</button></div>
+
+        <div class="col-lg-3"></div>
+    </div>
+<div class="modal fade" id="modal_busca_Clientes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel_Clientes" aria-hidden="true" style="margin-top: 80px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header_modal">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="titulo_modal_h3 modal-title" id="myModalLabel_Clientes">
+                    Clientes
+                </h3>
+            </div>
+            <div class="modal-body">
+                <select id="listado_Clientes" class="form-control" data-live-search="true">
+                    <option value="0">--Cargando Datos--</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_elegir_modal_Clientes" type="button" class="btn btn-danger pull-left">Elegir</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_boleta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="max-width:1200px;width:60%">
+        <div class="modal-content modal-lg">
+            <div class="modal-header header_modal">
+                <div class="row">
+                    <div class="col-lg-10 col-xs-10">
+                        <h3 class="modal-title titulo_modal_h3" id="myModalLabel_Boleta">Boleta</h3>
+                    </div>
+                    <div class="col-lg-2 col-xs-2">
+                        <button type="button" data-dismiss="modal" class="btn btn-primary center-block">Cerrar</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div id="pdfboleta">
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-lg-12 col-xs-12">
+                                <button type="button" data-dismiss="modal" class="btn btn-primary center-block">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+    <div class="col-lg-6 col-md-6 col-xs-12" id="divpartialImprimir_Boletas"></div>
+    <div class="col-lg-3 col-md-3 col-xs-0"></div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var d = new Date();
+        var curDay = d.getDate();
+        var curMonth = d.getMonth() + 1;
+        var curYear = d.getFullYear();
+
+        var fi = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-" + (curDay < 10 ? "0" + curDay : curDay);
+
+        var ft = curYear + "-" + (curMonth < 10 ? "0" + curMonth : curMonth) + "-" + (curDay < 10 ? "0" + curDay : curDay);
+
+        $('#idfechainicio').val(fi);
+        $("#idfechatermino").val(ft);
+
+        cargar_informe();
+
+        $("#btn_generar_informe").on('click', function (e) {
+            e.preventDefault();
+
+            var nombre = $('#idcliente').text();
+            if (nombre == "cliente" || nombre == "TODOS") { nombre = ""; }
+            cargar_informe();
+        });
+        $("#btn_buscar_clientes").click(function (e) {
+            e.preventDefault();
+            listarClientes("");
+            $("#modal_busca_Clientes").modal("show");
+        });
+        $("#btn_elegir_modal_Clientes").click(function (e) {
+            e.preventDefault();
+            debugger;
+            $("#modal_busca_Clientes").modal("hide");
+            var nombre = $("#listado_Clientes option:selected").data("nombre");
+            $("#idnombrecliente").val(nombre);
+        });
+        $('#btn_generar_pdf_seleccionadas').on('click',function (e) {
+            e.preventDefault();
+
+            var registros = [];
+            var c = 0;
+            $("#table_pedidos_maestro .seleccionado").each(function () {
+                if ($(this).prop('checked')) {
+                    c++;
+                    registros.push($(this).data("registro"));
+                };
+            });
+            if (c == 0) {
+                mostrar_msj_advertencia("Debe seleecionar boleta");
+                return false;
+            }
+            $("#loading").show();
+            $.ajax({
+                type: "POST",
+                url: '/Pedidos/ok_PDFBoletasSeleccionadas/',
+                data: JSON.stringify({ registros: registros }),
+                contentType: "application/json; charset=utf-8",
+                dataType: false,
+                success: function (data) {
+
+                    $("#loading").hide();
+                    if (data.retornoJson == "1") {
+                        $("#modal_boleta").modal("show");
+                        $("#pdfboleta").html("");
+                        var iframe = $('<iframe/>', {
+                            'class': 'pdfpreview', // some CSS class to set the width and height of the preview iframe
+                            'name': 'myname',
+                            'id': 'print-iframe',
+                            'src': data.boletajson
+                        });
+                        $('#pdfboleta').html(
+                            iframe
+                        );
+                        $("#divpartialImprimir_Boletas").html(data);
+                    } else {
+                        mostrar_msj_error(data.mensajejson);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    mostrar_msj_error("error de Conexion");
+                }
+            });
+
+        });
+    });
+
+
+    function cargar_informe() {
+        var fechai = $('#idfechainicio').val();
+        var fechat = $('#idfechatermino').val();
+        var nombre = $('#idnombrecliente').val();
+        var nropedido = $('#idpedido').val();
+        $("#loading").show();
+        $.ajax({
+            type: "POST",
+            url: '/Pedidos/partialImprimir_Boletas/',
+            data: JSON.stringify({ fechai: fechai, fechat: fechat, nombre: nombre, nropedido: nropedido }),
+            contentType: "application/json; charset=utf-8",
+            dataType: false,
+            success: function (result) {
+
+                $("#loading").hide();
+                if (result == "-1") {
+                    mostrar_msj_error_volverIniciar("Su Sessión a ha expirado. Ingrese al Sistema nuevamente", "/../Home/Login");
+                } else {
+                    $("#divpartialImprimir_Boletas").html(result);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                mostrar_msj_error("error de Conexion");
+            }
+        });
+
+    }
+    function listarClientes(nombre) {
+
+        $.getJSON('/Clientes/BuscarClientes/?nombre_cliente=' + nombre, function (data) {
+
+            var items = "";
+            $("#listado_Clientes").empty();
+            var count = 0;
+            $.each(data, function (i, district) {
+                count = 1;
+                items += "<option value='" + district.telefono + "' data-nombre='" + district.nombre + "' data-direccion='" + district.direccion + "' data-comuna='" +
+                    district.comuna + "' data-condominio='" + district.condominio + "' data-categoria='" + district.categoria + "'>" + district.nombre + "</option>";
+            });
+
+            if (count == 0) {
+                $('#listado_Clientes').html("<option value='0' data-nombre='' data-direccion='' data-comuna='' data-condominio=''>No hay datos</option>");
+            } else {
+                $('#listado_Clientes').html(items);
+            }
+            $("#listado_Clientes").selectpicker('refresh');
+
+        });
+    }
+
+</script>
+

@@ -1,0 +1,127 @@
+﻿@model IEnumerable<WebBox.Models.CarritoInventarioModels>
+
+@{
+    Layout = null;
+    int i = 0;
+}
+
+
+<table id="table_carrito" class="table table-striped table-bordered tableSection table_consulta" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background-color: #FF9A00; color: #fff">
+            <th style="width: 10%">Codigo</th>
+            <th style="width: 45%">Nombre</th>
+            <th style="width: 10%" class="text-right">Cantidad</th>
+            <th style="width: 10%" class="text-center">Und</th>
+            <th style="width: 15%" class="text-right">Valor</th>
+            <th style="width: 5%">Editar</th>
+            <th style="width: 5%">Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr id="fila_inventario_@i">
+                <td>
+                    <div id="codigo_@i">@item.codigo</div>
+                </td>
+                <td>
+                    @item.detalle
+                </td>
+                <td class="text-right">
+                    @item.cantidad.ToString().Replace(',', '.')
+                </td>
+                <td class="text-center">
+                    @item.unidad
+                </td>
+                <td class="text-right">
+                    @item.valor.ToString("N0")
+                </td>
+                <td>
+                    <button type="button" class="editarCarrito"
+                            data-fila="@i"
+                            data-codigo="@item.codigo"
+                            data-detalle="@item.detalle"
+                            data-cantidad="@item.cantidad.ToString().Replace(',', '.')"
+                            data-unidad="@item.unidad"
+                            data-valor="@item.valor"
+                            data-obsdet="@item.obsdet"
+                            style="width: 100%">
+                        E
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="eliminarCarrito" data-fila="@i" data-codigo="@item.codigo" style="width: 100%">X</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript" class="init">
+
+    $(document).ready(function () {
+        table_carrito = $('#table_carrito').DataTable({
+            destroy: true,
+            //"bInfo": false,
+            //"bPaginate": false,
+            "searching": false,
+            "ordering": false,
+            "bFilter": false,
+            "bLengthChange": false,
+            "lengthMenu": [[10, 45, 75, 105, 135, 165, 195, 225, 255, 285], [10, 45, 75, 105, 135, 165, 195, 225, 255, 285]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            fixedHeader: {
+                header: true,
+                footer: true
+            }
+        });
+        $('#table_carrito tbody').on('click', '.eliminarCarrito', function (e) {
+            e.preventDefault();
+
+            var codigo = $(this).data('codigo');
+            fila_actual_carro = $(this).data('fila');
+            $("#codigocarrito_eliminar_hidden").val(codigo);
+            $("#modal_carrito_eliminar").modal("show");
+
+        });
+
+
+        $('#table_carrito tbody').on('click', '.editarCarrito', function (e) {
+            e.preventDefault();
+            $('#form_editar_carrito').validationEngine('hideAll');
+            $("#modal_editar_carrito").modal("show");
+            $("#codigo_editar_carrito").val($(this).data("codigo"));
+            $("#producto_editar_carrito").val($(this).data("detalle"));
+            $("#cantidad_editar_carrito").val($(this).data("cantidad"));
+            $("#unidad_editar_carrito").html($(this).data("unidad"));
+            $("#valor_editar_carrito").val(formatea_miles($(this).data("valor")));
+            $("#obsdet_editar_carrito").val($(this).data("obsdet"));
+        });
+
+    });
+
+
+</script>
