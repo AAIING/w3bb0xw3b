@@ -210,9 +210,21 @@
 
                             </ul>
                         </li>
-
+                        <li class="dropdown abuelo ocultar_menu">
+                            <a class="dropdown-toggle nombre_menu menu_padre " data-toggle="dropdown" href="#">
+                                Informes
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Imprimir Boletas" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Imprimir_Boletas" class="menu_navegacion">Imprimir Boletas</a></li>
+                                @{ocultar = (listado_opciones.Where(x => x.nombre.Trim().Replace("\n", "") == "Recuperar Boletas" || x.usuario == "ADMIN").FirstOrDefault()) != null ? "" : "ocultar"; }
+                                <li class="menu_webbox @ocultar"><a href="#" data-controlador="Pedidos" data-vista="Recuperar_Boletas" class="menu_navegacion">Recuperar Boletas</a></li>
+                            </ul>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                 
                         <li><a href="#" id="btn_modal_ingresar" class="btn btn-oscuro"><span class="glyphicon glyphicon-user"></span>@Session["ss_UsuarioCodigo"]</a></li>
                         <li><a href="@Url.Action("Logout", "Home")" class="btn btn-danger" style="text-align:left !important"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
                     </ul>
